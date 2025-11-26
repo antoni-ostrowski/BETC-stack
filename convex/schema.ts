@@ -1,14 +1,16 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 
 export default defineSchema({
-  products: defineTable({
-    title: v.string(),
-    imageId: v.string(),
-    price: v.number(),
-  }),
+  users: defineTable({
+    authId: v.string(),
+  }).index("by_auth_id", ["authId"]),
+
   todos: defineTable({
     text: v.string(),
     completed: v.boolean(),
-  }),
-});
+    userId: v.id("users"),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("userId", ["userId"]),
+})
