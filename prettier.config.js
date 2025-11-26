@@ -3,9 +3,9 @@
 /** @type {import('prettier').Config} */
 const config = {
   semi: false,
-  singleQuote: true,
-  trailingComma: 'all',
-  plugins: ['prettier-plugin-organize-imports'],
-}
+  singleQuote: false,
+  trailingComma: "all",
+  plugins: ["prettier-plugin-organize-imports", "@prettier/plugin-oxc"],
+};
 
-export default config
+export default config;

@@ -12,15 +12,6 @@
     "verbatimModuleSyntax": false,
     "noEmit": true,
 
-"exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    // *** ADD THIS LINE ***
-    "eslint.config.js" 
-  ],
-
-
     /* Linting */
     "skipLibCheck": true,
     "strict": true,
@@ -28,7 +19,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

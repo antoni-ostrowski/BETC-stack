@@ -6,9 +6,10 @@
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "eslint",
-    "format": "prettier",
-    "check": "prettier --write . && eslint --fix"
+    "lint": "oxlint --type-aware",
+    "format": "bunx oxfmt@latest",
+    "check": "bunx oxfmt@latest . && oxlint --type-aware",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@convex-dev/react-query": "0.0.0-alpha.11",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@convex-dev/eslint-plugin": "^1.0.0",
     "@eslint/js": "^9.39.1",
+    "@prettier/plugin-oxc": "^0.0.5",
     "@tanstack/eslint-plugin-query": "^5.91.2",
     "@tanstack/eslint-plugin-router": "^1.139.0",
     "@types/node": "^22.19.1",
@@ -44,6 +46,9 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "jsdom": "^27.2.0",
+    "oxfmt": "^0.15.0",
+    "oxlint": "^1.30.0",
+    "oxlint-tsgolint": "^0.8.2",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "typescript": "^5.9.3",
