@@ -3,8 +3,8 @@ import { QueryClient, notifyManager } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
 import { ReactNode } from "react"
-import { NotFound } from "./components/default-not-found"
-import { DefaultCatchBoundary } from "./components/defuault-error-boundary"
+import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
+import { NotFound } from "./components/router/default-not-found"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {

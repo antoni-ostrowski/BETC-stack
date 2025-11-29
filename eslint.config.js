@@ -1,12 +1,12 @@
-import convexPlugin from "@convex-dev/eslint-plugin";
-import eslint from "@eslint/js";
-import pluginQuery from "@tanstack/eslint-plugin-query";
-import pluginRouter from "@tanstack/eslint-plugin-router";
-import prettierConfig from "eslint-config-prettier";
-import reactPlugin from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import { defineConfig } from "eslint/config";
-import tseslint from "typescript-eslint";
+import convexPlugin from "@convex-dev/eslint-plugin"
+import eslint from "@eslint/js"
+import pluginQuery from "@tanstack/eslint-plugin-query"
+import pluginRouter from "@tanstack/eslint-plugin-router"
+import prettierConfig from "eslint-config-prettier"
+import reactPlugin from "eslint-plugin-react"
+import reactHooks from "eslint-plugin-react-hooks"
+import { defineConfig } from "eslint/config"
+import tseslint from "typescript-eslint"
 
 export default defineConfig(
   ...convexPlugin.configs.recommended,
@@ -26,7 +26,6 @@ export default defineConfig(
   reactHooks.configs.flat.recommended,
   eslint.configs.recommended,
   tseslint.configs.recommended,
-
   prettierConfig,
 
   // 2. Load the strict type-checked rules (These require the project service)
@@ -43,4 +42,15 @@ export default defineConfig(
       },
     },
   },
-);
+
+  {
+    rules: {
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        {
+          checksVoidReturn: false,
+        },
+      ],
+    },
+  },
+)

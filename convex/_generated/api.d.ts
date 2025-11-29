@@ -13,6 +13,7 @@ import type * as http from "../http.js";
 import type * as internal_ from "../internal.js";
 import type * as lib from "../lib.js";
 import type * as todos from "../todos.js";
+import type * as user_query from "../user/query.js";
 
 import type {
   ApiFromModules,
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   internal: typeof internal_;
   lib: typeof lib;
   todos: typeof todos;
+  "user/query": typeof user_query;
 }>;
 
 /**

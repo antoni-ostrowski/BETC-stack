@@ -4,7 +4,7 @@ export const list = authQuery({
   args: {},
   handler: async (ctx) => {
     console.log(ctx.auth.user)
-    await ctx.db.query("todos").collect()
+    return await ctx.db.query("todos").collect()
   },
 })
 
