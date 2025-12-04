@@ -1,10 +1,12 @@
 import { ConvexQueryClient } from "@convex-dev/react-query"
 import { QueryClient, notifyManager } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
 import { ReactNode } from "react"
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
 import { NotFound } from "./components/router/default-not-found"
+import { ThemeProvider } from "./lib/providers/theme/theme-provider"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
@@ -19,6 +21,8 @@ export function getRouter() {
 
   const convex = new ConvexReactClient(CONVEX_URL, {
     unsavedChangesWarning: false,
+    logger: true,
+    verbose: true,
   })
 
   const convexQueryClient = new ConvexQueryClient(convex)
@@ -42,9 +46,11 @@ export function getRouter() {
     defaultNotFoundComponent: () => <NotFound />,
     context: { queryClient, convexClient: convex, convexQueryClient },
     Wrap: ({ children }: { children: ReactNode }) => (
-      <ConvexProvider client={convexQueryClient.convexClient}>
-        {children}
-      </ConvexProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <ConvexProvider client={convexQueryClient.convexClient}>
+          <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
+        </ConvexProvider>
+      </ThemeProvider>
     ),
   })
 

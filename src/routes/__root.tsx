@@ -3,6 +3,12 @@ import { NotFound } from "@/components/router/default-not-found"
 import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
 import { fetchQuery } from "@/lib/auth-server"
+import { getThemeServerFn } from "@/lib/providers/theme/theme"
+import {
+  ThemeProvider,
+  themeScript,
+} from "@/lib/providers/theme/theme-provider"
+import ThemeToggle from "@/lib/providers/theme/theme-toggle"
 import { tryCatch } from "@/lib/utils"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import {
@@ -16,6 +22,7 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
   Link,
+  ScriptOnce,
   Scripts,
   createRootRouteWithContext,
   useRouteContext,
@@ -27,21 +34,6 @@ import { getCookie, getRequest } from "@tanstack/react-start/server"
 import { ConvexReactClient } from "convex/react"
 import { api } from "../../convex/_generated/api"
 import appCss from "../styles.css?url"
-
-const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
-  const { createAuth } = await import("../../convex/auth")
-  const { session } = await fetchSession(getRequest())
-  const sessionCookieName = getCookieName(createAuth)
-  const token = getCookie(sessionCookieName)
-
-  const [user, err] = await tryCatch(fetchQuery(api.user.query.getMe, {}))
-  console.log("user fetched - ", user)
-  return {
-    userId: session?.user.id,
-    token,
-    user: user ?? undefined,
-  }
-})
 
 export interface MyRouterContext {
   queryClient: QueryClient
@@ -81,16 +73,20 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async (ctx) => {
     // all queries, mutations and action made with TanStack Query will be
     // authenticated by an identity token.
-    const { userId, token, user } = await fetchAuth()
+    const a = await ctx.context.queryClient.ensureQueryData({
+      queryKey: ["auth"],
+      queryFn: fetchAuth,
+    })
 
     // During SSR only (the only time serverHttpClient exists),
     // set the auth token to make HTTP queries with.
-    if (token) {
-      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
+    if (a.token) {
+      ctx.context.convexQueryClient.serverHttpClient?.setAuth(a.token)
     }
 
-    return { userId, token, user }
+    return { userId: a.userId, token: a.token, user: a.user }
   },
+  loader: () => getThemeServerFn(),
   shellComponent: RootDocument,
 })
 
@@ -101,34 +97,56 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       client={context.convexClient}
       authClient={authClient}
     >
-      <html lang="en">
-        <head>
-          <HeadContent />
-        </head>
-        <body>
-          <SignOutBtn />
-          {children}
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              {
-                name: "Tanstack Query",
-                render: <ReactQueryDevtoolsPanel />,
-              },
-            ]}
-          />
-          <Scripts />
-        </body>
-      </html>
+      <ThemeProvider>
+        <html lang="en" suppressHydrationWarning>
+          <head>
+            <HeadContent />
+          </head>
+          <body>
+            <ScriptOnce>{themeScript}</ScriptOnce>
+            <div className="absolute top-4 left-4 flex flex-row gap-2">
+              <SignOutBtn />
+              <div>
+                <ThemeToggle />
+              </div>
+            </div>
+            {children}
+            <TanStackDevtools
+              config={{
+                position: "bottom-right",
+              }}
+              plugins={[
+                {
+                  name: "Tanstack Router",
+                  render: <TanStackRouterDevtoolsPanel />,
+                },
+                {
+                  name: "Tanstack Query",
+                  render: <ReactQueryDevtoolsPanel />,
+                },
+              ]}
+            />
+            <Scripts />
+          </body>
+        </html>
+      </ThemeProvider>
     </ConvexBetterAuthProvider>
   )
 }
+
+const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
+  const { createAuth } = await import("../../convex/auth")
+  const { session } = await fetchSession(getRequest())
+  const sessionCookieName = getCookieName(createAuth)
+  const token = getCookie(sessionCookieName)
+
+  const [user] = await tryCatch(fetchQuery(api.user.query.getMe, {}))
+  return {
+    userId: session?.user.id,
+    token,
+    user: user ?? undefined,
+  }
+})
 
 function SignOutBtn() {
   const context = useRouteContext({ from: Route.id })
@@ -145,6 +163,7 @@ function SignOutBtn() {
     <Button
       onClick={async () => {
         await authClient.signOut()
+        await context.queryClient.resetQueries({ queryKey: ["auth"] })
         await router.invalidate()
       }}
       variant={"outline"}

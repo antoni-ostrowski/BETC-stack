@@ -16,6 +16,7 @@ const authFunctions: AuthFunctions = internal.auth
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
   {
+    verbose: true,
     local: {
       schema: authSchema,
     },

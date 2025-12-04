@@ -1,5 +1,6 @@
 import { GenericCtx } from "@convex-dev/better-auth"
 import { makeUseQueryWithStatus } from "convex-helpers/react"
+import { useQueries } from "convex-helpers/react/cache"
 import {
   customAction,
   customCtx,
@@ -7,7 +8,6 @@ import {
   customQuery,
 } from "convex-helpers/server/customFunctions"
 import { typedV } from "convex-helpers/validators"
-import { useQueries } from "convex/react"
 import { ConvexError } from "convex/values"
 import { internal } from "./_generated/api"
 import { DataModel, Doc } from "./_generated/dataModel"

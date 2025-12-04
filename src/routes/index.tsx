@@ -1,14 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 export const Route = createFileRoute("/")({
-  loader: async ({ context }) => {
-    // const user = await queryClient.fetchQuery(convexQuery(api.todos.list, {}))
-    return { user: context.user, userId: context.userId }
-  },
   component: App,
 })
 
 function App() {
-  const loaderData = Route.useLoaderData()
-  console.log(loaderData)
-  return <div>app,user id {loaderData.userId}</div>
+  return (
+    <div className="flex h-screen w-full flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold">welcome</h1>
+      <div className="font-semibold">
+        <Link to="/authed-route/test" className="hover:underline">
+          <p>/authed-route/test - checkout authenticated route</p>
+        </Link>
+      </div>
+    </div>
+  )
 }
