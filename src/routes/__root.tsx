@@ -141,8 +141,9 @@ const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
   const { session } = await fetchSession(getRequest())
   const sessionCookieName = getCookieName(createAuth)
   const token = getCookie(sessionCookieName)
-
+  console.log({ session })
   const [user] = await tryCatch(fetchQuery(api.user.queries.getMe, {}))
+  console.log("user in fetch auth -", user)
   return {
     userId: session?.user.id,
     token,
