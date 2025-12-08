@@ -2,7 +2,7 @@ import { redirect } from "@tanstack/react-router"
 import { clsx, type ClassValue } from "clsx"
 import { ConvexError } from "convex/values"
 import { twMerge } from "tailwind-merge"
-import { User } from "../../convex/user/query"
+import { MyUser } from "../../convex/types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -49,8 +49,8 @@ export function tryCatchSync<T, E = Error>(func: () => T): Result<T, E> {
 }
 
 export function ensureAuthedOrRedirect(
-  user: User | undefined,
-): asserts user is User {
+  user: MyUser | undefined,
+): asserts user is MyUser {
   if (!user) {
     throw redirect({
       to: "/sign-in",

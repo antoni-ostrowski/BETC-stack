@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { Effect } from "effect"
 import { mutation } from "../_generated/server"
-import { appRuntime, matchExit } from "../utils"
+import { appRuntime, matchExit } from "../utils_effect"
 import { TodoApi } from "./api"
 
 export const toggle = mutation({

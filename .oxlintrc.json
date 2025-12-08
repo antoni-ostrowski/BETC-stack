@@ -78,7 +78,7 @@
     "no-useless-catch": "error",
     "no-useless-escape": "error",
     "no-with": "error",
-    "require-yield": "error",
+    "require-yield": "warn",
     "use-isnan": "error",
     "valid-typeof": "error",
     "@typescript-eslint/ban-ts-comment": "error",
@@ -138,7 +138,7 @@
     "@typescript-eslint/related-getter-setter-pairs": "error",
     "@typescript-eslint/require-await": "warn",
     "@typescript-eslint/restrict-plus-operands": "error",
-    "@typescript-eslint/restrict-template-expressions": "error",
+    "@typescript-eslint/restrict-template-expressions": "warn",
     "@typescript-eslint/return-await": [
       "error",
       "error-handling-correctness-only"

@@ -1,7 +1,7 @@
 import { Effect } from "effect"
 import { Doc, Id } from "../_generated/dataModel"
 import { DatabaseReader, DatabaseWriter } from "../_generated/server"
-import { DatabaseError, NotFound } from "../utils"
+import { DatabaseError, NotFound } from "../utils_effect"
 
 export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
   effect: Effect.gen(function* () {
