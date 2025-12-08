@@ -2,10 +2,6 @@ import { createEnv } from "@t3-oss/env-core"
 import { Schema } from "effect"
 
 export const env = createEnv({
-  server: {
-    GITHUB_CLIENT_ID: Schema.standardSchemaV1(Schema.String),
-    GITHUB_CLIENT_SECRET: Schema.standardSchemaV1(Schema.String),
-  },
   clientPrefix: "VITE_",
 
   client: {
