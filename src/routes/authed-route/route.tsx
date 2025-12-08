@@ -2,7 +2,8 @@ import { ensureAuthedOrRedirect } from "@/lib/utils"
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/authed-route")({
-  // main auth check for this and child routes
+  // main auth check for this and child routes,
+  // you can of course check that per route
   beforeLoad: ({ context: { user } }) => {
     ensureAuthedOrRedirect(user)
   },
