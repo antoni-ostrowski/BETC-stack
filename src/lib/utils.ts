@@ -1,10 +1,23 @@
 import { redirect } from "@tanstack/react-router"
 import { clsx, type ClassValue } from "clsx"
+import { ConvexError } from "convex/values"
 import { twMerge } from "tailwind-merge"
 import { User } from "../../convex/user/query"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function parseConvexError(error: unknown) {
+  const errMess =
+    error instanceof ConvexError
+      ? (error.data as string)
+      : `Unexpected error occurred - ${error}`
+  return errMess
+}
+
+export function getRandomUUID() {
+  return crypto.randomUUID()
 }
 
 export function getCurrentUnixTimestamp(): number {

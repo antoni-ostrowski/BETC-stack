@@ -1,5 +1,9 @@
 import { ConvexQueryClient } from "@convex-dev/react-query"
-import { QueryClient, notifyManager } from "@tanstack/react-query"
+import {
+  QueryClient,
+  QueryClientProvider,
+  notifyManager,
+} from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
@@ -46,9 +50,11 @@ export function getRouter() {
     defaultNotFoundComponent: () => <NotFound />,
     context: { queryClient, convexClient: convex, convexQueryClient },
     Wrap: ({ children }: { children: ReactNode }) => (
-      <ConvexProvider client={convexQueryClient.convexClient}>
-        <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
-      </ConvexProvider>
+      <QueryClientProvider client={queryClient}>
+        <ConvexProvider client={convexQueryClient.convexClient}>
+          <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
+        </ConvexProvider>
+      </QueryClientProvider>
     ),
   })
 

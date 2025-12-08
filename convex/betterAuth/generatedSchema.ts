@@ -2,8 +2,8 @@
 // To regenerate the schema, run:
 // `npx @better-auth/cli generate --output generatedSchema.ts -y`
 
-import { defineSchema, defineTable } from "convex/server"
-import { v } from "convex/values"
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
 
 export const tables = {
   user: defineTable({
@@ -15,7 +15,7 @@ export const tables = {
     updatedAt: v.number(),
     userId: v.optional(v.union(v.null(), v.string())),
   })
-    .index("email_name", ["email", "name"])
+    .index("email_name", ["email","name"])
     .index("name", ["name"])
     .index("userId", ["userId"]),
   session: defineTable({
@@ -28,7 +28,7 @@ export const tables = {
     userId: v.string(),
   })
     .index("expiresAt", ["expiresAt"])
-    .index("expiresAt_userId", ["expiresAt", "userId"])
+    .index("expiresAt_userId", ["expiresAt","userId"])
     .index("token", ["token"])
     .index("userId", ["userId"]),
   account: defineTable({
@@ -46,8 +46,8 @@ export const tables = {
     updatedAt: v.number(),
   })
     .index("accountId", ["accountId"])
-    .index("accountId_providerId", ["accountId", "providerId"])
-    .index("providerId_userId", ["providerId", "userId"])
+    .index("accountId_providerId", ["accountId","providerId"])
+    .index("providerId_userId", ["providerId","userId"])
     .index("userId", ["userId"]),
   verification: defineTable({
     identifier: v.string(),
@@ -63,8 +63,8 @@ export const tables = {
     privateKey: v.string(),
     createdAt: v.number(),
   }),
-}
+};
 
-const schema = defineSchema(tables)
+const schema = defineSchema(tables);
 
-export default schema
+export default schema;

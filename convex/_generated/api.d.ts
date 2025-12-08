@@ -12,8 +12,11 @@ import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as internal_ from "../internal.js";
 import type * as lib from "../lib.js";
-import type * as todos from "../todos.js";
+import type * as todo_api from "../todo/api.js";
+import type * as todo_mutations from "../todo/mutations.js";
+import type * as todo_queries from "../todo/queries.js";
 import type * as user_query from "../user/query.js";
+import type * as utils from "../utils.js";
 
 import type {
   ApiFromModules,
@@ -26,8 +29,11 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   internal: typeof internal_;
   lib: typeof lib;
-  todos: typeof todos;
+  "todo/api": typeof todo_api;
+  "todo/mutations": typeof todo_mutations;
+  "todo/queries": typeof todo_queries;
   "user/query": typeof user_query;
+  utils: typeof utils;
 }>;
 
 /**

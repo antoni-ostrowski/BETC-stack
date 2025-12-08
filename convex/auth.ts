@@ -16,7 +16,6 @@ const authFunctions: AuthFunctions = internal.auth
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
   {
-    verbose: true,
     local: {
       schema: authSchema,
     },
@@ -42,20 +41,13 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
 
 export const { onCreate, onUpdate, onDelete } = authComponent.triggersApi()
 
-export const createAuth = (
-  ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false },
-) => {
+export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
-    logger: {
-      disabled: optionsOnly,
-    },
     account: {
       accountLinking: {
         enabled: true,
       },
     },
-
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
     emailAndPassword: {
@@ -63,7 +55,7 @@ export const createAuth = (
       requireEmailVerification: false,
       autoSignIn: true,
     },
-
+    secret: process.env.BETTER_AUTH_SECRET,
     socialProviders: {
       github: {
         clientId: process.env.GITHUB_CLIENT_ID as string,
