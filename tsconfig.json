@@ -1,6 +1,15 @@
 {
   "include": ["**/*.ts", "**/*.tsx", "prettier.config.js", "vite.config.js"],
+  "exclude": [
+    "convex/betterAuth/_generated",    
+    "convex/_generated/**"
+  ],
   "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ],
     "target": "ES2022",
     "jsx": "react-jsx",
     "module": "ESNext",

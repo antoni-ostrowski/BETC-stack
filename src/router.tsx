@@ -6,7 +6,6 @@ import { ConvexProvider, ConvexReactClient } from "convex/react"
 import { ReactNode } from "react"
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
 import { NotFound } from "./components/router/default-not-found"
-import { ThemeProvider } from "./lib/providers/theme/theme-provider"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
@@ -46,11 +45,9 @@ export function getRouter() {
     defaultNotFoundComponent: () => <NotFound />,
     context: { queryClient, convexClient: convex, convexQueryClient },
     Wrap: ({ children }: { children: ReactNode }) => (
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <ConvexProvider client={convexQueryClient.convexClient}>
-          <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
-        </ConvexProvider>
-      </ThemeProvider>
+      <ConvexProvider client={convexQueryClient.convexClient}>
+        <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
+      </ConvexProvider>
     ),
   })
 

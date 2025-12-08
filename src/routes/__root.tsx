@@ -1,6 +1,7 @@
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
 import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth-client"
 import { fetchQuery } from "@/lib/auth-server"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
@@ -32,6 +33,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { createServerFn } from "@tanstack/react-start"
 import { getCookie, getRequest } from "@tanstack/react-start/server"
 import { ConvexReactClient } from "convex/react"
+import { useState } from "react"
 import { api } from "../../convex/_generated/api"
 import appCss from "../styles.css?url"
 
@@ -149,8 +151,10 @@ const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
 })
 
 function SignOutBtn() {
+  const [isPending, setIsPending] = useState(false)
   const context = useRouteContext({ from: Route.id })
   const router = useRouter()
+
   if (!context.user) {
     return (
       <Link to={"/sign-in"}>
@@ -162,13 +166,15 @@ function SignOutBtn() {
   return (
     <Button
       onClick={async () => {
+        setIsPending(true)
         await authClient.signOut()
         await context.queryClient.resetQueries({ queryKey: ["auth"] })
         await router.invalidate()
+        setIsPending(false)
       }}
       variant={"outline"}
     >
-      Sign out
+      {isPending ? <Spinner /> : "Sign out"}
     </Button>
   )
 }

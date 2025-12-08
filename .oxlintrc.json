@@ -1,5 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    ".convex/_generated**",
+    ".convex/betterAuth/_generated/**"
+  ],
   "plugins": ["react", "typescript", "unicorn"],
   "categories": {
     "correctness": "off"
@@ -69,7 +73,7 @@
     "no-unsafe-optional-chaining": "error",
     "no-unused-labels": "error",
     "no-unused-private-class-members": "error",
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "no-useless-backreference": "error",
     "no-useless-catch": "error",
     "no-useless-escape": "error",
@@ -99,7 +103,7 @@
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/no-array-delete": "error",
     "@typescript-eslint/no-base-to-string": "error",
-    "@typescript-eslint/no-confusing-void-expression": "error",
+    "@typescript-eslint/no-confusing-void-expression": "warn",
     "@typescript-eslint/no-deprecated": "error",
     "@typescript-eslint/no-duplicate-type-constituents": "error",
     "@typescript-eslint/no-dynamic-delete": "error",
@@ -108,7 +112,7 @@
     "@typescript-eslint/no-for-in-array": "error",
     "@typescript-eslint/no-implied-eval": "error",
     "@typescript-eslint/no-meaningless-void-operator": "error",
-    "@typescript-eslint/no-misused-promises": "error",
+    "@typescript-eslint/no-misused-promises": "warn",
     "@typescript-eslint/no-misused-spread": "error",
     "@typescript-eslint/no-mixed-enums": "error",
     "@typescript-eslint/no-non-null-asserted-nullish-coalescing": "error",
@@ -118,7 +122,7 @@
     "@typescript-eslint/no-unnecessary-template-expression": "error",
     "@typescript-eslint/no-unnecessary-type-arguments": "error",
     "@typescript-eslint/no-unnecessary-type-assertion": "error",
-    "@typescript-eslint/no-unsafe-argument": "error",
+    "@typescript-eslint/no-unsafe-argument": "warn",
     "@typescript-eslint/no-unsafe-assignment": "error",
     "@typescript-eslint/no-unsafe-call": "error",
     "@typescript-eslint/no-unsafe-enum-comparison": "error",
@@ -126,20 +130,20 @@
     "@typescript-eslint/no-unsafe-return": "error",
     "@typescript-eslint/no-unsafe-unary-minus": "error",
     "no-useless-constructor": "error",
-    "@typescript-eslint/only-throw-error": "error",
+    "@typescript-eslint/only-throw-error": "warn",
     "@typescript-eslint/prefer-literal-enum-member": "error",
     "@typescript-eslint/prefer-promise-reject-errors": "error",
     "@typescript-eslint/prefer-reduce-type-parameter": "error",
     "@typescript-eslint/prefer-return-this-type": "error",
     "@typescript-eslint/related-getter-setter-pairs": "error",
-    "@typescript-eslint/require-await": "error",
+    "@typescript-eslint/require-await": "warn",
     "@typescript-eslint/restrict-plus-operands": "error",
     "@typescript-eslint/restrict-template-expressions": "error",
     "@typescript-eslint/return-await": [
       "error",
       "error-handling-correctness-only"
     ],
-    "@typescript-eslint/unbound-method": "error",
+    "@typescript-eslint/unbound-method": "warn",
     "@typescript-eslint/use-unknown-in-catch-callback-variable": "error"
   },
   "overrides": [

@@ -23,9 +23,11 @@ export const vv = typedV(schema)
 async function createAuthCtx(ctx: GenericCtx<DataModel>) {
   const authUser = await authComponent.getAuthUser(ctx)
 
+  // oxlint-disable-next-line no-unnecessary-type-assertion
   const user = (await ctx.runQuery(internal.internal.getCurrentUserInternal, {
     authId: authUser._id,
   })) as Doc<"users"> | null
+
   if (user === null) {
     throw new ConvexError("No user found")
   }
@@ -46,7 +48,6 @@ export const authQuery = customQuery(
   query,
   customCtx(async (ctx) => {
     return await createAuthCtx(ctx)
-    // return {}
   }),
 )
 
