@@ -3,9 +3,11 @@ import { QueryClient, notifyManager } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
+import { Effect } from "effect"
 import { ReactNode } from "react"
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
 import { NotFound } from "./components/router/default-not-found"
+import { env } from "./env"
 import { routeTree } from "./routeTree.gen"
 
 export function getRouter() {
@@ -13,12 +15,11 @@ export function getRouter() {
     notifyManager.setScheduler(window.requestAnimationFrame)
   }
 
-  const CONVEX_URL = import.meta.env.VITE_CONVEX_URL!
-  if (!CONVEX_URL) {
-    console.error("missing envar CONVEX_URL")
+  if (!env.VITE_CONVEX_URL) {
+    Effect.runSync(Effect.logError("missing envar VITE_CONVEX_URL"))
   }
 
-  const convex = new ConvexReactClient(CONVEX_URL, {
+  const convex = new ConvexReactClient(env.VITE_CONVEX_URL, {
     unsavedChangesWarning: false,
     logger: true,
     verbose: true,
