@@ -1,4 +1,4 @@
-# CBET react web stack/template
+# CBET React Web Stack (Template)
 
 > I was tired of configuring nice tech stack every time I wanted to start new web app and I tried template generators but they just don't feel right for me. I wanted a simple template thats was personalized for me and exactly to my way of building stuff so i created one.
 
@@ -7,14 +7,15 @@
 You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup.
 
 ```bash
-git clone https://github.com/antoni-ostrowski/tanstack-template.git
-cd tanstack-template
+git clone https://github.com/antoni-ostrowski/CBET-stack.git
+cd CBET-stack
 
 bun install
 
 bun run dev
 bunx convex dev
 ```
+> Repo contains all the boilerplate for Better-auth + Convex usage (Github sign in, protected route). Also some basic examples of Effect in convex functions.
 
 # Stack
 
