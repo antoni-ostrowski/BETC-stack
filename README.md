@@ -31,7 +31,7 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Package manager - [Bun](https://bun.com/docs/pm/cli/install)
 - Linter - [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)
 - Formatter - [Prettier](https://prettier.io/docs/install)
-  - Waiting for [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
+  - Waits to be replaced by [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
 - Typesafe env vars - [T3 Env](https://env.t3.gg/docs/introduction)
 
 ## Styles
