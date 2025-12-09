@@ -9,8 +9,6 @@ export const Route = createFileRoute("/")({
 })
 
 function App() {
-  const { data: user } = useQuery(convexQuery(api.user.queries.getMe, {}))
-  console.log({ user })
   const { data, error } = useQuery(convexQuery(api.todo.queries.list, {}))
   const { mutate } = useMutation({
     mutationFn: useConvexMutation(api.todo.mutations.toggle),

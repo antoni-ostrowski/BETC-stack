@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth-client"
-import { tryCatch } from "@/lib/utils"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 
@@ -17,16 +16,9 @@ export function SignIn() {
       <Button
         onClick={async () => {
           setIsPending(true)
-          const [, err] = await tryCatch(
-            authClient.signIn.social({
-              provider: "github",
-            }),
-          )
-
-          if (err) {
-            console.error("Failed to sign in - ", err)
-            return
-          }
+          await authClient.signIn.social({
+            provider: "github",
+          })
 
           await router.invalidate()
           await router.navigate({ to: "/" })

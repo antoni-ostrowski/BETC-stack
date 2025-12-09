@@ -13,8 +13,6 @@ const siteUrl = process.env.SITE_URL
 
 const authFunctions: AuthFunctions = internal.auth
 
-console.log("BETTER_AUTH_SECRET in Convex:", process.env.BETTER_AUTH_SECRET)
-
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
 
@@ -22,6 +20,7 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
     local: {
       schema: authSchema,
     },
+    verbose: true,
     authFunctions,
     triggers: {
       user: {
@@ -50,7 +49,6 @@ export const createAuth = (
 ) => {
   return betterAuth({
     baseURL: siteUrl,
-    trustedOrigins: [siteUrl ?? ""],
     logger: {
       disabled: optionsOnly,
     },

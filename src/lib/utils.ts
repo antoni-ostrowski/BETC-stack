@@ -1,8 +1,8 @@
 import { redirect } from "@tanstack/react-router"
+import { Session } from "better-auth"
 import { clsx, type ClassValue } from "clsx"
 import { ConvexError } from "convex/values"
 import { twMerge } from "tailwind-merge"
-import { MyUser } from "../../convex/types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -49,9 +49,9 @@ export function tryCatchSync<T, E = Error>(func: () => T): Result<T, E> {
 }
 
 export function ensureAuthedOrRedirect(
-  user: MyUser | undefined,
-): asserts user is MyUser {
-  if (!user) {
+  session: Session | undefined,
+): asserts session is Session {
+  if (!session) {
     throw redirect({
       to: "/sign-in",
     })

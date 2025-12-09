@@ -3,14 +3,12 @@ import { NotFound } from "@/components/router/default-not-found"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth-client"
-import { fetchQuery } from "@/lib/auth-server"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
 import {
   ThemeProvider,
   themeScript,
 } from "@/lib/providers/theme/theme-provider"
 import ThemeToggle from "@/lib/providers/theme/theme-toggle"
-import { tryCatch } from "@/lib/utils"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import {
   fetchSession,
@@ -23,6 +21,7 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
   Link,
+  Outlet,
   ScriptOnce,
   Scripts,
   createRootRouteWithContext,
@@ -34,7 +33,6 @@ import { createServerFn } from "@tanstack/react-start"
 import { getCookie, getRequest } from "@tanstack/react-start/server"
 import { ConvexReactClient } from "convex/react"
 import { useState } from "react"
-import { api } from "../../convex/_generated/api"
 import appCss from "../styles.css?url"
 
 export interface MyRouterContext {
@@ -42,6 +40,17 @@ export interface MyRouterContext {
   convexClient: ConvexReactClient
   convexQueryClient: ConvexQueryClient
 }
+
+const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
+  const { createAuth } = await import("../../convex/auth")
+  const { session } = await fetchSession(getRequest())
+  const sessionCookieName = getCookieName(createAuth)
+  const token = getCookie(sessionCookieName)
+  return {
+    userId: session?.user.id,
+    token,
+  }
+})
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
@@ -75,88 +84,77 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   beforeLoad: async (ctx) => {
     // all queries, mutations and action made with TanStack Query will be
     // authenticated by an identity token.
-    const a = await ctx.context.queryClient.ensureQueryData({
-      queryKey: ["auth"],
-      queryFn: fetchAuth,
-    })
+    const { userId, token } = await fetchAuth()
 
     // During SSR only (the only time serverHttpClient exists),
     // set the auth token to make HTTP queries with.
-    if (a.token) {
-      ctx.context.convexQueryClient.serverHttpClient?.setAuth(a.token)
+    if (token) {
+      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
     }
 
-    return { userId: a.userId, token: a.token, user: a.user }
+    return { userId, token }
   },
   loader: () => getThemeServerFn(),
-  shellComponent: RootDocument,
+  component: RootComponent,
 })
-
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootComponent() {
   const context = useRouteContext({ from: Route.id })
   return (
     <ConvexBetterAuthProvider
       client={context.convexClient}
       authClient={authClient}
     >
-      <ThemeProvider>
-        <html lang="en" suppressHydrationWarning>
-          <head>
-            <HeadContent />
-          </head>
-          <body>
-            <ScriptOnce>{themeScript}</ScriptOnce>
-            <div className="absolute top-4 left-4 flex flex-row gap-2">
-              <SignOutBtn />
-              <div>
-                <ThemeToggle />
-              </div>
-            </div>
-            {children}
-            <TanStackDevtools
-              config={{
-                position: "bottom-right",
-              }}
-              plugins={[
-                {
-                  name: "Tanstack Router",
-                  render: <TanStackRouterDevtoolsPanel />,
-                },
-                {
-                  name: "Tanstack Query",
-                  render: <ReactQueryDevtoolsPanel />,
-                },
-              ]}
-            />
-            <Scripts />
-          </body>
-        </html>
-      </ThemeProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
     </ConvexBetterAuthProvider>
   )
 }
 
-const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
-  const { createAuth } = await import("../../convex/auth")
-  const { session } = await fetchSession(getRequest())
-  const sessionCookieName = getCookieName(createAuth)
-  const token = getCookie(sessionCookieName)
-  console.log({ session })
-  const [user] = await tryCatch(fetchQuery(api.user.queries.getMe, {}))
-  console.log("user in fetch auth -", user)
-  return {
-    userId: session?.user.id,
-    token,
-    user: user ?? undefined,
-  }
-})
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head>
+          <HeadContent />
+        </head>
+        <body>
+          <ScriptOnce>{themeScript}</ScriptOnce>
+          <div className="absolute top-4 left-4 flex flex-row gap-2">
+            <SignOutBtn />
+            <div>
+              <ThemeToggle />
+            </div>
+          </div>
+          {children}
+          <TanStackDevtools
+            config={{
+              position: "bottom-right",
+            }}
+            plugins={[
+              {
+                name: "Tanstack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+              {
+                name: "Tanstack Query",
+                render: <ReactQueryDevtoolsPanel />,
+              },
+            ]}
+          />
+          <Scripts />
+        </body>
+      </html>
+    </ThemeProvider>
+  )
+}
 
 function SignOutBtn() {
   const [isPending, setIsPending] = useState(false)
-  const context = useRouteContext({ from: Route.id })
   const router = useRouter()
+  const session = authClient.useSession()
 
-  if (!context.user) {
+  if (!session.isPending && !session.data?.session) {
     return (
       <Link to={"/sign-in"}>
         <Button variant={"outline"}>Sign in</Button>
@@ -169,7 +167,6 @@ function SignOutBtn() {
       onClick={async () => {
         setIsPending(true)
         await authClient.signOut()
-        await context.queryClient.resetQueries({ queryKey: ["auth"] })
         await router.invalidate()
         setIsPending(false)
       }}

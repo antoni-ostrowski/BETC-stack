@@ -13,7 +13,6 @@ import { DefaultCatchBoundary } from "./components/router/default-error-boundary
 import { NotFound } from "./components/router/default-not-found"
 import { env } from "./env"
 import { routeTree } from "./routeTree.gen"
-
 export function getRouter() {
   if (typeof document !== "undefined") {
     notifyManager.setScheduler(window.requestAnimationFrame)
@@ -50,11 +49,11 @@ export function getRouter() {
     defaultNotFoundComponent: () => <NotFound />,
     context: { queryClient, convexClient: convex, convexQueryClient },
     Wrap: ({ children }: { children: ReactNode }) => (
-      <QueryClientProvider client={queryClient}>
-        <ConvexProvider client={convexQueryClient.convexClient}>
+      <ConvexProvider client={convexQueryClient.convexClient}>
+        <QueryClientProvider client={convexQueryClient.queryClient}>
           <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
-        </ConvexProvider>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </ConvexProvider>
     ),
   })
 
