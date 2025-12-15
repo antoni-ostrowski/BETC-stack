@@ -22,6 +22,9 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
     verbose: true,
     authFunctions,
     triggers: {
+      // here you can define triggers to update the user profiles in your app db,
+      // but I prefer just storing the authId and fetching the auth data when needed
+      // so thats why this is so simple
       user: {
         onCreate: async (ctx, authUser) => {
           await ctx.db.insert("users", {
@@ -51,11 +54,6 @@ export const createAuth = (
     logger: {
       disabled: optionsOnly
     },
-    // account: {
-    //   accountLinking: {
-    //     enabled: true,
-    //   },
-    // },
     database: authComponent.adapter(ctx),
     socialProviders: {
       github: {
@@ -63,13 +61,6 @@ export const createAuth = (
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string
       }
     },
-    // emailAndPassword: {
-    //   enabled: true,
-    //   requireEmailVerification: false,
-    // },
-    plugins: [
-      // crossDomain({ siteUrl: siteUrl ?? "" }),
-      convex()
-    ]
+    plugins: [convex()]
   })
 }

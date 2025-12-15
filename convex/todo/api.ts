@@ -3,6 +3,9 @@ import { Doc, Id } from "../_generated/dataModel"
 import { DatabaseReader, DatabaseWriter } from "../_generated/server"
 import { DatabaseError, NotFound } from "../utils_effect"
 
+// this is just an example structure that I think works nicely, its a simple repo pattern
+// for data aceess layer
+
 export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
   effect: Effect.gen(function* () {
     return {
@@ -32,8 +35,9 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         (args: { db: DatabaseWriter; todo: Doc<"todos"> }) => args,
         ({ db, todo }) =>
           Effect.tryPromise({
-            try: async () =>{ 
-              await db.patch(todo._id, { completed: !todo.completed }); },
+            try: async () => {
+              await db.patch(todo._id, { completed: !todo.completed })
+            },
             catch: () => new DatabaseError({ message: "Failed to update todo" })
           })
       )
