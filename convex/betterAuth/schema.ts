@@ -3,7 +3,7 @@ import { defineSchema } from "convex/server"
 import { tables } from "./generatedSchema"
 
 const authSchema = defineSchema({
-  ...tables,
+  ...tables
 })
 
 export const authVv = typedV(authSchema)

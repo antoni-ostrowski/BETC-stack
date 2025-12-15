@@ -1,17 +1,17 @@
-import { getRandomUUID, parseConvexError } from "@/lib/utils"
+import { parseConvexError } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { api } from "../../convex/_generated/api"
 
 export const Route = createFileRoute("/")({
-  component: App,
+  component: App
 })
 
 function App() {
   const { data, error } = useQuery(convexQuery(api.todo.queries.list, {}))
   const { mutate } = useMutation({
-    mutationFn: useConvexMutation(api.todo.mutations.toggle),
+    mutationFn: useConvexMutation(api.todo.mutations.toggle)
   })
 
   return (
@@ -28,7 +28,7 @@ function App() {
       </h2>
       {data?.map((a) => {
         return (
-          <div key={getRandomUUID()} className="flex flex-row gap-2">
+          <div key={a._id} className="flex flex-row gap-2">
             {a.text}
 
             <input

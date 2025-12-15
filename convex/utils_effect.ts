@@ -15,14 +15,14 @@ export async function matchExit<A, E>(effect: Effect.Effect<A, E>): Promise<A> {
     },
     onSuccess: (value) => {
       return value
-    },
+    }
   })
 }
 
 export class DatabaseError extends Data.TaggedError("DatabaseError")<{
-  message: string
+  message?: string
 }> {}
 
 export class NotFound extends Data.TaggedError("NotFound")<{
-  message: string
+  message?: string
 }> {}

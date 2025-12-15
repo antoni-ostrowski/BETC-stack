@@ -15,6 +15,7 @@ bun install
 bun run dev
 bunx convex dev
 ```
+
 > to make auth work, you need to generate better-auth secret and generate schema ([docs](https://convex-better-auth.netlify.app/framework-guides/react#set-environment-variables))
 
 # Stack
@@ -51,7 +52,6 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Light/dark mode setup
 - Generic components like FullScreenLoading and FullScreenError (which i use all the time)
 - Prettier setup with plugins for organizing tailwind classess and imports
-  
 
 # Todo
 
@@ -59,13 +59,11 @@ These technologies create in my opinion the best web stack for complex web apps.
 - [ ] Migrate from prettier to oxfmt
 - [ ] Add Posthog
 
+### Media
 
-### Media 
 > Its really minimalistic, just a handy starter point
 
-
 <img src="https://github.com/user-attachments/assets/b6e00cbc-a500-4284-a0ef-4a3c94c2b306" width="60%" height="60%" />
-
 
 <img src="https://github.com/user-attachments/assets/1d42bafe-57cc-4b96-a312-46a1c93fca96" width="60%" height="60%" />
 

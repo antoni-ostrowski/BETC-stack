@@ -1,38 +1,28 @@
+import SignOutBtn from "@/components/auth/sign-out-btn"
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
-import { Button } from "@/components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth-client"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
 import {
   ThemeProvider,
-  themeScript,
+  themeScript
 } from "@/lib/providers/theme/theme-provider"
 import ThemeToggle from "@/lib/providers/theme/theme-toggle"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
-import {
-  fetchSession,
-  getCookieName,
-} from "@convex-dev/better-auth/react-start"
 import { ConvexQueryClient } from "@convex-dev/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
-  Link,
   Outlet,
   ScriptOnce,
   Scripts,
   createRootRouteWithContext,
-  useRouteContext,
-  useRouter,
+  useRouteContext
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { createServerFn } from "@tanstack/react-start"
-import { getCookie, getRequest } from "@tanstack/react-start/server"
 import { ConvexReactClient } from "convex/react"
-import { useState } from "react"
 import appCss from "../styles.css?url"
 
 export interface MyRouterContext {
@@ -41,37 +31,26 @@ export interface MyRouterContext {
   convexQueryClient: ConvexQueryClient
 }
 
-const fetchAuth = createServerFn({ method: "GET" }).handler(async () => {
-  const { createAuth } = await import("../../convex/auth")
-  const { session } = await fetchSession(getRequest())
-  const sessionCookieName = getCookieName(createAuth)
-  const token = getCookie(sessionCookieName)
-  return {
-    userId: session?.user.id,
-    token,
-  }
-})
-
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: "utf-8"
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content: "width=device-width, initial-scale=1"
       },
       {
-        title: "TanStack Start Starter",
-      },
+        title: "TanStack Start Starter"
+      }
     ],
     links: [
       {
         rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+        href: appCss
+      }
+    ]
   }),
   errorComponent: (props) => {
     return (
@@ -81,22 +60,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     )
   },
   notFoundComponent: () => <NotFound />,
-  beforeLoad: async (ctx) => {
-    // all queries, mutations and action made with TanStack Query will be
-    // authenticated by an identity token.
-    const { userId, token } = await fetchAuth()
-
-    // During SSR only (the only time serverHttpClient exists),
-    // set the auth token to make HTTP queries with.
-    if (token) {
-      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
-    }
-
-    return { userId, token }
-  },
   loader: () => getThemeServerFn(),
-  component: RootComponent,
+  component: RootComponent
 })
+
 function RootComponent() {
   const context = useRouteContext({ from: Route.id })
   return (
@@ -129,50 +96,22 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           {children}
           <TanStackDevtools
             config={{
-              position: "bottom-right",
+              position: "bottom-right"
             }}
             plugins={[
               {
                 name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
+                render: <TanStackRouterDevtoolsPanel />
               },
               {
                 name: "Tanstack Query",
-                render: <ReactQueryDevtoolsPanel />,
-              },
+                render: <ReactQueryDevtoolsPanel />
+              }
             ]}
           />
           <Scripts />
         </body>
       </html>
     </ThemeProvider>
-  )
-}
-
-function SignOutBtn() {
-  const [isPending, setIsPending] = useState(false)
-  const router = useRouter()
-  const session = authClient.useSession()
-
-  if (!session.isPending && !session.data?.session) {
-    return (
-      <Link to={"/sign-in"}>
-        <Button variant={"outline"}>Sign in</Button>
-      </Link>
-    )
-  }
-
-  return (
-    <Button
-      onClick={async () => {
-        setIsPending(true)
-        await authClient.signOut()
-        await router.invalidate()
-        setIsPending(false)
-      }}
-      variant={"outline"}
-    >
-      {isPending ? <Spinner /> : "Sign out"}
-    </Button>
   )
 }

@@ -16,10 +16,6 @@ export function parseConvexError(error: unknown) {
   return errMess
 }
 
-export function getRandomUUID() {
-  return crypto.randomUUID()
-}
-
 export function getCurrentUnixTimestamp(): number {
   return Math.floor(Date.now() / 1000)
 }
@@ -29,7 +25,7 @@ type Failure<E> = [null, E]
 type Result<T, E = Error> = Success<T> | Failure<E>
 
 export async function tryCatch<T, E = Error>(
-  promise: Promise<T>,
+  promise: Promise<T>
 ): Promise<Result<T, E>> {
   try {
     const data = await promise
@@ -49,11 +45,11 @@ export function tryCatchSync<T, E = Error>(func: () => T): Result<T, E> {
 }
 
 export function ensureAuthedOrRedirect(
-  session: Session | undefined,
+  session: Session | undefined
 ): asserts session is Session {
   if (!session) {
     throw redirect({
-      to: "/sign-in",
+      to: "/sign-in"
     })
   }
 }

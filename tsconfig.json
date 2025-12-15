@@ -1,9 +1,6 @@
 {
   "include": ["**/*.ts", "**/*.tsx", "prettier.config.js", "vite.config.js"],
-  "exclude": [
-    "convex/betterAuth/_generated",    
-    "convex/_generated/**"
-  ],
+  "exclude": ["convex/betterAuth/_generated", "convex/_generated/**"],
   "compilerOptions": {
     "plugins": [
       {

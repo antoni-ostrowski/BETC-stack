@@ -2,7 +2,7 @@ import { Spinner } from "../ui/spinner"
 
 export default function FullScreenLoading({
   loadingMessage = "",
-  loadingDetail = "",
+  loadingDetail = ""
 }: {
   loadingMessage?: string
   loadingDetail?: string

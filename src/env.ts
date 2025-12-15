@@ -7,12 +7,12 @@ export const env = createEnv({
   client: {
     VITE_CONVEX_URL: Schema.standardSchemaV1(Schema.String),
     VITE_CONVEX_SITE_URL: Schema.standardSchemaV1(Schema.String),
-    VITE_SITE_URL: Schema.standardSchemaV1(Schema.String),
+    VITE_SITE_URL: Schema.standardSchemaV1(Schema.String)
   },
 
   runtimeEnv: {
     ...process.env,
-    ...import.meta.env,
+    ...import.meta.env
   },
-  emptyStringAsUndefined: true,
+  emptyStringAsUndefined: true
 })

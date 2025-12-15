@@ -1,9 +1,9 @@
 import {
   AuthFunctions,
   createClient,
-  type GenericCtx,
+  type GenericCtx
 } from "@convex-dev/better-auth"
-import { convex, crossDomain } from "@convex-dev/better-auth/plugins"
+import { convex } from "@convex-dev/better-auth/plugins"
 import { betterAuth } from "better-auth"
 import { components, internal } from "./_generated/api"
 import { DataModel, Id } from "./_generated/dataModel"
@@ -15,10 +15,9 @@ const authFunctions: AuthFunctions = internal.auth
 
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
-
   {
     local: {
-      schema: authSchema,
+      schema: authSchema
     },
     verbose: true,
     authFunctions,
@@ -26,7 +25,7 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       user: {
         onCreate: async (ctx, authUser) => {
           await ctx.db.insert("users", {
-            authId: authUser._id,
+            authId: authUser._id
           })
         },
         onDelete: async (ctx, authUser) => {
@@ -35,33 +34,42 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
             return
           }
           await ctx.db.delete(user._id)
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 )
 
 export const { onCreate, onUpdate, onDelete } = authComponent.triggersApi()
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false },
+  { optionsOnly } = { optionsOnly: false }
 ) => {
   return betterAuth({
     baseURL: siteUrl,
     logger: {
-      disabled: optionsOnly,
+      disabled: optionsOnly
     },
-    account: {
-      accountLinking: {
-        enabled: true,
-      },
-    },
+    // account: {
+    //   accountLinking: {
+    //     enabled: true,
+    //   },
+    // },
     database: authComponent.adapter(ctx),
-    emailAndPassword: {
-      enabled: true,
-      requireEmailVerification: false,
+    socialProviders: {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID as string,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string
+      }
     },
-    plugins: [crossDomain({ siteUrl: siteUrl ?? "" }), convex()],
+    // emailAndPassword: {
+    //   enabled: true,
+    //   requireEmailVerification: false,
+    // },
+    plugins: [
+      // crossDomain({ siteUrl: siteUrl ?? "" }),
+      convex()
+    ]
   })
 }

@@ -8,7 +8,7 @@ if (!env.VITE_CONVEX_URL) {
 const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL)
 
 export default function AppConvexProvider({
-  children,
+  children
 }: {
   children: React.ReactNode
 }) {

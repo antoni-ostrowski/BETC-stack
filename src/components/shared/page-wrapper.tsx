@@ -3,7 +3,7 @@ import { ComponentProps, ReactNode } from "react"
 
 export default function PageWrapper({
   children,
-  className,
+  className
 }: {
   children: ReactNode
   className?: ComponentProps<"div">
@@ -12,7 +12,7 @@ export default function PageWrapper({
     <div
       className={cn(
         "flex h-full w-full flex-1 flex-col items-start justify-start",
-        className,
+        className
       )}
     >
       {children}

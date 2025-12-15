@@ -8,5 +8,5 @@ export const getCurrentUserInternal = internalQuery({
       .query("users")
       .withIndex("by_auth_id", (q) => q.eq("authId", authId))
       .first()
-  },
+  }
 })

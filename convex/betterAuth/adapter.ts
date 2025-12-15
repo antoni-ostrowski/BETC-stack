@@ -9,5 +9,5 @@ export const {
   updateOne,
   updateMany,
   deleteOne,
-  deleteMany,
+  deleteMany
 } = createApi(schema, createAuth)

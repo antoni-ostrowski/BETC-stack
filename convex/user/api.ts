@@ -10,19 +10,18 @@ export class UserApi extends Effect.Service<UserApi>()("UserApi", {
     return {
       getUser: Effect.fn(function* (
         ctx: GenericQueryCtx<DataModel>,
-        userId: Id<"users">,
+        userId: Id<"users">
       ) {
         const user = yield* Effect.tryPromise({
-          try: async () => await ctx.db.get(userId),
-          catch: () => new DatabaseError({ message: "Failed to get user" }),
+          try: async () => await ctx.db.get("users", userId),
+          catch: () => new DatabaseError({ message: "Failed to get user" })
         })
 
         if (!user) return yield* new NotFound({ message: "User not found" })
 
         const authUser = yield* Effect.tryPromise({
           try: async () => await authComponent.getAnyUserById(ctx, user.authId),
-          catch: () =>
-            new DatabaseError({ message: "Failed to get auth user" }),
+          catch: () => new DatabaseError({ message: "Failed to get auth user" })
         })
 
         if (!authUser)
@@ -30,9 +29,9 @@ export class UserApi extends Effect.Service<UserApi>()("UserApi", {
 
         return {
           ...user,
-          authInfo: authUser,
+          authInfo: authUser
         } as MyUser
-      }),
+      })
     }
-  }),
+  })
 }) {}

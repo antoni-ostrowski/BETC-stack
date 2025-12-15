@@ -10,11 +10,11 @@ export const toggle = mutation({
     const result = await appRuntime.runPromiseExit(
       Effect.gen(function* () {
         const todoApi = yield* TodoApi
-        const todo = yield* todoApi.getTodo(ctx.db, id)
-        yield* todoApi.toggleTodo(ctx.db, todo)
-      }),
+        const todo = yield* todoApi.getTodo({ db: ctx.db, todoId: id })
+        yield* todoApi.toggleTodo({ db: ctx.db, todo })
+      }).pipe(Effect.tapError((err) => Effect.logError(err)))
     )
 
     return await matchExit(result)
-  },
+  }
 })

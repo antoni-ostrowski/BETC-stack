@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/auth/$")({
       },
       POST: ({ request }) => {
         return reactStartHandler(request)
-      },
-    },
-  },
+      }
+    }
+  }
 })

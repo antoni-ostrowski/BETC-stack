@@ -5,7 +5,7 @@ import {
   customAction,
   customCtx,
   customMutation,
-  customQuery,
+  customQuery
 } from "convex-helpers/server/customFunctions"
 import { typedV } from "convex-helpers/validators"
 import { ConvexError } from "convex/values"
@@ -25,7 +25,7 @@ async function createAuthCtx(ctx: GenericCtx<DataModel>) {
 
   // oxlint-disable-next-line no-unnecessary-type-assertion
   const user = (await ctx.runQuery(internal.internal.getCurrentUserInternal, {
-    authId: authUser._id,
+    authId: authUser._id
   })) as Doc<"users"> | null
 
   if (user === null) {
@@ -40,7 +40,7 @@ async function createAuthCtx(ctx: GenericCtx<DataModel>) {
 
   return {
     ...ctx,
-    auth: { ...auth, user, authUser, getAnyUserByIdOrThrow },
+    auth: { ...auth, user, authUser, getAnyUserByIdOrThrow }
   }
 }
 
@@ -48,19 +48,19 @@ export const authQuery = customQuery(
   query,
   customCtx(async (ctx) => {
     return await createAuthCtx(ctx)
-  }),
+  })
 )
 
 export const authMutation = customMutation(
   mutation,
   customCtx(async (ctx) => {
     return await createAuthCtx(ctx)
-  }),
+  })
 )
 
 export const authAction = customAction(
   action,
   customCtx(async (ctx) => {
     return await createAuthCtx(ctx)
-  }),
+  })
 )

@@ -2,7 +2,7 @@ import { ConvexQueryClient } from "@convex-dev/react-query"
 import {
   QueryClient,
   QueryClientProvider,
-  notifyManager,
+  notifyManager
 } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
@@ -13,6 +13,7 @@ import { DefaultCatchBoundary } from "./components/router/default-error-boundary
 import { NotFound } from "./components/router/default-not-found"
 import { env } from "./env"
 import { routeTree } from "./routeTree.gen"
+
 export function getRouter() {
   if (typeof document !== "undefined") {
     notifyManager.setScheduler(window.requestAnimationFrame)
@@ -25,7 +26,7 @@ export function getRouter() {
   const convex = new ConvexReactClient(env.VITE_CONVEX_URL, {
     unsavedChangesWarning: false,
     logger: true,
-    verbose: true,
+    verbose: true
   })
 
   const convexQueryClient = new ConvexQueryClient(convex)
@@ -34,9 +35,9 @@ export function getRouter() {
     defaultOptions: {
       queries: {
         queryKeyHashFn: convexQueryClient.hashFn(),
-        queryFn: convexQueryClient.queryFn(),
-      },
-    },
+        queryFn: convexQueryClient.queryFn()
+      }
+    }
   })
 
   convexQueryClient.connect(queryClient)
@@ -54,7 +55,7 @@ export function getRouter() {
           <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
         </QueryClientProvider>
       </ConvexProvider>
-    ),
+    )
   })
 
   return router

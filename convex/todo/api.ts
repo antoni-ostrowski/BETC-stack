@@ -1,4 +1,4 @@
-import { Effect } from "effect"
+import { Effect, flow } from "effect"
 import { Doc, Id } from "../_generated/dataModel"
 import { DatabaseReader, DatabaseWriter } from "../_generated/server"
 import { DatabaseError, NotFound } from "../utils_effect"
@@ -6,32 +6,37 @@ import { DatabaseError, NotFound } from "../utils_effect"
 export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
   effect: Effect.gen(function* () {
     return {
-      listTodos: Effect.fn(function* (db: DatabaseReader) {
-        const todos = yield* Effect.tryPromise({
-          try: async () => await db.query("todos").collect(),
-          catch: () => new DatabaseError({ message: "Failed to fetch todos" }),
-        })
-        return todos
-      }),
+      listTodos: flow(
+        (args: { db: DatabaseReader }) => args,
+        ({ db }) =>
+          Effect.tryPromise({
+            try: async () => await db.query("todos").collect(),
+            catch: () => new DatabaseError({ message: "Failed to fetch todos" })
+          })
+      ),
 
-      getTodo: Effect.fn(function* (db: DatabaseReader, todoId: Id<"todos">) {
-        const todo = yield* Effect.tryPromise({
-          try: async () => await db.get(todoId),
-          catch: () => new DatabaseError({ message: "Failed to get todo" }),
-        })
+      getTodo: flow(
+        (args: { db: DatabaseReader; todoId: Id<"todos"> }) => args,
+        ({ db, todoId }) =>
+          Effect.tryPromise({
+            try: async () => await db.get("todos", todoId),
+            catch: () => new DatabaseError({ message: "Failed to get todo" })
+          }),
+        Effect.filterOrFail(
+          (a) => a != null,
+          () => new NotFound({})
+        )
+      ),
 
-        if (!todo) return yield* new NotFound({ message: "Todo not found" })
-
-        return todo
-      }),
-
-      toggleTodo: Effect.fn(function* (db: DatabaseWriter, todo: Doc<"todos">) {
-        yield* Effect.tryPromise({
-          try: async () =>
-            await db.patch(todo._id, { completed: !todo.completed }),
-          catch: () => new DatabaseError({ message: "Failed to update todo" }),
-        })
-      }),
+      toggleTodo: flow(
+        (args: { db: DatabaseWriter; todo: Doc<"todos"> }) => args,
+        ({ db, todo }) =>
+          Effect.tryPromise({
+            try: async () =>
+              await db.patch(todo._id, { completed: !todo.completed }),
+            catch: () => new DatabaseError({ message: "Failed to update todo" })
+          })
+      )
     }
-  }),
+  })
 }) {}

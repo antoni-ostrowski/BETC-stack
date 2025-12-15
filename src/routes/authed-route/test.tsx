@@ -1,13 +1,15 @@
 import PageWrapper from "@/components/shared/page-wrapper"
-import { useAuth } from "@/lib/auth-client"
+import { useUser } from "@/lib/auth-client"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/authed-route/test")({
-  component: RouteComponent,
+  component: RouteComponent
 })
 
 function RouteComponent() {
-  const { user } = useAuth()
+  // this will always return a valid user after isPending is done
+  const { user } = useUser()
+  console.log({ user })
 
   return (
     <PageWrapper>

@@ -2,8 +2,8 @@
 // To regenerate the schema, run:
 // `npx @better-auth/cli generate --output generatedSchema.ts -y`
 
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server"
+import { v } from "convex/values"
 
 export const tables = {
   user: defineTable({
@@ -13,9 +13,9 @@ export const tables = {
     image: v.optional(v.union(v.null(), v.string())),
     createdAt: v.number(),
     updatedAt: v.number(),
-    userId: v.optional(v.union(v.null(), v.string())),
+    userId: v.optional(v.union(v.null(), v.string()))
   })
-    .index("email_name", ["email","name"])
+    .index("email_name", ["email", "name"])
     .index("name", ["name"])
     .index("userId", ["userId"]),
   session: defineTable({
@@ -25,10 +25,10 @@ export const tables = {
     updatedAt: v.number(),
     ipAddress: v.optional(v.union(v.null(), v.string())),
     userAgent: v.optional(v.union(v.null(), v.string())),
-    userId: v.string(),
+    userId: v.string()
   })
     .index("expiresAt", ["expiresAt"])
-    .index("expiresAt_userId", ["expiresAt","userId"])
+    .index("expiresAt_userId", ["expiresAt", "userId"])
     .index("token", ["token"])
     .index("userId", ["userId"]),
   account: defineTable({
@@ -43,28 +43,28 @@ export const tables = {
     scope: v.optional(v.union(v.null(), v.string())),
     password: v.optional(v.union(v.null(), v.string())),
     createdAt: v.number(),
-    updatedAt: v.number(),
+    updatedAt: v.number()
   })
     .index("accountId", ["accountId"])
-    .index("accountId_providerId", ["accountId","providerId"])
-    .index("providerId_userId", ["providerId","userId"])
+    .index("accountId_providerId", ["accountId", "providerId"])
+    .index("providerId_userId", ["providerId", "userId"])
     .index("userId", ["userId"]),
   verification: defineTable({
     identifier: v.string(),
     value: v.string(),
     expiresAt: v.number(),
     createdAt: v.number(),
-    updatedAt: v.number(),
+    updatedAt: v.number()
   })
     .index("expiresAt", ["expiresAt"])
     .index("identifier", ["identifier"]),
   jwks: defineTable({
     publicKey: v.string(),
     privateKey: v.string(),
-    createdAt: v.number(),
-  }),
-};
+    createdAt: v.number()
+  })
+}
 
-const schema = defineSchema(tables);
+const schema = defineSchema(tables)
 
-export default schema;
+export default schema
