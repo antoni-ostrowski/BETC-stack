@@ -32,8 +32,8 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         (args: { db: DatabaseWriter; todo: Doc<"todos"> }) => args,
         ({ db, todo }) =>
           Effect.tryPromise({
-            try: async () =>
-              await db.patch(todo._id, { completed: !todo.completed }),
+            try: async () =>{ 
+              await db.patch(todo._id, { completed: !todo.completed }); },
             catch: () => new DatabaseError({ message: "Failed to update todo" })
           })
       )

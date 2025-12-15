@@ -34,7 +34,9 @@ function App() {
             <input
               type="checkbox"
               checked={a.completed}
-              onChange={() => mutate({ id: a._id })}
+              onChange={() => {
+                mutate({ id: a._id })
+              }}
             />
           </div>
         )

@@ -46,9 +46,13 @@ const handleThemeChange = createClientOnlyFn((userTheme: UserTheme) => {
 
 const setupPreferredListener = createClientOnlyFn(() => {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-  const handler = () => handleThemeChange("system")
+  const handler = () => {
+    handleThemeChange("system")
+  }
   mediaQuery.addEventListener("change", handler)
-  return () => mediaQuery.removeEventListener("change", handler)
+  return () => {
+    mediaQuery.removeEventListener("change", handler)
+  }
 })
 
 export const themeScript = (function () {
@@ -68,7 +72,7 @@ export const themeScript = (function () {
       } else {
         document.documentElement.classList.add(validTheme)
       }
-    } catch (e) {
+    } catch {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"

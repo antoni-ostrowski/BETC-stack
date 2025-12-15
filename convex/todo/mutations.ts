@@ -15,6 +15,6 @@ export const toggle = mutation({
       }).pipe(Effect.tapError((err) => Effect.logError(err)))
     )
 
-    return await matchExit(result)
+     await matchExit(result)
   }
 })
