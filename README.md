@@ -1,31 +1,31 @@
-# BETC React Web Stack (Template)
+# My React web stack (BETC Stack Template)
 
-> I was tired of configuring nice tech stack every time I wanted to start new web app and I tried template generators but they just don't feel right for me. I wanted a simple template thats was personalized for me and exactly to my way of building stuff so i created one.
+> I was tired of configuring tech stack every time I wanted to start new web app so i created this repo. This is exactly how I would start new web app today.
+
+_**This repo is meant to be cloned and used as a starting point for a your web app.**_
 
 # Getting Started
 
-You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup.
+You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup. 
 
 ```bash
 git clone https://github.com/antoni-ostrowski/BETC-stack.git
 cd BETC-stack
-
 bun install
-
 bun run dev
 bunx convex dev
 ```
 
-> to make auth work, you need to generate better-auth secret and generate schema ([docs](https://convex-better-auth.netlify.app/framework-guides/react#set-environment-variables))
+> To make auth work, you need to have convex project, generate better-auth secret and generate schema ([docs](https://convex-better-auth.netlify.app/framework-guides/react#set-environment-variables))
 
-# Stack
+# Technologies
 
-These technologies create in my opinion the best web stack for complex web apps. Everything is fully typesafe.
+These technologies create in my opinion the best web stack for complex web apps. Everything is fully typesafe and DX is next level.
 
-- [Tanstack (Start & Router & Query)](https://tanstack.com/) (The best react framework & react tools)
-- [Convex](https://www.convex.dev/) (The best backend)
-- [Better-auth](https://www.better-auth.com/) (The best auth solution)
-- [EffectTS](https://effect.website/) (The best way to write backend in TS)
+- [Tanstack (Start & Router & Query)](https://tanstack.com/) (React framework & tools)
+- [Convex](https://www.convex.dev/) (Backend)
+- [Better-auth](https://www.better-auth.com/) (Auth) 
+- [EffectTS](https://effect.website/) (Production-grade TypeScript)
 
 ## Tooling
 
