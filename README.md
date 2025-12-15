@@ -44,20 +44,13 @@ These technologies create in my opinion the best web stack for complex web apps.
 
 - Full authentication setup with Better-Auth + Convex adapter (Its a more flexible, "local install" version, which should enable better plugin support [docs](https://convex-better-auth.netlify.app/features/local-install))
   - Example of protected route
-  - Current signed in user globally accessible in router context
 - Simple repository pattern implemented with EffectTS for data access layer (abstracted away from convex functions) with todo example
 - Full Tanstack query + Convex integration setup (you can use tanstack query with convex functions)
 - Typesafe enviroment variables with [T3 Env](https://env.t3.gg/docs/introduction) validated with Effect Schema
-- Lots of my most used helpers utils (e.g tryCatch wrapper)
+- Basic utils (e.g tryCatch wrapper)
 - Light/dark mode setup
 - Generic components like FullScreenLoading and FullScreenError (which i use all the time)
 - Prettier setup with plugins for organizing tailwind classess and imports
-
-# Todo
-
-- [ ] Add payments integration (Polar.sh)
-- [ ] Migrate from prettier to oxfmt
-- [ ] Add Posthog
 
 ### Media
 
@@ -68,3 +61,10 @@ These technologies create in my opinion the best web stack for complex web apps.
 <img src="https://github.com/user-attachments/assets/1d42bafe-57cc-4b96-a312-46a1c93fca96" width="60%" height="60%" />
 
 <img src="https://github.com/user-attachments/assets/503e93ed-d02d-4921-a2f5-5c1bd965f034" width="60%" height="60%" />
+
+
+# Todo
+
+- [ ] Add payments integration (Polar.sh)
+- [ ] Migrate from prettier to oxfmt
+- [ ] Add Posthog
