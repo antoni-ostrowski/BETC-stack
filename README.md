@@ -6,7 +6,9 @@ _**This repo is meant to be cloned and used as a starting point for a your web a
 
 # Getting Started
 
-You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup. 
+You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup.
+
+> Remember to delete the .git folder, and init a new repo after cloning :)
 
 ```bash
 git clone https://github.com/antoni-ostrowski/BETC-stack.git
@@ -15,6 +17,7 @@ bun install
 bun run dev
 bunx convex dev
 ```
+
 
 > To make auth work, you need to have convex project, generate better-auth secret and generate schema ([docs](https://convex-better-auth.netlify.app/framework-guides/react#set-environment-variables))
 
