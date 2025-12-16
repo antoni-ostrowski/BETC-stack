@@ -1,6 +1,7 @@
 import SignOutBtn from "@/components/auth/sign-out-btn"
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
+import { Toaster } from "@/components/ui/sonner"
 import { authClient } from "@/lib/auth-client"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
 import {
@@ -86,6 +87,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <HeadContent />
         </head>
         <body>
+          <Toaster />
           <ScriptOnce>{themeScript}</ScriptOnce>
           <div className="absolute top-4 left-4 flex flex-row gap-2">
             <SignOutBtn />

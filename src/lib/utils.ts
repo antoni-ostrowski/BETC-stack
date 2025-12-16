@@ -10,7 +10,7 @@ export function parseConvexError(error: unknown) {
   const errMess =
     error instanceof ConvexError
       ? (error.data as string)
-      : `Unexpected error occurred - ${error}`
+      : `[ERROR] Unexpected error occurred - ${error}`
   return errMess
 }
 

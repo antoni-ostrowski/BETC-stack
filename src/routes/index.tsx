@@ -11,6 +11,11 @@ export const Route = createFileRoute("/")({
 function App() {
   const { data, error } = useQuery(convexQuery(api.todo.queries.list, {}))
   const { mutate } = useMutation({
+    meta: {
+      withToasts: true,
+      successMessage: "Toggled todo!",
+      loadingMessage: "Loading..."
+    },
     mutationFn: useConvexMutation(api.todo.mutations.toggle)
   })
 

@@ -5,7 +5,6 @@ import { DatabaseError, NotFound } from "../utils_effect"
 
 // this is just an example structure that I think works nicely, its a simple repo pattern
 // for data aceess layer
-
 export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
   effect: Effect.gen(function* () {
     return {
@@ -27,7 +26,7 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
           }),
         Effect.filterOrFail(
           (a) => a != null,
-          () => new NotFound({})
+          () => new NotFound()
         )
       ),
 
