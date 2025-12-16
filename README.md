@@ -2,7 +2,7 @@
 
 > I was tired of configuring tech stack every time I wanted to start new web app so i created this repo. This is exactly how I would start new web app today.
 
-_**This repo is meant to be cloned and used as a starting point for a your web app.**_
+_**This repo is meant to be cloned and used as a starting point for a your next web app.**_
 
 # Getting Started
 
@@ -25,7 +25,7 @@ bunx convex dev
 
 These technologies create in my opinion the best web stack for complex web apps. Everything is fully typesafe and DX is next level.
 
-- [Tanstack (Start & Router & Query)](https://tanstack.com/) (React framework & tools)
+- [Tanstack (Start & Router & Query & ...)](https://tanstack.com/) (React framework & tools)
 - [Convex](https://www.convex.dev/) (Backend)
 - [Better-auth](https://www.better-auth.com/) (Auth) 
 - [EffectTS](https://effect.website/) (Production-grade TypeScript)
@@ -36,7 +36,6 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Linter - [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)
 - Formatter - [Prettier](https://prettier.io/docs/install)
   - Waits to be replaced by [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
-- Bundler - [Vite](https://vite.dev/) (Tanstack Start foundation)
 
 ## Styles
 
@@ -47,15 +46,36 @@ These technologies create in my opinion the best web stack for complex web apps.
 
 - Full authentication setup with Better-Auth + Convex adapter (Its a more flexible, "local install" version, which should enable better plugin support [docs](https://convex-better-auth.netlify.app/features/local-install))
   - Example of protected route
+  - Github sign in
+  - handy hooks to access user data
 - Simple repository pattern implemented with EffectTS for data access layer (abstracted away from convex functions) with todo example
+  - Utlity function to exec effect and wrap errors to ConvexError type
 - Full Tanstack query + Convex integration setup (you can use tanstack query with convex functions)
+  - Global toasts for mutations states (opt in on mutation level)
 - Typesafe enviroment variables with [T3 Env](https://env.t3.gg/docs/introduction) validated with Effect Schema
 - Basic utils (e.g tryCatch wrapper)
-- Light/dark mode setup
-- Generic components like FullScreenLoading and FullScreenError (which i use all the time)
+- Light/dark mode setup (SSR safe)
+- Generic components like FullScreenLoading and FullScreenError
 - Prettier setup with plugins for organizing tailwind classess and imports
 
-### Media
+> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. For now, I created a utility to run an effect and wrap any failures in ConvexError and throw it. Then client can use parseConvexError util to read exact error message. This approach preserves the nature of js exceptions and doesn't break convex assumptions. This is how that looks like.
+```typescript
+export const toggle = mutation({
+  args: { id: v.id("todos") },
+  handler: async ({ db }, { id }) => {
+    const program = Effect.gen(function* () {
+      const todoApi = yield* TodoApi
+      const todo = yield* todoApi.getTodo({ db, todoId: id })
+      yield* todoApi.toggleTodo({ db, todo })
+    }).pipe(Effect.tapError((err) => Effect.logError(err)))
+
+    return await runEffOrThrow(appRuntime, program)
+  }
+})
+
+```
+
+# Media
 
 > Its really minimalistic, just a handy starter point
 
