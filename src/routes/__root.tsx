@@ -141,26 +141,4 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   )
 }
 
-export const getSession = createIsomorphicFn()
-  .client(async (queryClient: MyRouterContext["queryClient"]) => {
-    const { data: session } = await queryClient.fetchQuery({
-      queryFn: () => authClient.getSession(),
-      queryKey: ["auth"],
-      staleTime: 30_000
-    })
-    return session
-  })
-  .server(async (_: MyRouterContext["queryClient"]) => {
-    const request = getRequest()
 
-    if (!request?.headers) {
-      return { session: null }
-    }
-    const session = await authClient.getSession({
-      fetchOptions: {
-        headers: request.headers
-      }
-    })
-
-    return session
-  })
