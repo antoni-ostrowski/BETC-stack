@@ -28,14 +28,11 @@ export default function SignOutBtn() {
             onResponse: async () => {
               await router.invalidate()
               await qc.resetQueries({ queryKey: ["auth"] })
-              await router.navigate({ to: "/" })
+              location.reload()
               setIsPending(false)
             }
           }
         })
-        // await router.invalidate()
-        // await qc.invalidateQueries({ queryKey: ["auth"] })
-        // setIsPending(false)
       }}
       variant={"outline"}
     >

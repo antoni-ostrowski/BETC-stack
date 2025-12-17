@@ -5,6 +5,9 @@ import { defineConfig } from "vite"
 import viteTsConfigPaths from "vite-tsconfig-paths"
 
 const config = defineConfig({
+  ssr: {
+    noExternal: ["@convex-dev/better-auth"]
+  },
   plugins: [
     viteTsConfigPaths({
       projects: ["./tsconfig.json"]

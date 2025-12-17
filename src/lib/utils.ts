@@ -41,3 +41,11 @@ export function tryCatchSync<T, E = Error>(func: () => T): Result<T, E> {
     return [null, error as E]
   }
 }
+
+export const isAuthError = (error: unknown) => {
+  const message =
+    (error instanceof ConvexError && error.data) ||
+    (error instanceof Error && error.message) ||
+    ""
+  return /auth/i.test(message)
+}

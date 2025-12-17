@@ -2,7 +2,7 @@ import SignOutBtn from "@/components/auth/sign-out-btn"
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
 import { Toaster } from "@/components/ui/sonner"
-import { authClient } from "@/lib/auth-client"
+import { authClient, getAuth } from "@/lib/auth-client"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
 import {
   ThemeProvider,
@@ -23,6 +23,9 @@ import {
   useRouteContext
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import { createIsomorphicFn } from "@tanstack/react-start"
+import { getRequest } from "@tanstack/react-start/server"
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { ConvexReactClient } from "convex/react"
 import appCss from "../styles.css?url"
 
@@ -62,6 +65,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   notFoundComponent: () => <NotFound />,
   loader: () => getThemeServerFn(),
+  // this will run on every page navigation,
+  // but JWT caching from convex ensures the navigation
+  // still feels snappy while keeping the app safe
+  beforeLoad: async (ctx) => {
+    const token = await getAuth()
+    // all queries, mutations and actions through TanStack Query will be
+    // authenticated during SSR if we have a valid token
+    if (token) {
+      // During SSR only (the only time serverHttpClient exists),
+      // set the auth token to make HTTP queries with.
+      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
+    }
+    return {
+      isAuthenticated: !!token,
+      token
+    }
+  },
   component: RootComponent
 })
 
@@ -71,10 +91,13 @@ function RootComponent() {
     <ConvexBetterAuthProvider
       client={context.convexClient}
       authClient={authClient}
+      initialToken={context.token}
     >
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
+      <ConvexQueryCacheProvider>
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ConvexQueryCacheProvider>
     </ConvexBetterAuthProvider>
   )
 }
@@ -117,3 +140,27 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   )
 }
+
+export const getSession = createIsomorphicFn()
+  .client(async (queryClient: MyRouterContext["queryClient"]) => {
+    const { data: session } = await queryClient.fetchQuery({
+      queryFn: () => authClient.getSession(),
+      queryKey: ["auth"],
+      staleTime: 30_000
+    })
+    return session
+  })
+  .server(async (_: MyRouterContext["queryClient"]) => {
+    const request = getRequest()
+
+    if (!request?.headers) {
+      return { session: null }
+    }
+    const session = await authClient.getSession({
+      fetchOptions: {
+        headers: request.headers
+      }
+    })
+
+    return session
+  })

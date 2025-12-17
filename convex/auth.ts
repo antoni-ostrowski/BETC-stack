@@ -4,14 +4,35 @@ import {
   type GenericCtx
 } from "@convex-dev/better-auth"
 import { convex } from "@convex-dev/better-auth/plugins"
-import { betterAuth } from "better-auth"
+import { betterAuth, BetterAuthOptions } from "better-auth"
 import { components, internal } from "./_generated/api"
 import { DataModel, Id } from "./_generated/dataModel"
+import authConfig from "./auth.config"
 import authSchema from "./betterAuth/schema"
 
 const siteUrl = process.env.SITE_URL
 
 const authFunctions: AuthFunctions = internal.auth
+
+export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
+  return {
+    baseURL: siteUrl,
+    database: authComponent.adapter(ctx),
+    socialProviders: {
+      github: {
+        clientId: process.env.GITHUB_CLIENT_ID as string,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string
+      }
+    },
+    plugins: [
+      convex({
+        authConfig,
+        jwksRotateOnTokenGenerationError: true
+      })
+      // tanstackStartCookies()
+    ]
+  } satisfies BetterAuthOptions
+}
 
 export const authComponent = createClient<DataModel, typeof authSchema>(
   components.betterAuth,
@@ -44,23 +65,8 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
 )
 
 export const { onCreate, onUpdate, onDelete } = authComponent.triggersApi()
+export const { getAuthUser } = authComponent.clientApi()
 
-export const createAuth = (
-  ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false }
-) => {
-  return betterAuth({
-    baseURL: siteUrl,
-    logger: {
-      disabled: optionsOnly
-    },
-    database: authComponent.adapter(ctx),
-    socialProviders: {
-      github: {
-        clientId: process.env.GITHUB_CLIENT_ID as string,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET as string
-      }
-    },
-    plugins: [convex()]
-  })
+export const createAuth = (ctx: GenericCtx<DataModel>) => {
+  return betterAuth(createAuthOptions(ctx))
 }

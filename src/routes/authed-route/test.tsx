@@ -1,13 +1,17 @@
 import PageWrapper from "@/components/shared/page-wrapper"
 import { useUser } from "@/lib/auth-client"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/authed-route/test")({
+  beforeLoad: async (ctx) => {
+    if (!ctx.context.isAuthenticated) {
+      throw redirect({ to: "/sign-in" })
+    }
+  },
   component: RouteComponent
 })
 
 function RouteComponent() {
-  // this will always return a valid user after isPending is done
   const { user } = useUser()
   console.log({ user })
 

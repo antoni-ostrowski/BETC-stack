@@ -2,14 +2,12 @@ import { ConvexQueryClient } from "@convex-dev/react-query"
 import {
   MutationCache,
   QueryClient,
-  QueryClientProvider,
   notifyManager
 } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
-import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
-import { ConvexProvider, ConvexReactClient } from "convex/react"
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
+import { ConvexReactClient } from "convex/react"
 import { Effect } from "effect"
-import { ReactNode } from "react"
 import { toast } from "sonner"
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
 import { NotFound } from "./components/router/default-not-found"
@@ -39,7 +37,8 @@ export function getRouter() {
   const convex = new ConvexReactClient(env.VITE_CONVEX_URL, {
     unsavedChangesWarning: false,
     logger: true,
-    verbose: true
+    verbose: true,
+    expectAuth: true
   })
 
   const convexQueryClient = new ConvexQueryClient(convex)
@@ -82,14 +81,12 @@ export function getRouter() {
     scrollRestoration: true,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
-    context: { queryClient, convexClient: convex, convexQueryClient },
-    Wrap: ({ children }: { children: ReactNode }) => (
-      <ConvexProvider client={convexQueryClient.convexClient}>
-        <QueryClientProvider client={convexQueryClient.queryClient}>
-          <ConvexQueryCacheProvider>{children}</ConvexQueryCacheProvider>
-        </QueryClientProvider>
-      </ConvexProvider>
-    )
+    context: { queryClient, convexClient: convex, convexQueryClient }
+  })
+
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient
   })
 
   return router
