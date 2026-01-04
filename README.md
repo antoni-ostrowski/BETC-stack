@@ -75,6 +75,13 @@ export const toggle = mutation({
 
 ```
 
+# Todo
+
+- [x] Add payments integration (Polar.sh)
+  - clone polar branch to use this template with basic polar integration, remember to setup env vars (for app and convex)
+- [ ] Migrate from prettier to oxfmt
+- [ ] Add Posthog
+
 # Media
 
 > Its really minimalistic, just a handy starter point
@@ -85,9 +92,3 @@ export const toggle = mutation({
 
 <img src="https://github.com/user-attachments/assets/503e93ed-d02d-4921-a2f5-5c1bd965f034" width="60%" height="60%" />
 
-
-# Todo
-
-- [ ] Add payments integration (Polar.sh)
-- [ ] Migrate from prettier to oxfmt
-- [ ] Add Posthog
