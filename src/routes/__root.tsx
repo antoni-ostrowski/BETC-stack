@@ -23,8 +23,6 @@ import {
   useRouteContext
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { createIsomorphicFn } from "@tanstack/react-start"
-import { getRequest } from "@tanstack/react-start/server"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 import { ConvexReactClient } from "convex/react"
 import appCss from "../styles.css?url"
@@ -140,27 +138,3 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     </ThemeProvider>
   )
 }
-
-export const getSession = createIsomorphicFn()
-  .client(async (queryClient: MyRouterContext["queryClient"]) => {
-    const { data: session } = await queryClient.fetchQuery({
-      queryFn: () => authClient.getSession(),
-      queryKey: ["auth"],
-      staleTime: 30_000
-    })
-    return session
-  })
-  .server(async (_: MyRouterContext["queryClient"]) => {
-    const request = getRequest()
-
-    if (!request?.headers) {
-      return { session: null }
-    }
-    const session = await authClient.getSession({
-      fetchOptions: {
-        headers: request.headers
-      }
-    })
-
-    return session
-  })
