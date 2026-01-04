@@ -10,9 +10,14 @@ export const env = createEnv({
     VITE_SITE_URL: Schema.standardSchemaV1(Schema.String)
   },
 
+  server: {
+    POLAR_ACCESS_TOKEN: Schema.standardSchemaV1(Schema.String)
+  },
+
   runtimeEnv: {
     ...process.env,
     ...import.meta.env
   },
+
   emptyStringAsUndefined: true
 })

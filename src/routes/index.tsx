@@ -27,6 +27,12 @@ function App() {
           <p>/authed-route/test - checkout authenticated route</p>
         </Link>
       </div>
+
+      <div className="font-semibold">
+        <Link to="/authed-route/polar" className="hover:underline">
+          <p>/authed-route/polar - checkout polar subscriptions</p>
+        </Link>
+      </div>
       <h2 className="text-muted-foreground">
         Try toggling the todo state from convex dashboard and see how client
         reacts.
