@@ -3,6 +3,7 @@ import { isAuthError } from "@/lib/utils"
 import { convexClient } from "@convex-dev/better-auth/client/plugins"
 import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start"
 import { convexQuery } from "@convex-dev/react-query"
+import { polarClient } from "@polar-sh/better-auth"
 import { useQuery } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { createAuthClient } from "better-auth/react"
@@ -10,7 +11,7 @@ import { api } from "../../convex/_generated/api"
 
 export const authClient = createAuthClient({
   baseURL: env.VITE_SITE_URL,
-  plugins: [convexClient()]
+  plugins: [polarClient(), convexClient()]
 })
 
 // those are necessary utils to fetch convex functions from tanstack server code

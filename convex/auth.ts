@@ -4,6 +4,8 @@ import {
   type GenericCtx
 } from "@convex-dev/better-auth"
 import { convex } from "@convex-dev/better-auth/plugins"
+import { checkout, polar, portal } from "@polar-sh/better-auth"
+import { Polar } from "@polar-sh/sdk"
 import { betterAuth, BetterAuthOptions } from "better-auth"
 import { api, components, internal } from "./_generated/api"
 import { DataModel, Id } from "./_generated/dataModel"
@@ -13,6 +15,11 @@ import authSchema from "./betterAuth/schema"
 const siteUrl = process.env.SITE_URL
 
 const authFunctions: AuthFunctions = internal.auth
+
+const polarClient = new Polar({
+  accessToken: process.env.POLAR_ACCESS_TOKEN,
+  server: "sandbox"
+})
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
@@ -24,7 +31,38 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         clientSecret: process.env.GITHUB_CLIENT_SECRET as string
       }
     },
+    user: {
+      deleteUser: {
+        enabled: true,
+        afterDelete: async (user, _request) => {
+          await polarClient.customers.deleteExternal({
+            externalId: user.id
+          })
+        }
+      }
+    },
     plugins: [
+      polar({
+        client: polarClient,
+        createCustomerOnSignUp: true,
+        use: [
+          checkout({
+            theme: "dark",
+            products: [
+              {
+                productId: "24629f61-995d-4a9d-b1bb-7b060fb5327a",
+                slug: "test-product" // Custom slug for easy reference in Checkout URL, e.g. /checkout/test-product
+              }
+            ],
+            successUrl: process.env.POLAR_SUCCESS_URL,
+            authenticatedUsersOnly: true,
+            returnUrl: process.env.SITE_URL
+          }),
+          portal({
+            returnUrl: process.env.SITE_URL // An optional URL which renders a back-button in the Customer Portal
+          })
+        ]
+      }),
       convex({
         authConfig,
         jwksRotateOnTokenGenerationError: true

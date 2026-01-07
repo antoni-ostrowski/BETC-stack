@@ -12,9 +12,14 @@ export const env = createEnv({
     VITE_PUBLIC_POSTHOG_HOST: Schema.standardSchemaV1(Schema.String)
   },
 
+  server: {
+    POLAR_ACCESS_TOKEN: Schema.standardSchemaV1(Schema.String)
+  },
+
   runtimeEnv: {
     ...process.env,
     ...import.meta.env
   },
+
   emptyStringAsUndefined: true
 })
