@@ -3,6 +3,7 @@ import { DefaultCatchBoundary } from "@/components/router/default-error-boundary
 import { NotFound } from "@/components/router/default-not-found"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
+import { PHProvider } from "@/lib/providers/posthog/provider"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
 import {
   ThemeProvider,
@@ -86,17 +87,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   const context = useRouteContext({ from: Route.id })
   return (
-    <ConvexBetterAuthProvider
-      client={context.convexClient}
-      authClient={authClient}
-      initialToken={context.token}
-    >
-      <ConvexQueryCacheProvider>
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ConvexQueryCacheProvider>
-    </ConvexBetterAuthProvider>
+    <PHProvider>
+      <ConvexBetterAuthProvider
+        client={context.convexClient}
+        authClient={authClient}
+        initialToken={context.token}
+      >
+        <ConvexQueryCacheProvider>
+          <RootDocument>
+            <Outlet />
+          </RootDocument>
+        </ConvexQueryCacheProvider>
+      </ConvexBetterAuthProvider>
+    </PHProvider>
   )
 }
 

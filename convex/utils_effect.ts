@@ -34,20 +34,24 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
 
 export class DatabaseError extends Data.TaggedError("DatabaseError")<{
   message?: string
+  cause?: unknown
 }> {
-  constructor(args?: { message?: string }) {
+  constructor(args?: { message?: string; cause?: unknown }) {
     super({
-      message: args?.message ?? "Database error"
+      message: args?.message ?? "Database error",
+      cause: args?.cause
     })
   }
 }
 
 export class NotFound extends Data.TaggedError("NotFound")<{
   message?: string
+  cause?: unknown
 }> {
-  constructor(args?: { message?: string }) {
+  constructor(args?: { message?: string; cause?: unknown }) {
     super({
-      message: args?.message ?? "Entity not found"
+      message: args?.message ?? "Entity not found",
+      cause: args?.cause
     })
   }
 }

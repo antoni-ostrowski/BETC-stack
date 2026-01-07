@@ -5,7 +5,7 @@ import {
 } from "@convex-dev/better-auth"
 import { convex } from "@convex-dev/better-auth/plugins"
 import { betterAuth, BetterAuthOptions } from "better-auth"
-import { components, internal } from "./_generated/api"
+import { api, components, internal } from "./_generated/api"
 import { DataModel, Id } from "./_generated/dataModel"
 import authConfig from "./auth.config"
 import authSchema from "./betterAuth/schema"
@@ -29,7 +29,6 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         authConfig,
         jwksRotateOnTokenGenerationError: true
       })
-      // tanstackStartCookies()
     ]
   } satisfies BetterAuthOptions
 }
@@ -48,8 +47,20 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
       // so thats why this is so simple
       user: {
         onCreate: async (ctx, authUser) => {
-          await ctx.db.insert("users", {
+          const userId = await ctx.db.insert("users", {
             authId: authUser._id
+          })
+
+          await ctx.scheduler.runAfter(0, api.analytics.captureEvent, {
+            distinctId: userId,
+            entry: {
+              type: "identify",
+              properties: {
+                email: authUser.email,
+                name: authUser.name
+              },
+              event: "$identify"
+            }
           })
         },
         onDelete: async (ctx, authUser) => {

@@ -1,17 +1,54 @@
 import { v } from "convex/values"
 import { Effect } from "effect"
-import { mutation } from "../_generated/server"
+import { api } from "../_generated/api"
+import { authMutation } from "../lib"
 import { appRuntime, runEffOrThrow } from "../utils_effect"
 import { TodoApi } from "./api"
 
-export const toggle = mutation({
+export const toggle = authMutation({
   args: { id: v.id("todos") },
-  handler: async ({ db }, { id }) => {
+  handler: async ({ db, scheduler }, { id }) => {
     const program = Effect.gen(function* () {
       const todoApi = yield* TodoApi
       const todo = yield* todoApi.getTodo({ db, todoId: id })
       yield* todoApi.toggleTodo({ db, todo })
-    }).pipe(Effect.tapError((err) => Effect.logError(err)))
+    })
+
+    scheduler.runAfter(0, api.analytics.captureEvent, {
+      entry: {
+        event: "some_event",
+        properties: {
+          plan: "free"
+        },
+        type: "capture"
+      },
+      distinctId: crypto.randomUUID()
+    })
+
+    return await runEffOrThrow(appRuntime, program)
+  }
+})
+
+export const create = authMutation({
+  args: { text: v.string() },
+  handler: async ({ db, auth }, { text }) => {
+    const program = Effect.gen(function* () {
+      const userId = auth.user._id
+      const todoApi = yield* TodoApi
+      yield* todoApi.create({ db, text, userId })
+    })
+
+    return await runEffOrThrow(appRuntime, program)
+  }
+})
+
+export const remove = authMutation({
+  args: { todoId: v.id("todos") },
+  handler: async ({ db }, { todoId }) => {
+    const program = Effect.gen(function* () {
+      const todoApi = yield* TodoApi
+      yield* todoApi.remove({ db, todoId })
+    })
 
     return await runEffOrThrow(appRuntime, program)
   }
