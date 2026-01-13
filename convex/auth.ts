@@ -25,6 +25,9 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
+    logger: {
+      level: "error"
+    },
     socialProviders: {
       github: {
         clientId: process.env.GITHUB_CLIENT_ID as string,

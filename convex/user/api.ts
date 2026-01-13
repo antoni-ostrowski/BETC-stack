@@ -14,14 +14,16 @@ export class UserApi extends Effect.Service<UserApi>()("UserApi", {
       ) {
         const user = yield* Effect.tryPromise({
           try: async () => await ctx.db.get("users", userId),
-          catch: () => new DatabaseError({ message: "Failed to get user" })
+          catch: (cause) =>
+            new DatabaseError({ message: "Failed to get user", cause })
         })
 
         if (!user) return yield* new NotFound({ message: "User not found" })
 
         const authUser = yield* Effect.tryPromise({
           try: async () => await authComponent.getAnyUserById(ctx, user.authId),
-          catch: () => new DatabaseError({ message: "Failed to get auth user" })
+          catch: (cause) =>
+            new DatabaseError({ message: "Failed to get auth user", cause })
         })
 
         if (!authUser)

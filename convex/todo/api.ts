@@ -13,7 +13,8 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         ({ db }) =>
           Effect.tryPromise({
             try: async () => await db.query("todos").collect(),
-            catch: () => new DatabaseError({ message: "Failed to fetch todos" })
+            catch: (cause) =>
+              new DatabaseError({ message: "Failed to fetch todos", cause })
           }),
         Effect.tapError((err) => Effect.logError(err))
       ),
@@ -23,11 +24,12 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         ({ db, todoId }) =>
           Effect.tryPromise({
             try: async () => await db.get("todos", todoId),
-            catch: () => new DatabaseError({ message: "Failed to get todo" })
+            catch: (cause) =>
+              new DatabaseError({ message: "Failed to get todo", cause })
           }),
         Effect.filterOrFail(
           (a) => a != null,
-          () => new NotFound()
+          (cause) => new NotFound({ cause })
         ),
         Effect.tapError((err) => Effect.logError(err))
       ),
@@ -39,7 +41,8 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
             try: async () => {
               await db.patch(todo._id, { completed: !todo.completed })
             },
-            catch: () => new DatabaseError({ message: "Failed to update todo" })
+            catch: (cause) =>
+              new DatabaseError({ message: "Failed to update todo", cause })
           }),
         Effect.tapError((err) => Effect.logError(err))
       ),
