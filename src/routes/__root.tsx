@@ -5,10 +5,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
 import { PHProvider } from "@/lib/providers/posthog/provider"
 import { getThemeServerFn } from "@/lib/providers/theme/theme"
-import {
-  ThemeProvider,
-  themeScript
-} from "@/lib/providers/theme/theme-provider"
+import { ThemeProvider } from "@/lib/providers/theme/theme-provider"
 import ThemeToggle from "@/lib/providers/theme/theme-toggle"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import { ConvexQueryClient } from "@convex-dev/react-query"
@@ -18,7 +15,6 @@ import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
   Outlet,
-  ScriptOnce,
   Scripts,
   createRootRouteWithContext,
   useRouteContext
@@ -104,15 +100,15 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const theme = Route.useLoaderData()
   return (
-    <ThemeProvider>
-      <html lang="en" suppressHydrationWarning>
+    <ThemeProvider theme={theme}>
+      <html lang="en" suppressHydrationWarning className={theme}>
         <head>
           <HeadContent />
         </head>
         <body>
           <Toaster />
-          <ScriptOnce>{themeScript}</ScriptOnce>
           <div className="absolute top-4 left-4 flex flex-row gap-2">
             <SignOutBtn />
             <div>
