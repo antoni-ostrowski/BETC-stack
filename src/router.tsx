@@ -2,6 +2,7 @@ import { ConvexQueryClient } from "@convex-dev/react-query"
 import {
   MutationCache,
   QueryClient,
+  QueryKey,
   notifyManager
 } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
@@ -18,6 +19,7 @@ import { routeTree } from "./routeTree.gen"
 declare module "@tanstack/react-query" {
   interface Register {
     mutationMeta: {
+      invalidatesQuery?: QueryKey
       withToasts?: boolean
       successMessage?: string
       errorMessage?: string
@@ -62,6 +64,15 @@ export function getRouter() {
       onError: (_error, _variables, _context, mutation) => {
         if (mutation.meta?.errorMessage || mutation.meta?.withToasts) {
           toast.error(parseConvexError(_error), { id: mutation.mutationId })
+        }
+      },
+      onSettled: (_data, _error, _variables, _context, mutation) => {
+        {
+          if (mutation.meta?.invalidatesQuery) {
+            queryClient.invalidateQueries({
+              queryKey: mutation.meta?.invalidatesQuery
+            })
+          }
         }
       }
     }),
