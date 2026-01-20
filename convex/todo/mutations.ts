@@ -25,7 +25,7 @@ export const toggle = authMutation({
       distinctId: crypto.randomUUID()
     })
 
-    return await runEffOrThrow(appRuntime, program)
+     await runEffOrThrow(appRuntime, program)
   }
 })
 
@@ -38,7 +38,7 @@ export const create = authMutation({
       yield* todoApi.create({ db, text, userId })
     })
 
-    return await runEffOrThrow(appRuntime, program)
+     await runEffOrThrow(appRuntime, program)
   }
 })
 
@@ -50,6 +50,6 @@ export const remove = authMutation({
       yield* todoApi.remove({ db, todoId })
     })
 
-    return await runEffOrThrow(appRuntime, program)
+     await runEffOrThrow(appRuntime, program)
   }
 })

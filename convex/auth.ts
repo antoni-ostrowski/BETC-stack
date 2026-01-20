@@ -7,8 +7,8 @@ import { convex } from "@convex-dev/better-auth/plugins"
 import { checkout, polar, portal } from "@polar-sh/better-auth"
 import { Polar } from "@polar-sh/sdk"
 import { betterAuth, BetterAuthOptions } from "better-auth"
-import { api, components, internal } from "./_generated/api"
-import { DataModel, Id } from "./_generated/dataModel"
+import { components, internal } from "./_generated/api"
+import { DataModel } from "./_generated/dataModel"
 import authConfig from "./auth.config"
 import authSchema from "./betterAuth/schema"
 
@@ -26,6 +26,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
     logger: {
+      disabled: true,
       level: "error"
     },
     socialProviders: {
@@ -51,6 +52,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
         use: [
           checkout({
             theme: "dark",
+            // put your product ids here
             products: [
               {
                 productId: "24629f61-995d-4a9d-b1bb-7b060fb5327a",
@@ -62,7 +64,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
             returnUrl: process.env.SITE_URL
           }),
           portal({
-            returnUrl: process.env.SITE_URL // An optional URL which renders a back-button in the Customer Portal
+            returnUrl: process.env.SITE_URL
           })
         ]
       }),
@@ -80,39 +82,7 @@ export const authComponent = createClient<DataModel, typeof authSchema>(
     local: {
       schema: authSchema
     },
-    verbose: true,
-    authFunctions,
-    triggers: {
-      // here you can define triggers to update the user profiles in your app db,
-      // but I prefer just storing the authId and fetching the auth data when needed
-      // so thats why this is so simple
-      user: {
-        onCreate: async (ctx, authUser) => {
-          const userId = await ctx.db.insert("users", {
-            authId: authUser._id
-          })
-
-          await ctx.scheduler.runAfter(0, api.analytics.captureEvent, {
-            distinctId: userId,
-            entry: {
-              type: "identify",
-              properties: {
-                email: authUser.email,
-                name: authUser.name
-              },
-              event: "$identify"
-            }
-          })
-        },
-        onDelete: async (ctx, authUser) => {
-          const user = await ctx.db.get(authUser.userId as Id<"users">)
-          if (!user) {
-            return
-          }
-          await ctx.db.delete(user._id)
-        }
-      }
-    }
+    authFunctions
   }
 )
 

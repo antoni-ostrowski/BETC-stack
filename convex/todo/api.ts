@@ -48,8 +48,7 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
       ),
 
       create: flow(
-        (args: { db: DatabaseWriter; text: string; userId: Id<"users"> }) =>
-          args,
+        (args: { db: DatabaseWriter; text: string; userId: string }) => args,
         ({ db, text, userId }) =>
           Effect.tryPromise({
             try: async () =>
@@ -67,7 +66,7 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         (args: { db: DatabaseWriter; todoId: Id<"todos"> }) => args,
         ({ db, todoId }) =>
           Effect.tryPromise({
-            try: async () => await db.delete(todoId),
+            try: async () =>{  await db.delete(todoId); },
             catch: (cause) =>
               new DatabaseError({ message: "Failed to remove todo", cause })
           }),

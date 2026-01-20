@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
-import { ConvexReactClient } from "convex/react"
 import { Effect } from "effect"
 import { toast } from "sonner"
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
@@ -36,14 +35,9 @@ export function getRouter() {
     Effect.runSync(Effect.logError("missing envar VITE_CONVEX_URL"))
   }
 
-  const convex = new ConvexReactClient(env.VITE_CONVEX_URL, {
-    unsavedChangesWarning: false,
-    logger: true,
-    verbose: true,
+  const convexQueryClient = new ConvexQueryClient(env.VITE_CONVEX_URL, {
     expectAuth: true
   })
-
-  const convexQueryClient = new ConvexQueryClient(convex)
 
   const queryClient: QueryClient = new QueryClient({
     mutationCache: new MutationCache({
@@ -56,7 +50,7 @@ export function getRouter() {
       },
       onSuccess: (_data, _variables, _context, mutation) => {
         if (mutation.meta?.successMessage && mutation.meta.withToasts) {
-          toast.success(mutation.meta.successMessage as string, {
+          toast.success(mutation.meta.successMessage, {
             id: mutation.mutationId
           })
         }
@@ -66,10 +60,10 @@ export function getRouter() {
           toast.error(parseConvexError(_error), { id: mutation.mutationId })
         }
       },
-      onSettled: (_data, _error, _variables, _context, mutation) => {
+      onSettled: async (_data, _error, _variables, _context, mutation) => {
         {
           if (mutation.meta?.invalidatesQuery) {
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
               queryKey: mutation.meta?.invalidatesQuery
             })
           }
@@ -92,7 +86,7 @@ export function getRouter() {
     scrollRestoration: true,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
-    context: { queryClient, convexClient: convex, convexQueryClient }
+    context: { queryClient, convexQueryClient }
   })
 
   setupRouterSsrQueryIntegration({

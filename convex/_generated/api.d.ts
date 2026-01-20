@@ -11,13 +11,11 @@
 import type * as analytics from "../analytics.js";
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
-import type * as internal_ from "../internal.js";
 import type * as lib from "../lib.js";
+import type * as runtime from "../runtime.js";
 import type * as todo_api from "../todo/api.js";
 import type * as todo_mutations from "../todo/mutations.js";
 import type * as todo_queries from "../todo/queries.js";
-import type * as types from "../types.js";
-import type * as user_api from "../user/api.js";
 import type * as user_queries from "../user/queries.js";
 import type * as utils_effect from "../utils_effect.js";
 
@@ -31,13 +29,11 @@ declare const fullApi: ApiFromModules<{
   analytics: typeof analytics;
   auth: typeof auth;
   http: typeof http;
-  internal: typeof internal_;
   lib: typeof lib;
+  runtime: typeof runtime;
   "todo/api": typeof todo_api;
   "todo/mutations": typeof todo_mutations;
   "todo/queries": typeof todo_queries;
-  types: typeof types;
-  "user/api": typeof user_api;
   "user/queries": typeof user_queries;
   utils_effect: typeof utils_effect;
 }>;

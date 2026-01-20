@@ -21,12 +21,10 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
-import { ConvexReactClient } from "convex/react"
 import appCss from "../styles.css?url"
 
 export interface MyRouterContext {
   queryClient: QueryClient
-  convexClient: ConvexReactClient
   convexQueryClient: ConvexQueryClient
 }
 
@@ -85,7 +83,7 @@ function RootComponent() {
   return (
     <PHProvider>
       <ConvexBetterAuthProvider
-        client={context.convexClient}
+        client={context.convexQueryClient.convexClient}
         authClient={authClient}
         initialToken={context.token}
       >

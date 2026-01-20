@@ -1,7 +1,7 @@
 import PageWrapper from "@/components/shared/page-wrapper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useUser } from "@/lib/auth-client"
+import { useSession } from "@/lib/auth-client"
 import { parseConvexError } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/authed-route/test")({
 })
 
 function RouteComponent() {
-  const { user } = useUser()
+  const { user } = useSession()
   console.log({ user })
 
   const [input, setInput] = useState("")
@@ -56,7 +56,7 @@ function RouteComponent() {
     <PageWrapper>
       <div className="flex h-full w-full flex-1 flex-col items-center justify-center">
         <h1 className="text-2xl font-bold">
-          Hi {user?.authInfo.name}! ({user?.authInfo.email})
+          Hi {user?.name}! ({user?.email})
         </h1>
         <h1 className="text-2xl font-bold">
           You can access this page only when you are authenticated.
@@ -69,7 +69,9 @@ function RouteComponent() {
           <div className="flex flex-col gap-2">
             <Input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value)
+              }}
               placeholder="Todo text"
             />
           </div>
