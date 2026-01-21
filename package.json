@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
+    "backend": "bunx convex dev",
     "build": "bun run typecheck && bun run lint && vite build",
     "serve": "vite preview --port 3000",
     "lint": "oxlint --type-aware --fix",
