@@ -4,13 +4,15 @@ import { NotFound } from "@/components/router/default-not-found"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
 import { PHProvider } from "@/lib/providers/posthog/provider"
-import { getThemeServerFn } from "@/lib/providers/theme/theme"
-import { ThemeProvider } from "@/lib/providers/theme/theme-provider"
+import {
+  ThemeProvider,
+  useGetTheme
+} from "@/lib/providers/theme/theme-provider"
 import ThemeToggle from "@/lib/providers/theme/theme-toggle"
 import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import { ConvexQueryClient } from "@convex-dev/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import type { QueryClient } from "@tanstack/react-query"
+import { type QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
@@ -57,7 +59,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     )
   },
   notFoundComponent: () => <NotFound />,
-  loader: () => getThemeServerFn(),
   // this will run on every page navigation,
   // but JWT caching from convex ensures the navigation
   // still feels snappy while keeping the app safe
@@ -98,7 +99,8 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const theme = Route.useLoaderData()
+  const theme = useGetTheme()
+
   return (
     <ThemeProvider theme={theme}>
       <html lang="en" suppressHydrationWarning className={theme}>
