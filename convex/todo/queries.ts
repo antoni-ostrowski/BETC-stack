@@ -1,6 +1,7 @@
 import { Effect } from "effect"
 import { query } from "../_generated/server"
-import { appRuntime, runEffOrThrow } from "../utils_effect"
+import { appRuntime } from "../runtime"
+import { runEffOrThrow } from "../utils_effect"
 import { TodoApi } from "./api"
 
 export const list = query({

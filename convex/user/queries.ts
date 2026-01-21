@@ -1,9 +1,9 @@
 import { authQuery } from "../lib"
 
 export const getMe = authQuery({
-  handler: (ctx) => {
+  handler: async (ctx) => {
     return {
-      ...ctx.auth.user
+      ...(await ctx.auth.getUserAsync(ctx))
     }
   }
 })

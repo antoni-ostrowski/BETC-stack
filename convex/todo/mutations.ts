@@ -2,7 +2,8 @@ import { v } from "convex/values"
 import { Effect } from "effect"
 import { api } from "../_generated/api"
 import { authMutation } from "../lib"
-import { appRuntime, runEffOrThrow } from "../utils_effect"
+import { appRuntime } from "../runtime"
+import { runEffOrThrow } from "../utils_effect"
 import { TodoApi } from "./api"
 
 export const toggle = authMutation({
@@ -25,7 +26,7 @@ export const toggle = authMutation({
       distinctId: crypto.randomUUID()
     })
 
-     await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program)
   }
 })
 
@@ -33,12 +34,12 @@ export const create = authMutation({
   args: { text: v.string() },
   handler: async ({ db, auth }, { text }) => {
     const program = Effect.gen(function* () {
-      const userId = auth.user._id
+      const user = yield* auth.getUser
       const todoApi = yield* TodoApi
-      yield* todoApi.create({ db, text, userId })
+      yield* todoApi.create({ db, text, userId: user._id })
     })
 
-     await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program)
   }
 })
 
@@ -50,6 +51,6 @@ export const remove = authMutation({
       yield* todoApi.remove({ db, todoId })
     })
 
-     await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program)
   }
 })

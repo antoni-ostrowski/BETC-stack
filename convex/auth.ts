@@ -11,6 +11,7 @@ import { components, internal } from "./_generated/api"
 import { DataModel } from "./_generated/dataModel"
 import authConfig from "./auth.config"
 import authSchema from "./betterAuth/schema"
+import { getAuthAsync } from "./lib"
 
 const siteUrl = process.env.SITE_URL
 
@@ -92,3 +93,5 @@ export const { getAuthUser } = authComponent.clientApi()
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth(createAuthOptions(ctx))
 }
+
+export type AuthType = Awaited<ReturnType<typeof getAuthAsync>>

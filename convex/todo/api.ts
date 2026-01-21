@@ -1,6 +1,7 @@
 import { Effect, flow } from "effect"
 import { Doc, Id } from "../_generated/dataModel"
 import { DatabaseReader, DatabaseWriter } from "../_generated/server"
+import { MyUserId } from "../betterAuth/schema"
 import { DatabaseError, NotFound } from "../utils_effect"
 
 // this is just an example structure that I think works nicely, its a simple repo pattern
@@ -48,7 +49,7 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
       ),
 
       create: flow(
-        (args: { db: DatabaseWriter; text: string; userId: string }) => args,
+        (args: { db: DatabaseWriter; text: string; userId: MyUserId }) => args,
         ({ db, text, userId }) =>
           Effect.tryPromise({
             try: async () =>
@@ -66,7 +67,9 @@ export class TodoApi extends Effect.Service<TodoApi>()("TodoApi", {
         (args: { db: DatabaseWriter; todoId: Id<"todos"> }) => args,
         ({ db, todoId }) =>
           Effect.tryPromise({
-            try: async () =>{  await db.delete(todoId); },
+            try: async () => {
+              await db.delete(todoId)
+            },
             catch: (cause) =>
               new DatabaseError({ message: "Failed to remove todo", cause })
           }),
