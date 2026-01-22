@@ -34,9 +34,8 @@ export const create = authMutation({
   args: { text: v.string() },
   handler: async ({ db, auth }, { text }) => {
     const program = Effect.gen(function* () {
-      const user = yield* auth.getUser
       const todoApi = yield* TodoApi
-      yield* todoApi.create({ db, text, userId: user._id })
+      yield* todoApi.create({ db, text, userId: auth.userId })
     })
 
     await runEffOrThrow(appRuntime, program)

@@ -12,6 +12,7 @@ import { ConvexError } from "convex/values"
 import { DataModel } from "./_generated/dataModel"
 import { action, mutation, query } from "./_generated/server"
 import { authComponent, createAuth } from "./auth"
+import { MyUserId } from "./betterAuth/schema"
 import schema from "./schema"
 import { getAuthEff, getUserEff } from "./utils_effect"
 
@@ -39,7 +40,8 @@ async function createAuthCtx(ctx: GenericCtx<DataModel>) {
       getUserAsync,
       getAuthAsync,
       getAuth: getAuthEff(() => getAuthAsync(ctx)),
-      getUser: getUserEff(() => getUserAsync(ctx))
+      getUser: getUserEff(() => getUserAsync(ctx)),
+      userId: identity.subject as MyUserId
     }
   }
 }
