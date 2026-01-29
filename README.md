@@ -38,12 +38,7 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Formatter - [Prettier](https://prettier.io/docs/install)
   - Waits to be replaced by [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
 
-## Styles
-
-- CSS - [Tailwindcss](https://tailwindcss.com/)
-- Base components - [Shadcn](https://ui.shadcn.com/)
-
-> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. For now, I created a utility to run an effect and wrap any failures in ConvexError and throw it. Then client can use parseConvexError util to read exact error message. This approach preserves the nature of js exceptions and doesn't break convex assumptions. This is how that looks like.
+> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. 
 
 ```typescript
 // full repo pattern (little clunky)
@@ -60,7 +55,8 @@ export const toggle = mutation({
   }
 })
 
-// or with ents and a promise wrapper
+// or with a effectful promise wrapper
+// (also this is newer approach with better-convex and convex ents)
 export const list = authQuery.query(async ({ ctx }) => {
   const program = effectifyPromise(
     () => ctx.table("todo"),
