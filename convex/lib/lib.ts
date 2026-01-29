@@ -1,9 +1,5 @@
-import { typedV } from "convex-helpers/validators"
 import { ConvexError } from "convex/values"
 import { Data, Effect, Either, ManagedRuntime, pipe } from "effect"
-import schema from "../functions/schema"
-
-export const vv = typedV(schema)
 
 /**
  * execute the final eff that returns the success data or wraps the failure in ConvexError,

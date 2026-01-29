@@ -29,10 +29,13 @@ export const toggle = authMutation
   })
 
 export const create = authMutation
-  .input(z.object({ text: z.string(), userId: zid("user") }))
-  .mutation(async ({ ctx, input: { text, userId } }) => {
+  .input(z.object({ text: z.string() }))
+  .mutation(async ({ ctx, input: { text } }) => {
     const program = effectifyPromise(
-      () => ctx.table("todo").insert({ text, completed: false, userId }),
+      () =>
+        ctx
+          .table("todo")
+          .insert({ text, completed: false, userId: ctx.user.id }),
       (cause, message) => new DatabaseError({ cause, message })
     )
     return await appRuntime.runPromise(program)
@@ -43,7 +46,7 @@ export const remove = authMutation
   .mutation(async ({ ctx, input: { todoId } }) => {
     const program = effectifyPromise(
       () => ctx.table("todo").getX(todoId).delete(),
-      ({ cause, message }) => new DatabaseError({ cause, message })
+      (cause, message) => new DatabaseError({ cause, message })
     )
     return await appRuntime.runPromise(program)
   })

@@ -29,16 +29,16 @@ import type { GenericId } from "convex/values";
 export type DataModel = {
   account: {
     document: {
-      accessToken?: string;
-      accessTokenExpiresAt?: number;
+      accessToken?: null | string;
+      accessTokenExpiresAt?: null | number;
       accountId: string;
       createdAt: number;
-      idToken?: string;
-      password?: string;
+      idToken?: null | string;
+      password?: null | string;
       providerId: string;
-      refreshToken?: string;
-      refreshTokenExpiresAt?: number;
-      scope?: string;
+      refreshToken?: null | string;
+      refreshTokenExpiresAt?: null | number;
+      scope?: null | string;
       updatedAt: number;
       userId: Id<"user">;
       _id: Id<"account">;
@@ -63,7 +63,57 @@ export type DataModel = {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
       accountId: ["accountId", "_creationTime"];
+      accountId_providerId: ["accountId", "providerId", "_creationTime"];
+      providerId_userId: ["providerId", "userId", "_creationTime"];
       userId: ["userId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  invitation: {
+    document: {
+      createdAt: number;
+      email: string;
+      expiresAt: number;
+      inviterId: Id<"user">;
+      organizationId: Id<"organization">;
+      role?: null | string;
+      status: string;
+      _id: Id<"invitation">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "email"
+      | "expiresAt"
+      | "inviterId"
+      | "organizationId"
+      | "role"
+      | "status";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      email: ["email", "_creationTime"];
+      email_organizationId_status: [
+        "email",
+        "organizationId",
+        "status",
+        "_creationTime",
+      ];
+      email_status: ["email", "status", "_creationTime"];
+      inviterId: ["inviterId", "_creationTime"];
+      organizationId: ["organizationId", "_creationTime"];
+      organizationId_email: ["organizationId", "email", "_creationTime"];
+      organizationId_email_status: [
+        "organizationId",
+        "email",
+        "status",
+        "_creationTime",
+      ];
+      organizationId_status: ["organizationId", "status", "_creationTime"];
+      status: ["status", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};
@@ -89,15 +139,73 @@ export type DataModel = {
     searchIndexes: {};
     vectorIndexes: {};
   };
-  session: {
+  member: {
     document: {
       createdAt: number;
+      organizationId: Id<"organization">;
+      role: string;
+      userId: Id<"user">;
+      _id: Id<"member">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "organizationId"
+      | "role"
+      | "userId";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      organizationId: ["organizationId", "_creationTime"];
+      organizationId_role: ["organizationId", "role", "_creationTime"];
+      organizationId_userId: ["organizationId", "userId", "_creationTime"];
+      role: ["role", "_creationTime"];
+      userId: ["userId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  organization: {
+    document: {
+      createdAt: number;
+      logo?: null | string;
+      metadata?: null | string;
+      monthlyCredits: number;
+      name: string;
+      slug: string;
+      _id: Id<"organization">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "createdAt"
+      | "logo"
+      | "metadata"
+      | "monthlyCredits"
+      | "name"
+      | "slug";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      name: ["name", "_creationTime"];
+      slug: ["slug", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  session: {
+    document: {
+      activeOrganizationId?: null | string;
+      createdAt: number;
       expiresAt: number;
-      impersonatedBy?: string;
-      ipAddress?: string;
+      impersonatedBy?: null | string;
+      ipAddress?: null | string;
       token: string;
       updatedAt: number;
-      userAgent?: string;
+      userAgent?: null | string;
       userId: Id<"user">;
       _id: Id<"session">;
       _creationTime: number;
@@ -105,6 +213,7 @@ export type DataModel = {
     fieldPaths:
       | "_creationTime"
       | "_id"
+      | "activeOrganizationId"
       | "createdAt"
       | "expiresAt"
       | "impersonatedBy"
@@ -116,8 +225,77 @@ export type DataModel = {
     indexes: {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
+      expiresAt: ["expiresAt", "_creationTime"];
+      expiresAt_userId: ["expiresAt", "userId", "_creationTime"];
       token: ["token", "_creationTime"];
       userId: ["userId", "_creationTime"];
+    };
+    searchIndexes: {};
+    vectorIndexes: {};
+  };
+  subscriptions: {
+    document: {
+      amount?: number | null;
+      cancelAtPeriodEnd: boolean;
+      checkoutId?: string | null;
+      createdAt: string;
+      currency?: string | null;
+      currentPeriodEnd?: string | null;
+      currentPeriodStart: string;
+      customerCancellationComment?: string | null;
+      customerCancellationReason?: string | null;
+      endedAt?: string | null;
+      metadata: Record<string, any>;
+      modifiedAt?: string | null;
+      organizationId: Id<"organization">;
+      priceId?: string;
+      productId: string;
+      recurringInterval?: string | null;
+      startedAt?: string | null;
+      status: string;
+      subscriptionId: string;
+      userId: Id<"user">;
+      _id: Id<"subscriptions">;
+      _creationTime: number;
+    };
+    fieldPaths:
+      | "_creationTime"
+      | "_id"
+      | "amount"
+      | "cancelAtPeriodEnd"
+      | "checkoutId"
+      | "createdAt"
+      | "currency"
+      | "currentPeriodEnd"
+      | "currentPeriodStart"
+      | "customerCancellationComment"
+      | "customerCancellationReason"
+      | "endedAt"
+      | "metadata"
+      | `metadata.${string}`
+      | "modifiedAt"
+      | "organizationId"
+      | "priceId"
+      | "productId"
+      | "recurringInterval"
+      | "startedAt"
+      | "status"
+      | "subscriptionId"
+      | "userId";
+    indexes: {
+      by_id: ["_id"];
+      by_creation_time: ["_creationTime"];
+      organizationId: ["organizationId", "_creationTime"];
+      organizationId_status: ["organizationId", "status", "_creationTime"];
+      subscriptionId: ["subscriptionId", "_creationTime"];
+      userId: ["userId", "_creationTime"];
+      userId_endedAt: ["userId", "endedAt", "_creationTime"];
+      userId_organizationId_status: [
+        "userId",
+        "organizationId",
+        "status",
+        "_creationTime",
+      ];
     };
     searchIndexes: {};
     vectorIndexes: {};
@@ -141,16 +319,28 @@ export type DataModel = {
   };
   user: {
     document: {
-      banExpires?: number;
-      banReason?: string;
-      banned?: boolean;
+      banExpires?: null | number;
+      banReason?: null | string;
+      banned?: null | boolean;
+      bio?: null | string;
       createdAt: number;
+      customerId?: string;
+      deletedAt?: number;
       email: string;
       emailVerified: boolean;
-      image?: string;
+      firstName?: null | string;
+      github?: null | string;
+      image?: null | string;
+      lastActiveOrganizationId?: Id<"organization">;
+      lastName?: null | string;
+      linkedin?: null | string;
+      location?: null | string;
       name: string;
-      role?: string;
+      personalOrganizationId?: Id<"organization">;
+      role?: null | string;
       updatedAt: number;
+      website?: null | string;
+      x?: null | string;
       _id: Id<"user">;
       _creationTime: number;
     };
@@ -160,27 +350,44 @@ export type DataModel = {
       | "banExpires"
       | "banned"
       | "banReason"
+      | "bio"
       | "createdAt"
+      | "customerId"
+      | "deletedAt"
       | "email"
       | "emailVerified"
+      | "firstName"
+      | "github"
       | "image"
+      | "lastActiveOrganizationId"
+      | "lastName"
+      | "linkedin"
+      | "location"
       | "name"
+      | "personalOrganizationId"
       | "role"
-      | "updatedAt";
+      | "updatedAt"
+      | "website"
+      | "x";
     indexes: {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
+      customerId: ["customerId", "_creationTime"];
       email: ["email", "_creationTime"];
+      email_name: ["email", "name", "_creationTime"];
+      lastActiveOrganizationId: ["lastActiveOrganizationId", "_creationTime"];
+      name: ["name", "_creationTime"];
+      personalOrganizationId: ["personalOrganizationId", "_creationTime"];
     };
     searchIndexes: {};
     vectorIndexes: {};
   };
   verification: {
     document: {
-      createdAt?: number;
+      createdAt: number;
       expiresAt: number;
       identifier: string;
-      updatedAt?: number;
+      updatedAt: number;
       value: string;
       _id: Id<"verification">;
       _creationTime: number;
@@ -196,6 +403,7 @@ export type DataModel = {
     indexes: {
       by_id: ["_id"];
       by_creation_time: ["_creationTime"];
+      expiresAt: ["expiresAt", "_creationTime"];
       identifier: ["identifier", "_creationTime"];
     };
     searchIndexes: {};

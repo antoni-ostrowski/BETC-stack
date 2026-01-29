@@ -1,97 +1,217 @@
+import { Doc } from "@convex/dataModel"
 import { defineEnt, defineEntSchema, getEntDefinitions } from "convex-ents"
-import { zodOutputToConvex } from "convex-helpers/server/zod4"
-import z from "zod"
-
-export const userZod = z.object({
-  name: z.string(),
-  email: z.email(),
-  emailVerified: z.boolean(),
-  image: z.string().optional(),
-  createdAt: z.number(),
-  updatedAt: z.number(),
-  role: z.string().optional(),
-  banned: z.boolean().optional(),
-  banReason: z.string().optional(),
-  banExpires: z.number().optional()
-})
-
-export const sessionZod = z.object({
-  token: z.string(),
-  expiresAt: z.number(),
-  createdAt: z.number(),
-  updatedAt: z.number(),
-  ipAddress: z.string().optional(),
-  userAgent: z.string().optional(),
-  impersonatedBy: z.string().optional()
-})
-
-export const accountZod = z.object({
-  accountId: z.string(),
-  providerId: z.string(),
-  accessToken: z.string().optional(),
-  refreshToken: z.string().optional(),
-  idToken: z.string().optional(),
-  accessTokenExpiresAt: z.number().optional(),
-  refreshTokenExpiresAt: z.number().optional(),
-  scope: z.string().optional(),
-  password: z.string().optional(),
-  createdAt: z.number(),
-  updatedAt: z.number()
-})
-
-export const verificationZod = z.object({
-  identifier: z.string(),
-  value: z.string(),
-  expiresAt: z.number(),
-  createdAt: z.number().optional(),
-  updatedAt: z.number().optional()
-})
-
-export const jwksZod = z.object({
-  publicKey: z.string(),
-  privateKey: z.string(),
-  createdAt: z.number()
-})
-
-export const todoZod = z.object({
-  text: z.string(),
-  completed: z.boolean()
-})
+import { convexToZod } from "convex-helpers/server/zod4"
+import { typedV } from "convex-helpers/validators"
+import { v } from "convex/values"
 
 const schema = defineEntSchema({
-  user: defineEnt(zodOutputToConvex(userZod))
-    .index("email", ["email"])
+  session: defineEnt({
+    expiresAt: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    ipAddress: v.optional(v.union(v.null(), v.string())),
+    userAgent: v.optional(v.union(v.null(), v.string())),
+    impersonatedBy: v.optional(v.union(v.null(), v.string())),
+    activeOrganizationId: v.optional(v.union(v.null(), v.string()))
+  })
+    .field("token", v.string(), { index: true })
+    .edge("user", { to: "user", field: "userId" })
+    .index("expiresAt", ["expiresAt"])
+    .index("expiresAt_userId", ["expiresAt", "userId"]),
+
+  account: defineEnt({
+    accountId: v.string(),
+    providerId: v.string(),
+    accessToken: v.optional(v.union(v.null(), v.string())),
+    refreshToken: v.optional(v.union(v.null(), v.string())),
+    idToken: v.optional(v.union(v.null(), v.string())),
+    accessTokenExpiresAt: v.optional(v.union(v.null(), v.number())),
+    refreshTokenExpiresAt: v.optional(v.union(v.null(), v.number())),
+    scope: v.optional(v.union(v.null(), v.string())),
+    password: v.optional(v.union(v.null(), v.string())),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .edge("user", { to: "user", field: "userId" })
+    .index("accountId", ["accountId"])
+    .index("accountId_providerId", ["accountId", "providerId"])
+    .index("providerId_userId", ["providerId", "userId"]),
+
+  verification: defineEnt({
+    value: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number()
+  })
+    .field("identifier", v.string(), { index: true })
+    .field("expiresAt", v.number(), { index: true }),
+
+  organization: defineEnt({
+    logo: v.optional(v.union(v.null(), v.string())),
+    createdAt: v.number(),
+    metadata: v.optional(v.union(v.null(), v.string())),
+    monthlyCredits: v.number()
+  })
+    .field("slug", v.string(), { unique: true })
+    .field("name", v.string(), { index: true })
+    .edges("members", { to: "member", ref: true })
+    .edges("invitations", { to: "invitation", ref: true })
+    .edge("subscription", { to: "subscriptions", ref: true })
+    .edges("usersLastActive", {
+      to: "user",
+      ref: "lastActiveOrganizationId"
+    })
+    .edges("usersPersonal", { to: "user", ref: "personalOrganizationId" }),
+
+  member: defineEnt({
+    createdAt: v.number()
+  })
+    .field("role", v.string(), { index: true })
+    .edge("organization", { to: "organization", field: "organizationId" })
+    .edge("user", { to: "user", field: "userId" })
+    .index("organizationId_userId", ["organizationId", "userId"])
+    .index("organizationId_role", ["organizationId", "role"]),
+
+  invitation: defineEnt({
+    role: v.optional(v.union(v.null(), v.string())),
+    expiresAt: v.number(),
+    createdAt: v.number()
+  })
+    .field("email", v.string(), { index: true })
+    .field("status", v.string(), { index: true })
+    .edge("organization", { to: "organization", field: "organizationId" })
+    .edge("inviter", { to: "user", field: "inviterId" })
+    .index("email_organizationId_status", ["email", "organizationId", "status"])
+    .index("organizationId_status", ["organizationId", "status"])
+    .index("email_status", ["email", "status"])
+    .index("organizationId_email", ["organizationId", "email"])
+    .index("organizationId_email_status", [
+      "organizationId",
+      "email",
+      "status"
+    ]),
+
+  jwks: defineEnt({
+    publicKey: v.string(),
+    privateKey: v.string(),
+    createdAt: v.number()
+  }),
+
+  // --------------------
+  // Unified User Model (App + Better Auth)
+  // --------------------
+  user: defineEnt({
+    // Better Auth required fields
+    name: v.string(),
+    emailVerified: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+
+    // Better Auth optional fields
+    image: v.optional(v.union(v.null(), v.string())),
+    role: v.optional(v.union(v.null(), v.string())),
+    banned: v.optional(v.union(v.null(), v.boolean())),
+    banReason: v.optional(v.union(v.null(), v.string())),
+    banExpires: v.optional(v.union(v.null(), v.number())),
+    bio: v.optional(v.union(v.null(), v.string())),
+    firstName: v.optional(v.union(v.null(), v.string())),
+    github: v.optional(v.union(v.null(), v.string())),
+    lastName: v.optional(v.union(v.null(), v.string())),
+    linkedin: v.optional(v.union(v.null(), v.string())),
+    location: v.optional(v.union(v.null(), v.string())),
+    website: v.optional(v.union(v.null(), v.string())),
+    x: v.optional(v.union(v.null(), v.string())),
+
+    // App-specific fields
+    deletedAt: v.optional(v.number())
+  })
+    .field("email", v.string(), { unique: true })
+    .field("customerId", v.optional(v.string()), { index: true })
+    // Better Auth edges
     .edges("sessions", { to: "session", ref: "userId" })
     .edges("accounts", { to: "account", ref: "userId" })
-    .edges("todos", { to: "todo", ref: "userId" }),
+    .edges("members", { to: "member", ref: "userId" })
+    .edges("invitations", { to: "invitation", ref: "inviterId" })
+    // App-specific edges
+    .edge("lastActiveOrganization", {
+      to: "organization",
+      field: "lastActiveOrganizationId",
+      optional: true
+    })
+    .edge("personalOrganization", {
+      to: "organization",
+      field: "personalOrganizationId",
+      optional: true
+    })
+    .edges("subscriptions", { to: "subscriptions", ref: "userId" })
+    .edges("todo", { ref: true })
+    // Indexes from both tables
+    .index("email_name", ["email", "name"])
+    .index("name", ["name"]),
 
-  session: defineEnt(zodOutputToConvex(sessionZod))
-    .index("token", ["token"])
-    .edge("user", { to: "user", field: "userId" }),
+  // --------------------
+  // Polar Payment Tables
+  // --------------------
+  subscriptions: defineEnt({
+    createdAt: v.string(),
+    modifiedAt: v.optional(v.union(v.string(), v.null())),
+    amount: v.optional(v.union(v.number(), v.null())),
+    currency: v.optional(v.union(v.string(), v.null())),
+    recurringInterval: v.optional(v.union(v.string(), v.null())),
+    status: v.string(),
+    currentPeriodStart: v.string(),
+    currentPeriodEnd: v.optional(v.union(v.string(), v.null())),
+    cancelAtPeriodEnd: v.boolean(),
+    startedAt: v.optional(v.union(v.string(), v.null())),
+    endedAt: v.optional(v.union(v.string(), v.null())),
+    priceId: v.optional(v.string()),
+    productId: v.string(),
+    checkoutId: v.optional(v.union(v.string(), v.null())),
+    metadata: v.record(v.string(), v.any()),
+    customerCancellationReason: v.optional(v.union(v.string(), v.null())),
+    customerCancellationComment: v.optional(v.union(v.string(), v.null()))
+  })
+    .field("subscriptionId", v.string(), { unique: true })
+    .edge("organization", { to: "organization", field: "organizationId" })
+    .edge("user", { to: "user", field: "userId" })
+    .index("organizationId_status", ["organizationId", "status"])
+    .index("userId_organizationId_status", [
+      "userId",
+      "organizationId",
+      "status"
+    ])
+    .index("userId_endedAt", ["userId", "endedAt"]),
 
-  account: defineEnt(zodOutputToConvex(accountZod))
-    .index("accountId", ["accountId"])
-    .edge("user", { to: "user", field: "userId" }),
-
-  verification: defineEnt(zodOutputToConvex(verificationZod)).index(
-    "identifier",
-    ["identifier"]
-  ),
-
-  jwks: defineEnt(zodOutputToConvex(jwksZod)),
-
-  todo: defineEnt(zodOutputToConvex(todoZod)).edge("user", {
+  todo: defineEnt({
+    text: v.string(),
+    completed: v.boolean()
+  }).edge("user", {
     to: "user",
     field: "userId"
   })
 })
 
-export type User = z.infer<typeof userZod>
-export type Session = z.infer<typeof sessionZod>
-export type Account = z.infer<typeof accountZod>
-export type Verification = z.infer<typeof verificationZod>
-export type Jwks = z.infer<typeof jwksZod>
-export type Todo = z.infer<typeof todoZod>
-
 export default schema
 export const entDefinitions = getEntDefinitions(schema)
+export const vv = typedV(schema)
+
+export const userZod = convexToZod(vv.doc("user"))
+export const sessionZod = convexToZod(vv.doc("session"))
+export const accountZod = convexToZod(vv.doc("account"))
+export const verificationZod = convexToZod(vv.doc("verification"))
+export const jwksZod = convexToZod(vv.doc("jwks"))
+export const todoZod = convexToZod(vv.doc("todo"))
+export const subscriptionZod = convexToZod(vv.doc("subscriptions"))
+export const memberZod = convexToZod(vv.doc("member"))
+export const orgZod = convexToZod(vv.doc("organization"))
+export const invitationZod = convexToZod(vv.doc("invitation"))
+
+export type UserType = Doc<"user">
+export type SessionType = Doc<"session">
+export type AccountType = Doc<"account">
+export type VerificationType = Doc<"verification">
+export type JwksType = Doc<"jwks">
+export type TodoType = Doc<"todo">
+export type SubscriptionType = Doc<"subscriptions">
+export type MemberType = Doc<"member">
+export type OrgType = Doc<"organization">
+export type InvitationType = Doc<"invitation">

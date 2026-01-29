@@ -12,7 +12,7 @@ const app = new Hono()
 app.use(
   "/api/*",
   cors({
-    origin: process.env.SITE_URL!,
+    origin: process.env.SITE_URL ?? "http://localhost:3000",
     allowHeaders: ["Content-Type", "Authorization", "Better-Auth-Cookie"],
     exposeHeaders: ["Set-Better-Auth-Cookie"],
     credentials: true
