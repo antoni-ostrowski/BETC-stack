@@ -6,12 +6,12 @@ export default function PageWrapper({
   className
 }: {
   children: ReactNode
-  className?: ComponentProps<"div">
+  className?: ComponentProps<"div">["className"]
 }) {
   return (
     <div
       className={cn(
-        "flex h-full w-full flex-1 flex-col items-start justify-start",
+        "flex h-full w-full flex-1 flex-col items-center justify-center",
         className
       )}
     >

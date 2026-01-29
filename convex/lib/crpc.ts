@@ -1,0 +1,72 @@
+import { getSession } from "better-convex/auth"
+import { CRPCError, initCRPC } from "better-convex/server"
+import type { DataModel } from "../functions/_generated/dataModel"
+import type {
+  ActionCtx,
+  MutationCtx,
+  QueryCtx
+} from "../functions/_generated/server"
+import {
+  action,
+  internalAction,
+  internalMutation,
+  internalQuery,
+  mutation,
+  query
+} from "../functions/_generated/server"
+import { getCtxWithTable } from "./ents"
+
+export type GenericCtx = QueryCtx | MutationCtx | ActionCtx
+
+const c = initCRPC
+  .dataModel<DataModel>()
+  .context({
+    query: (ctx) => getCtxWithTable(ctx),
+    mutation: (ctx) => getCtxWithTable(ctx)
+  })
+  .create({
+    query,
+    internalQuery,
+    mutation,
+    internalMutation,
+    action,
+    internalAction
+  })
+
+export const publicQuery = c.query
+export const publicMutation = c.mutation
+export const router = c.router
+
+export const authQuery = c.query.use(async ({ ctx, next }) => {
+  const session = await getSession(ctx)
+  if (!session) {
+    throw new CRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" })
+  }
+
+  const user = await ctx.table("user").getX(session.userId)
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: { id: user._id, session, ...user.doc() },
+      userId: user._id
+    }
+  })
+})
+
+export const authMutation = c.mutation.use(async ({ ctx, next }) => {
+  const session = await getSession(ctx)
+  if (!session) {
+    throw new CRPCError({ code: "UNAUTHORIZED", message: "Not authenticated" })
+  }
+
+  const user = await ctx.table("user").getX(session.userId)
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: { id: user._id, session, ...user.doc() },
+      userId: user._id
+    }
+  })
+})
