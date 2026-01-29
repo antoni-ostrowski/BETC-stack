@@ -14,9 +14,11 @@ You can wire everything up yourself if you like, but I propose you just clone th
 ```bash
 git clone https://github.com/antoni-ostrowski/BETC-stack.git
 cd BETC-stack
+rm -rf .git
 bun install
-bun run dev
-bunx convex dev
+bun dev
+bun backend
+bun backend:env-sync
 ```
 
 # Technologies
