@@ -92,6 +92,10 @@ export function createQueryClient() {
         }
       },
       onSuccess: (_data, _variables, _context, mutation) => {
+        if (!mutation.meta?.successMessage && mutation.meta?.withToasts) {
+          toast.dismiss(mutation.mutationId)
+          return
+        }
         if (mutation.meta?.successMessage && mutation.meta.withToasts) {
           toast.success(mutation.meta.successMessage, {
             id: mutation.mutationId
@@ -106,15 +110,6 @@ export function createQueryClient() {
           }
         }
       }
-      // onSettled: async (_data, _error, _variables, _context, mutation) => {
-      //   {
-      //     if (mutation.meta?.invalidatesQuery) {
-      //       await queryClient.invalidateQueries({
-      //         queryKey: mutation.meta?.invalidatesQuery
-      //       })
-      //     }
-      //   }
-      // }
     })
   })
 }

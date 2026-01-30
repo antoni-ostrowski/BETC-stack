@@ -1,7 +1,6 @@
 import { env } from "@/env"
 import { convexClient } from "@convex-dev/better-auth/client/plugins"
 import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start"
-import { polarClient } from "@polar-sh/better-auth"
 import { QueryClient } from "@tanstack/react-query"
 import {
   inferAdditionalFields,
@@ -13,12 +12,7 @@ import { Auth } from "../../convex/functions/auth"
 
 export const authClient = createAuthClient({
   baseURL: env.VITE_SITE_URL,
-  plugins: [
-    inferAdditionalFields<Auth>(),
-    polarClient(),
-    organizationClient(),
-    convexClient()
-  ]
+  plugins: [inferAdditionalFields<Auth>(), organizationClient(), convexClient()]
 })
 
 export const {

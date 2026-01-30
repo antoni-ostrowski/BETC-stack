@@ -23,7 +23,12 @@ function RouteComponent() {
   const crpc = useCRPC()
 
   const { mutate: createTodo } = useMutation(
-    crpc.todo.m.create.mutationOptions()
+    crpc.todo.m.create.mutationOptions({
+      meta: {
+        withToasts: true,
+        loadingMessage: "creating todo.."
+      }
+    })
   )
 
   const { mutate: deleteTodo } = useMutation(
@@ -38,15 +43,13 @@ function RouteComponent() {
 
   return (
     <PageWrapper className="h-screen">
-      <h1 className="text-2xl font-bold">
+      <h1>
         Hi {user?.name}! ({user?.email})
       </h1>
-      <h1 className="text-2xl font-bold">
-        You can access this page only when you are authenticated.
-      </h1>
+      <h1>You can access this page only when you are authenticated.</h1>
 
       <p className="text-muted-foreground">
-        Try accessing this page manually with url when signed out.
+        Try accessing this page manually when signed out to test.
       </p>
       <div className="mt-4 flex flex-col gap-2">
         <div className="flex flex-col gap-2">

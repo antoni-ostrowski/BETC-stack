@@ -172,7 +172,6 @@ export type DataModel = {
       createdAt: number;
       logo?: null | string;
       metadata?: null | string;
-      monthlyCredits: number;
       name: string;
       slug: string;
       _id: Id<"organization">;
@@ -184,7 +183,6 @@ export type DataModel = {
       | "createdAt"
       | "logo"
       | "metadata"
-      | "monthlyCredits"
       | "name"
       | "slug";
     indexes: {
@@ -229,73 +227,6 @@ export type DataModel = {
       expiresAt_userId: ["expiresAt", "userId", "_creationTime"];
       token: ["token", "_creationTime"];
       userId: ["userId", "_creationTime"];
-    };
-    searchIndexes: {};
-    vectorIndexes: {};
-  };
-  subscriptions: {
-    document: {
-      amount?: number | null;
-      cancelAtPeriodEnd: boolean;
-      checkoutId?: string | null;
-      createdAt: string;
-      currency?: string | null;
-      currentPeriodEnd?: string | null;
-      currentPeriodStart: string;
-      customerCancellationComment?: string | null;
-      customerCancellationReason?: string | null;
-      endedAt?: string | null;
-      metadata: Record<string, any>;
-      modifiedAt?: string | null;
-      organizationId: Id<"organization">;
-      priceId?: string;
-      productId: string;
-      recurringInterval?: string | null;
-      startedAt?: string | null;
-      status: string;
-      subscriptionId: string;
-      userId: Id<"user">;
-      _id: Id<"subscriptions">;
-      _creationTime: number;
-    };
-    fieldPaths:
-      | "_creationTime"
-      | "_id"
-      | "amount"
-      | "cancelAtPeriodEnd"
-      | "checkoutId"
-      | "createdAt"
-      | "currency"
-      | "currentPeriodEnd"
-      | "currentPeriodStart"
-      | "customerCancellationComment"
-      | "customerCancellationReason"
-      | "endedAt"
-      | "metadata"
-      | `metadata.${string}`
-      | "modifiedAt"
-      | "organizationId"
-      | "priceId"
-      | "productId"
-      | "recurringInterval"
-      | "startedAt"
-      | "status"
-      | "subscriptionId"
-      | "userId";
-    indexes: {
-      by_id: ["_id"];
-      by_creation_time: ["_creationTime"];
-      organizationId: ["organizationId", "_creationTime"];
-      organizationId_status: ["organizationId", "status", "_creationTime"];
-      subscriptionId: ["subscriptionId", "_creationTime"];
-      userId: ["userId", "_creationTime"];
-      userId_endedAt: ["userId", "endedAt", "_creationTime"];
-      userId_organizationId_status: [
-        "userId",
-        "organizationId",
-        "status",
-        "_creationTime",
-      ];
     };
     searchIndexes: {};
     vectorIndexes: {};

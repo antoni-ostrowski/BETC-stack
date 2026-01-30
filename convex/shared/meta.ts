@@ -3,6 +3,10 @@
 // Do not edit manually. Run `better-convex codegen` to regenerate.
 
 export const meta = {
+  organization: {
+    createOrganization: { rateLimit: 'organization/create', type: 'mutation' },
+    list: { type: 'query' },
+  },
   'todo/m': {
     create: { type: 'mutation' },
     remove: { type: 'mutation' },

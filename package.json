@@ -11,15 +11,11 @@
     "format": "bunx prettier . --write",
     "check": "bun run typecheck && bun run lint",
     "typecheck": "tsc --noEmit",
-    "backend:env-sync": "bunx better-convex env sync",
-    "ngrok": "ngrok http --url=https://lobster-known-wren.ngrok-free.app 3000"
+    "backend:env-sync": "bunx better-convex env sync"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
     "@convex-dev/better-auth": "^0.10.10",
-    "@polar-sh/better-auth": "^1.6.4",
-    "@polar-sh/sdk": "^0.42.5",
-    "@posthog/react": "^1.7.0",
     "@t3-oss/env-core": "^0.13.10",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "^0.7.11",
@@ -42,8 +38,6 @@
     "hono": "^4.11.7",
     "jsdom": "^27.4.0",
     "lucide-react": "^0.544.0",
-    "posthog-js": "^1.336.1",
-    "posthog-node": "^5.24.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "sonner": "^2.0.7",

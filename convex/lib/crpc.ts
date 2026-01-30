@@ -1,4 +1,4 @@
-import { getSession } from "better-convex/auth"
+import { getHeaders, getSession } from "better-convex/auth"
 import { CRPCError, initCRPC } from "better-convex/server"
 import type { DataModel } from "../functions/_generated/dataModel"
 import type {
@@ -14,6 +14,7 @@ import {
   mutation,
   query
 } from "../functions/_generated/server"
+import { getAuth } from "../functions/auth"
 import { getCtxWithTable } from "./ents"
 
 export type GenericCtx = QueryCtx | MutationCtx | ActionCtx
@@ -58,6 +59,11 @@ const authMiddleware = c.middleware(async ({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
+      auth: {
+        ...ctx.auth,
+        ...getAuth(ctx),
+        headers: await getHeaders(ctx, session)
+      },
       user: { id: user._id, session, ...user.doc() },
       userId: user._id
     }

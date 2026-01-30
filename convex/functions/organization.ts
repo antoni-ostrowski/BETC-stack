@@ -1,10 +1,11 @@
 import { Id } from "@convex/dataModel"
 import { MutationCtx } from "@convex/server"
+import { CRPCError } from "better-convex/server"
 import { entsTableFactory } from "convex-ents"
 import { asyncMap } from "convex-helpers"
 import { zid } from "convex-helpers/server/zod4"
 import { z } from "zod"
-import { authQuery } from "../lib/crpc"
+import { authMutation, authQuery } from "../lib/crpc"
 import { entDefinitions } from "./schema"
 
 export const createPersonalOrganization = async (
@@ -29,7 +30,6 @@ export const createPersonalOrganization = async (
 
   const orgId = await table("organization").insert({
     logo: args.image || undefined,
-    monthlyCredits: 0,
     name: `${args.name}'s Organization`,
     slug,
     createdAt: Date.now()
@@ -84,4 +84,61 @@ export const list = authQuery
     })
 
     return { organizations: orgs }
+  })
+
+export const createOrganization = authMutation
+  .meta({ rateLimit: "organization/create" })
+  .input(z.object({ name: z.string().min(1).max(100) }))
+  .output(z.object({ id: zid("organization"), slug: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    // Generate unique slug
+    let slug = input.name
+    let attempt = 0
+
+    while (attempt < 10) {
+      // Check if slug is already taken
+      const existingOrg = await ctx.table("organization").get("slug", slug)
+
+      if (!existingOrg) {
+        break // Slug is available!
+      }
+
+      // Add random suffix for uniqueness
+      slug = `${slug}-${Math.random().toString(36).slice(2, 10)}`
+      attempt++
+    }
+
+    if (attempt >= 10) {
+      throw new CRPCError({
+        code: "BAD_REQUEST",
+        message:
+          "Could not generate a unique slug. Please provide a custom slug."
+      })
+    }
+
+    // Create organization via Better Auth
+    const org = await ctx.auth.api.createOrganization({
+      body: {
+        name: input.name,
+        slug
+      },
+      headers: ctx.auth.headers
+    })
+
+    if (!org) {
+      throw new CRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to create organization"
+      })
+    }
+
+    await ctx.auth.api.setActiveOrganization({
+      body: { organizationId: org.id },
+      headers: ctx.auth.headers
+    })
+
+    return {
+      id: org.id as Id<"organization">,
+      slug: org.slug
+    }
   })

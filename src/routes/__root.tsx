@@ -1,14 +1,8 @@
-import SignOutBtn from "@/components/auth/sign-out-btn"
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getClientAuth, getServerAuth } from "@/lib/auth-client"
-import { PHProvider } from "@/lib/providers/posthog/provider"
-import {
-  ThemeProvider,
-  useGetTheme
-} from "@/lib/providers/theme/theme-provider"
-import ThemeToggle from "@/lib/providers/theme/theme-toggle"
+import { ThemeProvider, useGetTheme } from "@/lib/theme/theme-provider"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { isServer } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
@@ -76,18 +70,16 @@ function RootComponent() {
   const router = useRouter()
 
   return (
-    <PHProvider>
-      <ConvexAuthProvider
-        authClient={authClient}
-        client={context.convexReactClient}
-        onMutationUnauthorized={() => router.navigate({ to: "/sign-in" })}
-        onQueryUnauthorized={() => router.navigate({ to: "/sign-in" })}
-      >
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ConvexAuthProvider>
-    </PHProvider>
+    <ConvexAuthProvider
+      authClient={authClient}
+      client={context.convexReactClient}
+      onMutationUnauthorized={() => router.navigate({ to: "/sign-in" })}
+      onQueryUnauthorized={() => router.navigate({ to: "/sign-in" })}
+    >
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ConvexAuthProvider>
   )
 }
 
@@ -102,12 +94,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         </head>
         <body>
           <Toaster />
-          <div className="absolute top-4 left-4 flex flex-row gap-2">
-            <SignOutBtn />
-            <div>
-              <ThemeToggle />
-            </div>
-          </div>
           {children}
           <TanStackDevtools
             config={{

@@ -21,6 +21,12 @@ import type { GenericId as Id } from "convex/values";
  */
 export declare const api: {
   organization: {
+    createOrganization: FunctionReference<
+      "mutation",
+      "public",
+      { name: string },
+      { id: Id<"organization">; slug: string }
+    >;
     list: FunctionReference<
       "query",
       "public",
@@ -34,20 +40,6 @@ export declare const api: {
           slug: string;
         }>;
       }
-    >;
-  };
-  polarSubscription: {
-    cancelSubscription: FunctionReference<
-      "action",
-      "public",
-      {},
-      { success: boolean }
-    >;
-    resumeSubscription: FunctionReference<
-      "action",
-      "public",
-      {},
-      { success: boolean }
     >;
   };
   todo: {
@@ -268,88 +260,6 @@ export declare const internal: {
         onUpdateHandle?: string;
       },
       any
-    >;
-  };
-  polarCustomer: {
-    createCustomer: FunctionReference<
-      "action",
-      "internal",
-      { email: string; name?: string; userId: Id<"user"> },
-      null
-    >;
-    updateUserPolarCustomerId: FunctionReference<
-      "mutation",
-      "internal",
-      { customerId: string; userId: Id<"user"> },
-      null
-    >;
-  };
-  polarSubscription: {
-    createSubscription: FunctionReference<
-      "mutation",
-      "internal",
-      {
-        subscription: {
-          amount?: number | null;
-          cancelAtPeriodEnd: boolean;
-          checkoutId?: string | null;
-          createdAt: string;
-          currency?: string | null;
-          currentPeriodEnd?: string | null;
-          currentPeriodStart: string;
-          customerCancellationComment?: string | null;
-          customerCancellationReason?: string | null;
-          endedAt?: string | null;
-          metadata: Record<string, any>;
-          modifiedAt?: string | null;
-          organizationId: Id<"organization">;
-          priceId?: string;
-          productId: string;
-          recurringInterval?: string | null;
-          startedAt?: string | null;
-          status: string;
-          subscriptionId: string;
-          userId: Id<"user">;
-        };
-      },
-      null
-    >;
-    getActiveSubscription: FunctionReference<
-      "query",
-      "internal",
-      { userId: Id<"user"> },
-      { subscriptionId: string } | null
-    >;
-    updateSubscription: FunctionReference<
-      "mutation",
-      "internal",
-      {
-        subscription: {
-          _creationTime: number;
-          _id: Id<"subscriptions">;
-          amount?: number | null;
-          cancelAtPeriodEnd: boolean;
-          checkoutId?: string | null;
-          createdAt: string;
-          currency?: string | null;
-          currentPeriodEnd?: string | null;
-          currentPeriodStart: string;
-          customerCancellationComment?: string | null;
-          customerCancellationReason?: string | null;
-          endedAt?: string | null;
-          metadata: Record<string, any>;
-          modifiedAt?: string | null;
-          organizationId: Id<"organization">;
-          priceId?: string;
-          productId: string;
-          recurringInterval?: string | null;
-          startedAt?: string | null;
-          status: string;
-          subscriptionId: string;
-          userId: Id<"user">;
-        };
-      },
-      { updated: boolean }
     >;
   };
 };

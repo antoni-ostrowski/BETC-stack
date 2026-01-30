@@ -48,14 +48,12 @@ const schema = defineEntSchema({
   organization: defineEnt({
     logo: v.optional(v.union(v.null(), v.string())),
     createdAt: v.number(),
-    metadata: v.optional(v.union(v.null(), v.string())),
-    monthlyCredits: v.number()
+    metadata: v.optional(v.union(v.null(), v.string()))
   })
     .field("slug", v.string(), { unique: true })
     .field("name", v.string(), { index: true })
     .edges("members", { to: "member", ref: true })
     .edges("invitations", { to: "invitation", ref: true })
-    .edge("subscription", { to: "subscriptions", ref: true })
     .edges("usersLastActive", {
       to: "user",
       ref: "lastActiveOrganizationId"
@@ -142,44 +140,10 @@ const schema = defineEntSchema({
       field: "personalOrganizationId",
       optional: true
     })
-    .edges("subscriptions", { to: "subscriptions", ref: "userId" })
     .edges("todo", { ref: true })
     // Indexes from both tables
     .index("email_name", ["email", "name"])
     .index("name", ["name"]),
-
-  // --------------------
-  // Polar Payment Tables
-  // --------------------
-  subscriptions: defineEnt({
-    createdAt: v.string(),
-    modifiedAt: v.optional(v.union(v.string(), v.null())),
-    amount: v.optional(v.union(v.number(), v.null())),
-    currency: v.optional(v.union(v.string(), v.null())),
-    recurringInterval: v.optional(v.union(v.string(), v.null())),
-    status: v.string(),
-    currentPeriodStart: v.string(),
-    currentPeriodEnd: v.optional(v.union(v.string(), v.null())),
-    cancelAtPeriodEnd: v.boolean(),
-    startedAt: v.optional(v.union(v.string(), v.null())),
-    endedAt: v.optional(v.union(v.string(), v.null())),
-    priceId: v.optional(v.string()),
-    productId: v.string(),
-    checkoutId: v.optional(v.union(v.string(), v.null())),
-    metadata: v.record(v.string(), v.any()),
-    customerCancellationReason: v.optional(v.union(v.string(), v.null())),
-    customerCancellationComment: v.optional(v.union(v.string(), v.null()))
-  })
-    .field("subscriptionId", v.string(), { unique: true })
-    .edge("organization", { to: "organization", field: "organizationId" })
-    .edge("user", { to: "user", field: "userId" })
-    .index("organizationId_status", ["organizationId", "status"])
-    .index("userId_organizationId_status", [
-      "userId",
-      "organizationId",
-      "status"
-    ])
-    .index("userId_endedAt", ["userId", "endedAt"]),
 
   todo: defineEnt({
     text: v.string(),
@@ -200,7 +164,6 @@ export const accountZod = convexToZod(vv.doc("account"))
 export const verificationZod = convexToZod(vv.doc("verification"))
 export const jwksZod = convexToZod(vv.doc("jwks"))
 export const todoZod = convexToZod(vv.doc("todo"))
-export const subscriptionZod = convexToZod(vv.doc("subscriptions"))
 export const memberZod = convexToZod(vv.doc("member"))
 export const orgZod = convexToZod(vv.doc("organization"))
 export const invitationZod = convexToZod(vv.doc("invitation"))
@@ -211,7 +174,6 @@ export type AccountType = Doc<"account">
 export type VerificationType = Doc<"verification">
 export type JwksType = Doc<"jwks">
 export type TodoType = Doc<"todo">
-export type SubscriptionType = Doc<"subscriptions">
 export type MemberType = Doc<"member">
 export type OrgType = Doc<"organization">
 export type InvitationType = Doc<"invitation">
