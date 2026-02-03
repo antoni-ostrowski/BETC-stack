@@ -1,4 +1,4 @@
-import { ConvexError } from "convex/values"
+import { CRPCError } from "better-convex/server"
 import { Data, Effect, Either, ManagedRuntime, pipe } from "effect"
 
 /**
@@ -21,7 +21,11 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
 
     Effect.runSync(Effect.logError(error))
 
-    throw new ConvexError(errorMessage)
+    throw new CRPCError({
+      message: errorMessage,
+      code: "INTERNAL_SERVER_ERROR",
+      cause: error
+    })
   }
 
   return result.right
@@ -40,16 +44,16 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
  */
 export function effectifyPromise<A, E, R = never>(
   promiseFactory: () => Promise<A>,
-  errorFactory: (cause: unknown, message: string) => E,
+  errorFactory: (obj: { cause: unknown; message: string }) => E,
   errorMessage: string = "Promise failed"
 ): Effect.Effect<A, E, R> {
   return pipe(
     Effect.tryPromise({
       try: promiseFactory,
-      catch: (cause) => errorFactory(cause, errorMessage)
+      catch: (cause) => errorFactory({ cause, message: errorMessage })
     }),
     Effect.tapError((error) =>
-      Effect.logError("Effectified Promise Error:", error)
+      Effect.logError("Effectified Promise Error:", errorMessage, error)
     )
   )
 }

@@ -9,7 +9,7 @@ export const list = authQuery
   .query(async ({ ctx }) => {
     const program = effectifyPromise(
       () => ctx.table("todo").docs(),
-      (cause, message) => new DatabaseError({ cause, message })
+      (a) => new DatabaseError(a)
     )
     return await appRuntime.runPromise(program)
   })

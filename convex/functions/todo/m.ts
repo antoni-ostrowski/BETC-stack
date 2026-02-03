@@ -11,7 +11,7 @@ export const toggle = authMutation
     const program = Effect.gen(function* () {
       const todo = yield* effectifyPromise(
         () => ctx.table("todo").get(input.id),
-        (cause, message) => new DatabaseError({ cause, message })
+        (a) => new DatabaseError(a)
       )
 
       if (!todo) return yield* new NotFoundError({ message: "todo not found" })
@@ -22,7 +22,7 @@ export const toggle = authMutation
             .table("todo")
             .getX(todo._id)
             .patch({ completed: !todo.completed }),
-        (cause, message) => new DatabaseError({ cause, message })
+        (a) => new DatabaseError(a)
       )
     })
     return await appRuntime.runPromise(program)
@@ -36,7 +36,7 @@ export const create = authMutation
         ctx
           .table("todo")
           .insert({ text, completed: false, userId: ctx.user.id }),
-      (cause, message) => new DatabaseError({ cause, message })
+      (a) => new DatabaseError(a)
     )
     return await appRuntime.runPromise(program)
   })
@@ -46,7 +46,7 @@ export const remove = authMutation
   .mutation(async ({ ctx, input: { todoId } }) => {
     const program = effectifyPromise(
       () => ctx.table("todo").getX(todoId).delete(),
-      (cause, message) => new DatabaseError({ cause, message })
+      (a) => new DatabaseError(a)
     )
     return await appRuntime.runPromise(program)
   })

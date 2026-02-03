@@ -38,7 +38,7 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Formatter - [Prettier](https://prettier.io/docs/install)
   - Waits to be replaced by [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
 
-> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. 
+> I'm still experimenting with the best way to make the effect code interact correctly with convex functions.
 
 ```typescript
 // full repo pattern (little clunky)
@@ -60,7 +60,7 @@ export const toggle = mutation({
 export const list = authQuery.query(async ({ ctx }) => {
   const program = effectifyPromise(
     () => ctx.table("todo"),
-    (cause, message) => new DatabaseError({ cause, message })
+    ({ cause, message }) => new DatabaseError({ cause, message })
   )
   return await appRuntime.runPromise(program)
 })
