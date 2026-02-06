@@ -15,7 +15,10 @@ import {
   query
 } from "../functions/_generated/server"
 import { getAuth } from "../functions/auth"
+import { MyConvex } from "./convex-service"
 import { getCtxWithTable } from "./ents"
+import { execEff } from "./lib"
+import { appRuntime } from "./runtime"
 
 export type GenericCtx = QueryCtx | MutationCtx | ActionCtx
 
@@ -61,7 +64,8 @@ export const authQuery = c.query.use(async ({ ctx, next }) => {
         headers: await getHeaders(ctx, session)
       },
       user: { id: user._id, session, ...user.doc() },
-      userId: user._id
+      userId: user._id,
+      effQuery: (await execEff(ctx, appRuntime, MyConvex)).query
     }
   })
 })
@@ -86,7 +90,8 @@ export const authMutation = c.mutation.use(async ({ ctx, next }) => {
         headers: await getHeaders(ctx, session)
       },
       user: { id: user._id, session, ...user.doc() },
-      userId: user._id
+      userId: user._id,
+      effMutate: (await execEff(ctx, appRuntime, MyConvex)).mutate
     }
   })
 })

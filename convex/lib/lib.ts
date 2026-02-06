@@ -1,17 +1,27 @@
 import { CRPCError } from "better-convex/server"
 import { Data, Effect, Either, ManagedRuntime, pipe } from "effect"
+import { ConvexCtx, ConvexMutationCtx, ConvexQueryCtx } from "./convex-service"
+import { EntsMutationCtx, EntsQueryCtx } from "./ents"
 
 /**
- * execute the final eff that returns the success data or wraps the failure in ConvexError,
- * (so client can easly read err message via parseConvexError util)
- * R = The requirements provided by the ManagedRuntime
- * E_Runtime = Errors that can occur during runtime initialization
+ * execute the final eff that returns the success data or wraps the failure in crpc error,
  */
-export async function runEffOrThrow<A, E, R, E_Runtime>(
-  runtime: ManagedRuntime.ManagedRuntime<R, E_Runtime>,
-  eff: Effect.Effect<A, E, R>
+export async function execEff<A, E, R_Runtime, E_Runtime>(
+  ctx: EntsQueryCtx | EntsMutationCtx,
+  runtime: ManagedRuntime.ManagedRuntime<R_Runtime, E_Runtime>,
+  eff: Effect.Effect<
+    A,
+    E,
+    R_Runtime | ConvexQueryCtx | ConvexMutationCtx | ConvexCtx
+  >
 ): Promise<A> {
-  const result = await runtime.runPromise(Effect.either(eff))
+  const programReadyForRuntime = eff.pipe(
+    Effect.provideService(ConvexQueryCtx, ctx),
+    Effect.provideService(ConvexMutationCtx, ctx as EntsMutationCtx),
+    Effect.provideService(ConvexCtx, ctx)
+  )
+
+  const result = await runtime.runPromise(Effect.either(programReadyForRuntime))
 
   if (Either.isLeft(result)) {
     const error = result.left
