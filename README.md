@@ -1,7 +1,5 @@
 # My React web stack (BETC Stack Template)
 
-> I was tired of configuring tech stack every time I wanted to start new web app so i created this repo. This is exactly how I would start new web app today.
-
 _**This repo is meant to be cloned and used as a starting point for a your next web app.**_
 
 # Getting Started
@@ -33,15 +31,54 @@ These technologies create in my opinion the best web stack for complex web apps.
 
 ## Tooling
 
-- Package manager / runtime - [Bun](https://bun.com/docs/pm/cli/install)
+- Package manager & runtime - [Bun](https://bun.com/docs/pm/cli/install)
 - Linter - [Oxlint](https://oxc.rs/docs/guide/usage/linter.html)
 - Formatter - [Prettier](https://prettier.io/docs/install)
-  - Waits to be replaced by [Oxfmt](https://oxc.rs/docs/guide/usage/formatter.html)
 
-> I'm still experimenting with the best way to make the effect code interact correctly with convex functions.
-
+> this is how i handle effect in convex functions (with few wrappers)
 ```typescript
-// full repo pattern (little clunky)
+export const list = authQuery
+  .output(z.array(todoZod))
+  .query(async ({ ctx }) => {
+    const program = Effect.gen(function* () {
+      // special convex service wrapper, that gives access
+      // to convex ctx, executes promise and fails with DatabaseError,
+      // can take custom err message
+      const example1 = yield* ctx.effQuery(
+        async (c) => c.table("todo").docs(),
+        "custom err message"
+      )
+      // wrap default error to specific one
+      const example2 = yield* ctx
+        .effQuery(async (c) => c.table("todo").docs())
+        .pipe(
+          Effect.mapError(
+            (dbError) =>
+              new ServerError({ message: "another custom err message" })
+          )
+        )
+      // general purpose promise wrapper, works with any promise,
+      // allows to associate specific error to that promise
+      const example3 = yield* effectifyPromise(
+        () => ctx.table("todo").docs(),
+        ({ cause, message }) => new DatabaseError({ cause, message }),
+        "custom err message"
+      )
+      return example1
+    })
+    // exec program, throw crpc error if program fails
+    return await execEff(ctx, appRuntime, program)
+  })
+// similar with mutatations
+export const create = authMutation
+  .input(z.object({ text: z.string() }))
+  .mutation(async ({ ctx, input: { text } }) => {
+    const program = ctx.effMutate(async (c) =>
+      c.table("todo").insert({ text, completed: false, userId: ctx.user.id })
+    )
+    return await execEff(ctx, appRuntime, program)
+  })
+// or full repo pattern (little clunky)
 export const toggle = mutation({
   args: { id: v.id("todos") },
   handler: async ({ db }, { id }) => {
@@ -55,23 +92,14 @@ export const toggle = mutation({
   }
 })
 
-// or with a effectful promise wrapper
-// (also this is newer approach with better-convex and convex ents)
-export const list = authQuery.query(async ({ ctx }) => {
-  const program = effectifyPromise(
-    () => ctx.table("todo"),
-    ({ cause, message }) => new DatabaseError({ cause, message })
-  )
-  return await appRuntime.runPromise(program)
-})
 ```
 
 # Media
 
 > Its really minimalistic, just a handy starter point
 
-<img src="https://github.com/user-attachments/assets/b6e00cbc-a500-4284-a0ef-4a3c94c2b306" width="60%" height="60%" />
+<img width="1804" height="929" alt="image" src="https://github.com/user-attachments/assets/c256eac7-37b0-4310-8393-07c9026338ac" />
+<img width="1215" height="638" alt="image" src="https://github.com/user-attachments/assets/ff20038a-fcb0-4d8f-91fe-26a90f762837" />
+<img width="1391" height="675" alt="image" src="https://github.com/user-attachments/assets/d340ad33-80f5-419e-914c-085350ff9b79" />
 
-<img src="https://github.com/user-attachments/assets/1d42bafe-57cc-4b96-a312-46a1c93fca96" width="60%" height="60%" />
 
-<img src="https://github.com/user-attachments/assets/503e93ed-d02d-4921-a2f5-5c1bd965f034" width="60%" height="60%" />
