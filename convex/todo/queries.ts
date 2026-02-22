@@ -1,19 +1,17 @@
 import { Effect } from "effect"
-import { query } from "../_generated/server"
+import { authedQuery } from "../lib"
 import { appRuntime } from "../runtime"
-import { runEffOrThrow } from "../utils_effect"
-import { TodoApi } from "./api"
+import { DatabaseError, effectifyPromise, runEffOrThrow } from "../utils_effect"
 
-export const list = query({
-  handler: async ({ db }) => {
+export const list = authedQuery
+  .handler(async (ctx) => {
     const program = Effect.gen(function* () {
-      const todoApi = yield* TodoApi
-      return yield* todoApi.listTodos({ db })
-    }).pipe(
-      Effect.tapError((err) => Effect.logError(err)),
-      Effect.tap((a) => Effect.logInfo(a))
-    )
+      return yield* effectifyPromise(
+        () => ctx.db.query("todos").collect(),
+        (a) => new DatabaseError(a)
+      )
+    })
 
     return runEffOrThrow(appRuntime, program)
-  }
-})
+  })
+  .public()

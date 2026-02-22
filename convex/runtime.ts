@@ -1,6 +1,5 @@
 import { Layer, ManagedRuntime } from "effect"
-import { TodoApi } from "./todo/api"
 
-const appLayer = Layer.mergeAll(TodoApi.Default)
+const appLayer = Layer.mergeAll(Layer.empty)
 
 export const appRuntime = ManagedRuntime.make(appLayer)
