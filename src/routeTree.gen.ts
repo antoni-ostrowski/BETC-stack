@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/sign-in'
-import { Route as SuccessRouteRouteImport } from './routes/success/route'
 import { Route as AuthedRouteRouteRouteImport } from './routes/authed-route/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthedRouteTestRouteImport } from './routes/authed-route/test'
@@ -19,11 +18,6 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SuccessRouteRoute = SuccessRouteRouteImport.update({
-  id: '/success',
-  path: '/success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedRouteRouteRoute = AuthedRouteRouteRouteImport.update({
@@ -50,7 +44,6 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/authed-route': typeof AuthedRouteRouteRouteWithChildren
-  '/success': typeof SuccessRouteRoute
   '/sign-in': typeof SignInRoute
   '/authed-route/test': typeof AuthedRouteTestRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -58,7 +51,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/authed-route': typeof AuthedRouteRouteRouteWithChildren
-  '/success': typeof SuccessRouteRoute
   '/sign-in': typeof SignInRoute
   '/authed-route/test': typeof AuthedRouteTestRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -67,7 +59,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/authed-route': typeof AuthedRouteRouteRouteWithChildren
-  '/success': typeof SuccessRouteRoute
   '/sign-in': typeof SignInRoute
   '/authed-route/test': typeof AuthedRouteTestRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -77,23 +68,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/authed-route'
-    | '/success'
     | '/sign-in'
     | '/authed-route/test'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/authed-route'
-    | '/success'
-    | '/sign-in'
-    | '/authed-route/test'
-    | '/api/auth/$'
+  to: '/' | '/authed-route' | '/sign-in' | '/authed-route/test' | '/api/auth/$'
   id:
     | '__root__'
     | '/'
     | '/authed-route'
-    | '/success'
     | '/sign-in'
     | '/authed-route/test'
     | '/api/auth/$'
@@ -102,7 +85,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthedRouteRouteRoute: typeof AuthedRouteRouteRouteWithChildren
-  SuccessRouteRoute: typeof SuccessRouteRoute
   SignInRoute: typeof SignInRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -114,13 +96,6 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/success': {
-      id: '/success'
-      path: '/success'
-      fullPath: '/success'
-      preLoaderRoute: typeof SuccessRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/authed-route': {
@@ -168,7 +143,6 @@ const AuthedRouteRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthedRouteRouteRoute: AuthedRouteRouteRouteWithChildren,
-  SuccessRouteRoute: SuccessRouteRoute,
   SignInRoute: SignInRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

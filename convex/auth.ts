@@ -5,6 +5,7 @@ import {
 } from "@convex-dev/better-auth"
 import { convex } from "@convex-dev/better-auth/plugins"
 import { betterAuth, BetterAuthOptions } from "better-auth"
+import { organization } from "better-auth/plugins"
 import { components, internal } from "./_generated/api"
 import { DataModel } from "./_generated/dataModel"
 import authConfig from "./auth.config"
@@ -19,6 +20,7 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
+
     logger: {
       disabled: true,
       level: "error"
@@ -30,8 +32,10 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
       }
     },
     plugins: [
+      organization(),
       convex({
         authConfig,
+
         jwksRotateOnTokenGenerationError: true
       })
     ]

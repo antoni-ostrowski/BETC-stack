@@ -117,7 +117,70 @@ function RouteComponent() {
             )
           })}
         </div>
+        <Orgs />
       </div>
     </PageWrapper>
+  )
+}
+
+function Orgs() {
+  const { data: orgList } = useQuery(convexQuery(api.org.queries.list, {}))
+  console.log({ orgList })
+
+  const [orgName, setOrgName] = useState("")
+
+  const { mutate: createOrg } = useMutation({
+    meta: {
+      withToasts: true,
+      successMessage: "created org",
+      loadingMessage: "Loading..."
+    },
+    mutationFn: useConvexMutation(api.org.mutations.create)
+  })
+
+  const { mutate: markAsActive } = useMutation({
+    meta: {
+      withToasts: true,
+      loadingMessage: "Loading..."
+    },
+    mutationFn: useConvexMutation(api.org.mutations.markAsActive)
+  })
+
+  return (
+    <div className="mt-8 flex flex-col gap-4">
+      <h2 className="text-xl font-bold">Organizations</h2>
+      <div className="flex gap-2">
+        <Input
+          value={orgName}
+          onChange={(e) => setOrgName(e.target.value)}
+          placeholder="Organization name"
+        />
+        <Button
+          onClick={() => {
+            createOrg({ name: orgName })
+            setOrgName("")
+          }}
+        >
+          <PlusIcon />
+        </Button>
+      </div>
+      <div className="flex flex-col gap-2">
+        {orgList?.map((org) => (
+          <div
+            key={org.id}
+            className="flex items-center justify-between gap-2 rounded border p-2"
+          >
+            <span>{org.name}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => markAsActive({ orgId: org.id })}
+            >
+              Mark as Active
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
