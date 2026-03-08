@@ -8,6 +8,9 @@ import {
   runEffOrThrow,
   ServerError
 } from "../utils_effect"
+function generateSlug(name: string) {
+  return name.slice(0, name.length / 2)
+}
 
 export const create = authedMutation
   .input(
@@ -23,7 +26,7 @@ export const create = authedMutation
           auth.api.createOrganization({
             body: {
               name: args.name,
-              slug: "my-org",
+              slug: generateSlug(args.name),
               keepCurrentActiveOrganization: false
             },
             headers

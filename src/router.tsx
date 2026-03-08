@@ -49,6 +49,10 @@ export function getRouter() {
         }
       },
       onSuccess: (_data, _variables, _context, mutation) => {
+        if (!mutation.meta?.successMessage && mutation.meta?.withToasts) {
+          toast.dismiss(mutation.mutationId)
+          return
+        }
         if (mutation.meta?.successMessage && mutation.meta.withToasts) {
           toast.success(mutation.meta.successMessage, {
             id: mutation.mutationId

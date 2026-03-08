@@ -32,12 +32,11 @@ export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
       }
     },
     plugins: [
-      organization(),
       convex({
         authConfig,
-
         jwksRotateOnTokenGenerationError: true
-      })
+      }),
+      organization()
     ]
   } satisfies BetterAuthOptions
 }

@@ -1,6 +1,7 @@
 import SignOutBtn from "@/components/auth/sign-out-btn"
 import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
 import { NotFound } from "@/components/router/default-not-found"
+import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
 import { PHProvider } from "@/lib/providers/posthog/provider"
@@ -16,9 +17,11 @@ import { type QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useLocation,
   useRouteContext
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
@@ -100,6 +103,8 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = useGetTheme()
+  const { pathname } = useLocation()
+  const { data: activeOrg } = authClient.useActiveOrganization()
 
   return (
     <ThemeProvider theme={theme}>
@@ -110,10 +115,22 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <body>
           <Toaster />
           <div className="absolute top-4 left-4 flex flex-row gap-2">
-            <SignOutBtn />
-            <div>
-              <ThemeToggle />
-            </div>
+            {!pathname.includes("dashboard") && (
+              <>
+                <SignOutBtn />
+                <div>
+                  <ThemeToggle />
+                </div>
+                {activeOrg && (
+                  <Link
+                    to="/$slug/dashboard"
+                    params={{ slug: activeOrg?.slug }}
+                  >
+                    <Button>Dashboard</Button>
+                  </Link>
+                )}
+              </>
+            )}
           </div>
           {children}
           <TanStackDevtools
