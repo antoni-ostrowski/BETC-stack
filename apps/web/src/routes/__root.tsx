@@ -4,7 +4,6 @@ import { NotFound } from "@/components/router/default-not-found"
 import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
-import { PHProvider } from "@/lib/providers/posthog/provider"
 import {
   ThemeProvider,
   useGetTheme
@@ -85,19 +84,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   const context = useRouteContext({ from: Route.id })
   return (
-    <PHProvider>
-      <ConvexBetterAuthProvider
-        client={context.convexQueryClient.convexClient}
-        authClient={authClient}
-        initialToken={context.token}
-      >
-        <ConvexQueryCacheProvider>
-          <RootDocument>
-            <Outlet />
-          </RootDocument>
-        </ConvexQueryCacheProvider>
-      </ConvexBetterAuthProvider>
-    </PHProvider>
+    <ConvexBetterAuthProvider
+      client={context.convexQueryClient.convexClient}
+      authClient={authClient}
+      initialToken={context.token}
+    >
+      <ConvexQueryCacheProvider>
+        <RootDocument>
+          <Outlet />
+        </RootDocument>
+      </ConvexQueryCacheProvider>
+    </ConvexBetterAuthProvider>
   )
 }
 

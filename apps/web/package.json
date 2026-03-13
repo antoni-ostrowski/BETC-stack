@@ -1,11 +1,10 @@
 {
-  "name": "betc-stack-template",
+  "name": "@betc-stack/web",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3000",
-    "backend": "bunx convex dev",
-    "build": "bun run typecheck && bun run lint && vite build",
+    "dev": "bunx --bun vite --port 3000",
+    "build": "bun run check  && bunx --bun vite build --mode=production",
     "serve": "vite preview --port 3000",
     "lint": "oxlint --type-aware --fix",
     "format": "bunx prettier . --write",

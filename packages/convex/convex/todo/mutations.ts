@@ -1,40 +1,32 @@
-import { Effect } from "effect"
-import { z } from "zod"
-import { api } from "../_generated/api"
-import { Id } from "../_generated/dataModel"
-import { authedMutation } from "../lib"
-import { appRuntime } from "../runtime"
-import { DatabaseError, effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { Effect } from "effect";
+import { z } from "zod";
+import { Id } from "../_generated/dataModel";
+import { authedMutation } from "../lib";
+import { appRuntime } from "../runtime";
+import {
+  DatabaseError,
+  effectifyPromise,
+  runEffOrThrow,
+} from "../utils_effect";
 
 export const toggle = authedMutation
   .input(z.object({ id: z.string() }))
-  .handler(async ({ db, scheduler }, { id }) => {
+  .handler(async ({ db }, { id }) => {
     const program = Effect.gen(function* () {
       const todo = yield* effectifyPromise(
         () => db.get(id as Id<"todos">),
-        (a) => new DatabaseError(a)
-      )
-      if (!todo) throw new Error("Todo not found")
+        (a) => new DatabaseError(a),
+      );
+      if (!todo) throw new Error("Todo not found");
       yield* effectifyPromise(
         () => db.patch(todo._id, { completed: !todo.completed }),
-        (a) => new DatabaseError(a)
-      )
-    })
+        (a) => new DatabaseError(a),
+      );
+    });
 
-    scheduler.runAfter(0, api.analytics.captureEvent, {
-      entry: {
-        event: "some_event",
-        properties: {
-          plan: "free"
-        },
-        type: "capture"
-      },
-      distinctId: crypto.randomUUID()
-    })
-
-    await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program);
   })
-  .public()
+  .public();
 
 export const create = authedMutation
   .input(z.object({ text: z.string() }))
@@ -42,13 +34,13 @@ export const create = authedMutation
     const program = Effect.gen(function* () {
       yield* effectifyPromise(
         () => db.insert("todos", { text, completed: true, userId }),
-        (a) => new DatabaseError(a)
-      )
-    })
+        (a) => new DatabaseError(a),
+      );
+    });
 
-    await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program);
   })
-  .public()
+  .public();
 
 export const remove = authedMutation
   .input(z.object({ todoId: z.string() }))
@@ -56,10 +48,10 @@ export const remove = authedMutation
     const program = Effect.gen(function* () {
       yield* effectifyPromise(
         () => db.delete(todoId as Id<"todos">),
-        (a) => new DatabaseError(a)
-      )
-    })
+        (a) => new DatabaseError(a),
+      );
+    });
 
-    await runEffOrThrow(appRuntime, program)
+    await runEffOrThrow(appRuntime, program);
   })
-  .public()
+  .public();

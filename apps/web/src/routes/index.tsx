@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { usePostHog } from "@posthog/react"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
@@ -7,8 +5,6 @@ export const Route = createFileRoute("/")({
 })
 
 function App() {
-  const ph = usePostHog()
-
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
       <h1 className="text-4xl font-bold">welcome</h1>
@@ -25,23 +21,6 @@ function App() {
         Try toggling the todo state from convex dashboard and see how client
         reacts.
       </h2>
-
-      <Button
-        className={"mt-4"}
-        variant={"outline"}
-        onClick={() => {
-          try {
-            ph.capture("some-event", {
-              somepropert: "fjkdslfjsklf"
-            })
-            console.log("captured")
-          } catch (e) {
-            console.error(e)
-          }
-        }}
-      >
-        Send test client posthog event
-      </Button>
     </div>
   )
 }

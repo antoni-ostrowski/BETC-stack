@@ -18,7 +18,6 @@ bun run dev
 bunx convex dev
 ```
 
-
 > To make auth work, you need to have convex project, generate better-auth secret and generate schema ([docs](https://convex-better-auth.netlify.app/framework-guides/react#set-environment-variables))
 
 # Technologies
@@ -27,7 +26,7 @@ These technologies create in my opinion the best web stack for complex web apps.
 
 - [Tanstack (Start & Router & Query & ...)](https://tanstack.com/) (React framework & tools)
 - [Convex](https://www.convex.dev/) (Backend)
-- [Better-auth](https://www.better-auth.com/) (Auth) 
+- [Better-auth](https://www.better-auth.com/) (Auth)
 - [EffectTS](https://effect.website/) (Production-grade TypeScript)
 
 ## Tooling
@@ -59,6 +58,7 @@ These technologies create in my opinion the best web stack for complex web apps.
 - Prettier setup with plugins for organizing tailwind classess and imports
 
 > I'm still experimenting with the best way to make the effect code interact correctly with convex functions. For now, I created a utility to run an effect and wrap any failures in ConvexError and throw it. Then client can use parseConvexError util to read exact error message. This approach preserves the nature of js exceptions and doesn't break convex assumptions. This is how that looks like.
+
 ```typescript
 export const toggle = mutation({
   args: { id: v.id("todos") },
@@ -72,14 +72,7 @@ export const toggle = mutation({
     return await runEffOrThrow(appRuntime, program)
   }
 })
-
 ```
-
-# Todo
-
-- [x] Add payments integration (Polar.sh)
-- [ ] Migrate from prettier to oxfmt
-- [x] Add Posthog
 
 # Media
 
@@ -90,4 +83,3 @@ export const toggle = mutation({
 <img src="https://github.com/user-attachments/assets/1d42bafe-57cc-4b96-a312-46a1c93fca96" width="60%" height="60%" />
 
 <img src="https://github.com/user-attachments/assets/503e93ed-d02d-4921-a2f5-5c1bd965f034" width="60%" height="60%" />
-

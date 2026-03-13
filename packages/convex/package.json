@@ -24,11 +24,11 @@
   "dependencies": {
     "@convex-dev/better-auth": "^0.10.13",
     "better-auth": "1.4.9",
+    "@packages/convex": "workspace:*",
     "convex": "^1.32.0",
     "convex-helpers": "^0.1.114",
     "effect": "^3.19.19",
-    "fluent-convex": "^0.12.3",
-    "posthog-node": "^5.28.0"
+    "fluent-convex": "^0.12.3"
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
