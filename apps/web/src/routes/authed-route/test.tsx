@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input"
 import { useSession } from "@/lib/auth-client"
 import { parseConvexError } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
+import { api } from "@packages/convex"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { PlusIcon, XIcon } from "lucide-react"
 import { useState } from "react"
-import { api } from "../../../convex/_generated/api"
 
 export const Route = createFileRoute("/authed-route/test")({
   beforeLoad: async (ctx) => {
