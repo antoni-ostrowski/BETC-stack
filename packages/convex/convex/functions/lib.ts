@@ -1,4 +1,4 @@
-import { getAuthUserIdentity } from "better-convex/auth"
+import { getAuthUserIdentity, getHeaders } from "better-convex/auth"
 import { typedV } from "convex-helpers/validators"
 import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
@@ -6,7 +6,10 @@ import { createBuilder } from "fluent-convex"
 import { WithZod } from "fluent-convex/zod"
 
 import { DataModel } from "./_generated/dataModel"
+import { ServerError } from "./errors"
+import { getAuth } from "./generated/auth"
 import schema from "./schema"
+import { effectifyFunc, effectifyPromise } from "./utils_effect"
 
 export const vv = typedV(schema)
 const convex = createBuilder<DataModel>()
@@ -38,3 +41,12 @@ export const actionAuthMiddleware = convex.action().createMiddleware(async (ctx,
 })
 
 export const authedAction = convex.action().extend(WithZod).use(actionAuthMiddleware)
+
+export function getUserAuth(ctx: GenericQueryCtx<DataModel>) {
+  return effectifyPromise(
+    async () => {
+      return { auth: getAuth(ctx), headers: await getHeaders(ctx) }
+    },
+    () => new ServerError()
+  )
+}

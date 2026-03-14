@@ -3,12 +3,13 @@ import { isAuthError } from "@/lib/utils"
 import { convexClient } from "@convex-dev/better-auth/client/plugins"
 import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start"
 import { createServerFn } from "@tanstack/react-start"
+import { organizationClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 import { createAuthMutations } from "better-convex/react"
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_SITE_URL!,
-  plugins: [convexClient()]
+  plugins: [convexClient(), organizationClient()]
 })
 
 // Export mutation hooks for TanStack Query

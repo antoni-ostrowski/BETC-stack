@@ -1,9 +1,12 @@
+import { getHeaders } from "better-convex/auth"
 import { Effect } from "effect"
 import { z } from "zod/v4"
 
-import { authedMutation } from "../lib"
+import { DatabaseError, ServerError } from "../errors"
+import { getAuth } from "../generated/auth"
+import { authedMutation, authUtils, getAuthData, getUserAuth } from "../lib"
 import { appRuntime } from "../runtime"
-import { DatabaseError, effectifyPromise, runEffOrThrow, ServerError } from "../utils_effect"
+import { effectifyFunc, effectifyPromise, runEffOrThrow } from "../utils_effect"
 
 function generateSlug(name: string) {
   return name.slice(0, name.length / 2)
@@ -17,7 +20,7 @@ export const create = authedMutation
   )
   .handler(async (ctx, args) => {
     const program = Effect.gen(function* () {
-      const { auth, headers } = yield* ctx.getAuth
+      const { auth, headers } = yield* getUserAuth(ctx)
       const org = yield* effectifyPromise(
         async () =>
           auth.api.createOrganization({
@@ -51,7 +54,7 @@ export const markOrgAsActive = authedMutation
   .input(z.object({ orgId: z.string() }))
   .handler(async (ctx, args) => {
     const program = Effect.gen(function* () {
-      const { auth, headers } = yield* ctx.getAuth
+      const { auth, headers } = yield* getUserAuth(ctx)
       const org = yield* effectifyPromise(
         async () =>
           auth.api.setActiveOrganization({

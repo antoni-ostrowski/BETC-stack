@@ -2,21 +2,23 @@ import { Effect } from "effect"
 import { z } from "zod"
 
 import { Id } from "../_generated/dataModel"
+import { DatabaseError } from "../errors"
+import { getAuth } from "../generated/auth"
 import { authedMutation } from "../lib"
 import { appRuntime } from "../runtime"
-import { DatabaseError, effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { effectifyPromise, runEffOrThrow } from "../utils_effect"
 
 export const toggle = authedMutation
   .input(z.object({ id: z.string() }))
-  .handler(async ({ db }, { id }) => {
+  .handler(async (ctx, { id }) => {
     const program = Effect.gen(function* () {
       const todo = yield* effectifyPromise(
-        () => db.get(id as Id<"todos">),
+        () => ctx.db.get(id as Id<"todos">),
         (a) => new DatabaseError(a)
       )
       if (!todo) throw new Error("Todo not found")
       yield* effectifyPromise(
-        () => db.patch(todo._id, { completed: !todo.completed }),
+        () => ctx.db.patch(todo._id, { completed: !todo.completed }),
         (a) => new DatabaseError(a)
       )
     })

@@ -8,33 +8,31 @@ import {
   createAuthRuntime,
   type GenericAuthDefinition,
   getGeneratedAuthDisabledReason,
-  resolveGeneratedAuthDefinition,
-} from 'better-convex/auth';
-import { internal } from '../_generated/api.js';
-import type { DataModel } from '../_generated/dataModel';
-import type { GenericCtx, MutationCtx } from './server';
+  resolveGeneratedAuthDefinition
+} from "better-convex/auth"
 
-import schema from '../schema';
-import * as authDefinitionModule from '../auth';
+import { internal } from "../_generated/api.js"
+import type { DataModel } from "../_generated/dataModel"
+import * as authDefinitionModule from "../auth"
+import schema from "../schema"
+import type { GenericCtx, MutationCtx } from "./server"
 
 export function defineAuth<
-  AuthOptions extends BetterAuthOptionsWithoutDatabase = BetterAuthOptionsWithoutDatabase,
->(
-  definition: GenericAuthDefinition<GenericCtx, DataModel, typeof schema, AuthOptions>
-) {
-  return baseDefineAuth(definition);
+  AuthOptions extends BetterAuthOptionsWithoutDatabase = BetterAuthOptionsWithoutDatabase
+>(definition: GenericAuthDefinition<GenericCtx, DataModel, typeof schema, AuthOptions>) {
+  return baseDefineAuth(definition)
 }
 
 type AuthDefinitionFromFile = Extract<
   typeof authDefinitionModule extends { default: infer T } ? T : never,
   (...args: unknown[]) => unknown
->;
+>
 
 const authDefinition = ((ctx: GenericCtx) =>
   resolveGeneratedAuthDefinition<AuthDefinitionFromFile>(
     authDefinitionModule,
     getGeneratedAuthDisabledReason("default_export_unavailable")
-  )(ctx)) as AuthDefinitionFromFile;
+  )(ctx)) as AuthDefinitionFromFile
 
 const authRuntime = createAuthRuntime<
   DataModel,
@@ -46,8 +44,8 @@ const authRuntime = createAuthRuntime<
   internal,
   moduleName: "generated/auth",
   schema,
-  auth: authDefinition,
-});
+  auth: authDefinition
+})
 
 export const {
   authEnabled,
@@ -62,5 +60,5 @@ export const {
   updateMany,
   updateOne,
   getLatestJwks,
-  rotateKeys,
-} = authRuntime;
+  rotateKeys
+} = authRuntime

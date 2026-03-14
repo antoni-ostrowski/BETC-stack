@@ -1,5 +1,7 @@
+import { organization } from "better-auth/plugins"
 import { convex } from "better-convex/auth"
 
+import { api } from "./_generated/api"
 import authConfig from "./auth.config"
 import { defineAuth } from "./generated/auth"
 
@@ -10,6 +12,9 @@ export default defineAuth((_ctx) => ({
     convex({
       authConfig,
       jwks: process.env.JWKS
+    }),
+    organization({
+      allowUserToCreateOrganization: true
     })
   ],
   session: {

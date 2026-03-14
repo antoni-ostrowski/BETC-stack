@@ -1,25 +1,9 @@
-import { GenericCtx } from "@convex-dev/better-auth"
 import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
-import { Data, Effect, ManagedRuntime, pipe, Result } from "effect"
+import { Effect, ManagedRuntime, pipe, Result } from "effect"
 
 import { DataModel, Id } from "./_generated/dataModel"
-import { appRuntime } from "./runtime"
-
-export const getUserEff = Effect.fn(function* (fn: () => Promise<any>) {
-  return yield* Effect.tryPromise({
-    try: async () => fn(),
-    catch: (cause) => new NotAuthenticated({ cause })
-  })
-})
-
-export const getAuthEff = Effect.fn(function* (fn: () => Promise<any>) {
-  return yield* Effect.tryPromise({
-    try: async () => fn(),
-    catch: (cause) => new ServerError({ cause, message: "failed to get auth obj" })
-  })
-})
-
+import { ServerError } from "./errors"
 /**
  * Creates an Effect from a Promise, handling errors and logging.
  *
@@ -42,6 +26,20 @@ export function effectifyPromise<A, E, R = never>(
       catch: (cause) => errorFactory({ cause, message: errorMessage })
     }),
     Effect.tapError((error) => Effect.logError("Effectified Promise Error:", errorMessage, error))
+  )
+}
+
+export function effectifyFunc<A, E, R = never>(
+  funcFactory: () => A,
+  errorFactory: (obj: { cause: unknown; message: string }) => E,
+  errorMessage: string = "Function failed"
+): Effect.Effect<A, E, R> {
+  return pipe(
+    Effect.try({
+      try: funcFactory,
+      catch: (cause) => errorFactory({ cause, message: errorMessage })
+    }),
+    Effect.tapError((error) => Effect.logError("Effectified Function Error:", errorMessage, error))
   )
 }
 
@@ -69,54 +67,6 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
   }
 
   return result.success
-}
-
-export class ServerError extends Data.TaggedError("ServerError")<{
-  message?: string
-  cause?: unknown
-}> {
-  constructor(args?: { message?: string; cause?: unknown }) {
-    super({
-      message: args?.message ?? "Server error",
-      cause: args?.cause
-    })
-  }
-}
-
-export class DatabaseError extends Data.TaggedError("DatabaseError")<{
-  message?: string
-  cause?: unknown
-}> {
-  constructor(args?: { message?: string; cause?: unknown }) {
-    super({
-      message: args?.message ?? "Database error",
-      cause: args?.cause
-    })
-  }
-}
-
-export class NotFound extends Data.TaggedError("NotFound")<{
-  message?: string
-  cause?: unknown
-}> {
-  constructor(args?: { message?: string; cause?: unknown }) {
-    super({
-      message: args?.message ?? "Entity not found",
-      cause: args?.cause
-    })
-  }
-}
-
-export class NotAuthenticated extends Data.TaggedError("NotAuthenticated")<{
-  message?: string
-  cause?: unknown
-}> {
-  constructor(args?: { message?: string; cause?: unknown }) {
-    super({
-      message: args?.message ?? "not authenticated",
-      cause: args?.cause
-    })
-  }
 }
 
 export const getUserById = Effect.fn(function* (
