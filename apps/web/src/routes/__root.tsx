@@ -1,19 +1,16 @@
-import SignOutBtn from "@/components/auth/sign-out-btn";
-import { DefaultCatchBoundary } from "@/components/router/default-error-boundary";
-import { NotFound } from "@/components/router/default-not-found";
-import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/sonner";
-import { authClient, getAuth } from "@/lib/auth-client";
-import {
-  ThemeProvider,
-  useGetTheme,
-} from "@/lib/providers/theme/theme-provider";
-import ThemeToggle from "@/lib/providers/theme/theme-toggle";
-import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react";
-import { ConvexQueryClient } from "@convex-dev/react-query";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-import { type QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import SignOutBtn from "@/components/auth/sign-out-btn"
+import { DefaultCatchBoundary } from "@/components/router/default-error-boundary"
+import { NotFound } from "@/components/router/default-not-found"
+import { Button } from "@/components/ui/button"
+import { Toaster } from "@/components/ui/sonner"
+import { authClient, getAuth } from "@/lib/auth-client"
+import { ThemeProvider, useGetTheme } from "@/lib/providers/theme/theme-provider"
+import ThemeToggle from "@/lib/providers/theme/theme-toggle"
+import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
+import { ConvexQueryClient } from "@convex-dev/react-query"
+import { TanStackDevtools } from "@tanstack/react-devtools"
+import { type QueryClient } from "@tanstack/react-query"
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
   Link,
@@ -21,69 +18,69 @@ import {
   Scripts,
   createRootRouteWithContext,
   useLocation,
-  useRouteContext,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { ConvexQueryCacheProvider } from "convex-helpers/react/cache";
+  useRouteContext
+} from "@tanstack/react-router"
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 
-import appCss from "../styles.css?url";
+import appCss from "../styles.css?url"
 
 export interface MyRouterContext {
-  queryClient: QueryClient;
-  convexQueryClient: ConvexQueryClient;
+  queryClient: QueryClient
+  convexQueryClient: ConvexQueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   head: () => ({
     meta: [
       {
-        charSet: "utf-8",
+        charSet: "utf-8"
       },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1",
+        content: "width=device-width, initial-scale=1"
       },
       {
-        title: "TanStack Start Starter",
-      },
+        title: "TanStack Start Starter"
+      }
     ],
     links: [
       {
         rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+        href: appCss
+      }
+    ]
   }),
   errorComponent: (props) => {
     return (
       <RootDocument>
         <DefaultCatchBoundary {...props} />
       </RootDocument>
-    );
+    )
   },
   notFoundComponent: () => <NotFound />,
   // this will run on every page navigation,
   // but JWT caching from convex ensures the navigation
   // still feels snappy while keeping the app safe
   beforeLoad: async (ctx) => {
-    const token = await getAuth();
+    const token = await getAuth()
     // all queries, mutations and actions through TanStack Query will be
     // authenticated during SSR if we have a valid token
     if (token) {
       // During SSR only (the only time serverHttpClient exists),
       // set the auth token to make HTTP queries with.
-      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token);
+      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
     }
     return {
       isAuthenticated: !!token,
-      token,
-    };
+      token
+    }
   },
-  component: RootComponent,
-});
+  component: RootComponent
+})
 
 function RootComponent() {
-  const context = useRouteContext({ from: Route.id });
+  const context = useRouteContext({ from: Route.id })
   return (
     <ConvexBetterAuthProvider
       client={context.convexQueryClient.convexClient}
@@ -96,13 +93,13 @@ function RootComponent() {
         </RootDocument>
       </ConvexQueryCacheProvider>
     </ConvexBetterAuthProvider>
-  );
+  )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const theme = useGetTheme();
-  const { pathname } = useLocation();
-  const { data: activeOrg } = authClient.useActiveOrganization();
+  const theme = useGetTheme()
+  const { pathname } = useLocation()
+  const { data: activeOrg } = authClient.useActiveOrganization()
 
   return (
     <ThemeProvider theme={theme}>
@@ -120,10 +117,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                   <ThemeToggle />
                 </div>
                 {activeOrg && (
-                  <Link
-                    to="/$slug/dashboard"
-                    params={{ slug: activeOrg?.slug }}
-                  >
+                  <Link to="/$slug/dashboard" params={{ slug: activeOrg?.slug }}>
                     <Button>Dashboard</Button>
                   </Link>
                 )}
@@ -133,22 +127,22 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           {children}
           <TanStackDevtools
             config={{
-              position: "bottom-right",
+              position: "bottom-right"
             }}
             plugins={[
               {
                 name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
+                render: <TanStackRouterDevtoolsPanel />
               },
               {
                 name: "Tanstack Query",
-                render: <ReactQueryDevtoolsPanel />,
-              },
+                render: <ReactQueryDevtoolsPanel />
+              }
             ]}
           />
           <Scripts />
         </body>
       </html>
     </ThemeProvider>
-  );
+  )
 }

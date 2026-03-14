@@ -1,4 +1,4 @@
-import { defineConfig } from "vite-plus";
+import { defineConfig } from "vite-plus"
 
 export default defineConfig({
   lint: {
@@ -6,15 +6,15 @@ export default defineConfig({
       "**/node_modules/**",
       "**/.convex/_generated/**",
       "**/.convex/betterAuth/_generated/**",
-      "**/bun.lock",
+      "**/bun.lock"
     ],
     plugins: ["react", "typescript", "unicorn"],
     options: {
       typeAware: true,
-      typeCheck: true,
+      typeCheck: true
     },
     env: {
-      builtin: true,
+      builtin: true
     },
     rules: {
       "react-hooks/exhaustive-deps": "warn",
@@ -26,7 +26,7 @@ export default defineConfig({
       "@typescript-eslint/require-await": "warn",
       "@typescript-eslint/restrict-template-expressions": "warn",
       "require-yield": "off",
-      "@typescript-eslint/unbound-method": "off",
+      "@typescript-eslint/unbound-method": "off"
     },
     overrides: [
       {
@@ -44,10 +44,10 @@ export default defineConfig({
           "no-setter-return": "off",
           "no-this-before-super": "off",
           "no-unsafe-negation": "off",
-          "no-with": "off",
-        },
-      },
-    ],
+          "no-with": "off"
+        }
+      }
+    ]
   },
   fmt: {
     singleQuote: false,
@@ -58,7 +58,7 @@ export default defineConfig({
       "**/.convex/_generated/**",
       "**/.convex/betterAuth/_generated/**",
       "**/routeTree.gen.ts",
-      "**/bun.lock",
+      "**/bun.lock"
     ],
     sortImports: {
       groups: [
@@ -67,17 +67,17 @@ export default defineConfig({
         ["internal", "subpath"],
         ["parent", "sibling", "index"],
         "style",
-        "unknown",
+        "unknown"
       ],
       newlinesBetween: true,
       order: "asc",
-      internalPattern: ["^~/", "^@/"],
+      internalPattern: ["^~/", "^@/"]
     },
     sortTailwindcss: {
-      functions: ["clsx", "cn", "cva", "tw"],
+      functions: ["clsx", "cn", "cva", "tw"]
     },
     sortPackageJson: {
-      sortScripts: false,
-    },
-  },
-});
+      sortScripts: false
+    }
+  }
+})

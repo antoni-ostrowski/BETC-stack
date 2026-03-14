@@ -1,20 +1,20 @@
 {
   "name": "betc-stack",
-  "module": "index.ts",
-  "type": "module",
   "private": true,
-  "scripts": {
-    "dev:web": "cd ./apps/web && bun run dev",
-    "dev:convex": "cd ./packages/convex && bun run dev"
-  },
   "workspaces": [
     "packages/**",
     "apps/**"
   ],
-  "catalog": {
-    "vite-plus": "^0.1.11"
+  "type": "module",
+  "module": "index.ts",
+  "scripts": {
+    "dev:web": "cd ./apps/web && bun run dev",
+    "dev:convex": "cd ./packages/convex && bun run dev"
   },
   "devDependencies": {
     "vite-plus": "catalog:"
+  },
+  "catalog": {
+    "vite-plus": "^0.1.11"
   }
 }
