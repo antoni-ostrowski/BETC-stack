@@ -1,5 +1,5 @@
 import { ConvexError } from "convex/values"
-import { Data, Effect, Either, ManagedRuntime, pipe } from "effect"
+import { Data, Effect, ManagedRuntime, pipe, Result } from "effect"
 
 import { AuthType } from "./auth"
 import { MyUser } from "./betterAuth/schema"
@@ -53,10 +53,10 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
   runtime: ManagedRuntime.ManagedRuntime<R, E_Runtime>,
   eff: Effect.Effect<A, E, R>
 ): Promise<A> {
-  const result = await runtime.runPromise(Effect.either(eff))
+  const result = await runtime.runPromise(Effect.result(eff))
 
-  if (Either.isLeft(result)) {
-    const error = result.left
+  if (Result.isFailure(result)) {
+    const error = result.failure
     const errorMessage =
       (error as Error).message ||
       (typeof error === "string" ? error : "An unexpected error occurred")
@@ -66,7 +66,7 @@ export async function runEffOrThrow<A, E, R, E_Runtime>(
     throw new ConvexError(errorMessage)
   }
 
-  return result.right
+  return result.success
 }
 
 export class ServerError extends Data.TaggedError("ServerError")<{

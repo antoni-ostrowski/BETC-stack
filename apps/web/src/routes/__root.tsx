@@ -22,6 +22,7 @@ import {
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
+import { Result } from "effect"
 
 import appCss from "../styles.css?url"
 

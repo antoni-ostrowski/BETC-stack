@@ -1,18 +1,46 @@
+import tailwindcss from "@tailwindcss/vite"
+import { devtools } from "@tanstack/devtools-vite"
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import viteReact from "@vitejs/plugin-react"
+import { nitro } from "nitro/vite"
 import { defineConfig } from "vite-plus"
 
+const baseIgnorePatters = [
+  "**/node_modules/**",
+  "**/.convex/_generated/**",
+  "**/.convex/betterAuth/_generated/**",
+  "**/routeTree.gen.ts",
+  "**/bun.lock"
+]
+
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true
+  },
+  plugins: [
+    tailwindcss(),
+    tanstackStart(),
+    nitro({ preset: "bun" }),
+    devtools({ consolePiping: { enabled: true }, enhancedLogs: { enabled: true } }),
+    viteReact({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"]
+      }
+    })
+  ],
+
   lint: {
-    ignorePatterns: [
-      "**/node_modules/**",
-      "**/.convex/_generated/**",
-      "**/.convex/betterAuth/_generated/**",
-      "**/bun.lock"
+    ignorePatterns: [...baseIgnorePatters],
+    plugins: [
+      "react",
+      "typescript",
+      "unicorn",
+      "import",
+      "node",
+      "promise",
+      "react-perf",
+      "jsx-a11y"
     ],
-    plugins: ["react", "typescript", "unicorn"],
-    options: {
-      typeAware: true,
-      typeCheck: true
-    },
     env: {
       builtin: true
     },
@@ -27,39 +55,13 @@ export default defineConfig({
       "@typescript-eslint/restrict-template-expressions": "warn",
       "require-yield": "off",
       "@typescript-eslint/unbound-method": "off"
-    },
-    overrides: [
-      {
-        files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
-        rules: {
-          "no-class-assign": "off",
-          "no-const-assign": "off",
-          "no-dupe-class-members": "off",
-          "no-dupe-keys": "off",
-          "no-func-assign": "off",
-          "no-import-assign": "off",
-          "no-new-native-nonconstructor": "off",
-          "no-obj-calls": "off",
-          "no-redeclare": "off",
-          "no-setter-return": "off",
-          "no-this-before-super": "off",
-          "no-unsafe-negation": "off",
-          "no-with": "off"
-        }
-      }
-    ]
+    }
   },
   fmt: {
     singleQuote: false,
     semi: false,
     trailingComma: "none",
-    ignorePatterns: [
-      "**/node_modules/**",
-      "**/.convex/_generated/**",
-      "**/.convex/betterAuth/_generated/**",
-      "**/routeTree.gen.ts",
-      "**/bun.lock"
-    ],
+    ignorePatterns: [...baseIgnorePatters],
     sortImports: {
       groups: [
         "builtin",

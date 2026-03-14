@@ -31,8 +31,9 @@
     "better-auth": "1.4.9",
     "convex": "^1.32.0",
     "convex-helpers": "^0.1.114",
-    "effect": "^3.19.19",
-    "fluent-convex": "^0.12.3"
+    "effect": "^4.0.0-beta.31",
+    "fluent-convex": "^0.12.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
