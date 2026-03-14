@@ -11,8 +11,8 @@
       "types": "./index.ts"
     },
     "./api": {
-      "import": "./convex/_generated/api.js",
-      "types": "./convex/_generated/api.d.ts"
+      "import": "./convex/functions/_generated/api.js",
+      "types": "./convex/functions/_generated/api.d.ts"
     }
   },
   "scripts": {
@@ -23,12 +23,13 @@
     "format": "vp fmt",
     "format:check": "vp fmt --check",
     "check": "vp check",
-    "typecheck": "tsc --noEmit -p convex",
-    "auth:gen": "cd convex/betterAuth && bunx @better-auth/cli generate -y --output generatedSchema.ts"
+    "typecheck": "tsc --noEmit -p convex/tsconfig.check.json",
+    "auth:gen": "bunx @better-auth/cli generate -y --output convex/functions/authSchema.ts --config convex/functions/generated/auth.ts"
   },
   "dependencies": {
     "@convex-dev/better-auth": "^0.10.13",
     "better-auth": "1.4.9",
+    "better-convex": "^0.10.3",
     "convex": "^1.32.0",
     "convex-helpers": "^0.1.114",
     "effect": "^4.0.0-beta.31",
@@ -36,7 +37,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5",
+    "@types/node": "^25.5.0",
     "typescript": "^5.9.3",
     "vite-plus": "catalog:"
   }

@@ -18,11 +18,11 @@ import {
   Scripts,
   createRootRouteWithContext,
   useLocation,
-  useRouteContext
+  useRouteContext,
+  useRouter
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
-import { Result } from "effect"
 
 import appCss from "../styles.css?url"
 
@@ -79,28 +79,36 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   component: RootComponent
 })
+import { ConvexAuthProvider } from "better-convex/auth/client"
 
 function RootComponent() {
   const context = useRouteContext({ from: Route.id })
+  const router = useRouter()
+
   return (
-    <ConvexBetterAuthProvider
-      client={context.convexQueryClient.convexClient}
+    <ConvexAuthProvider
       authClient={authClient}
+      client={context.convexQueryClient.convexClient}
       initialToken={context.token}
+      onMutationUnauthorized={() => {
+        router.navigate({ to: "/sign-in" })
+      }}
+      onQueryUnauthorized={() => {
+        router.navigate({ to: "/sign-in" })
+      }}
     >
       <ConvexQueryCacheProvider>
         <RootDocument>
           <Outlet />
         </RootDocument>
       </ConvexQueryCacheProvider>
-    </ConvexBetterAuthProvider>
+    </ConvexAuthProvider>
   )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = useGetTheme()
   const { pathname } = useLocation()
-  const { data: activeOrg } = authClient.useActiveOrganization()
 
   return (
     <ThemeProvider theme={theme}>
@@ -117,11 +125,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                 <div>
                   <ThemeToggle />
                 </div>
-                {activeOrg && (
-                  <Link to="/$slug/dashboard" params={{ slug: activeOrg?.slug }}>
-                    <Button>Dashboard</Button>
-                  </Link>
-                )}
               </>
             )}
           </div>

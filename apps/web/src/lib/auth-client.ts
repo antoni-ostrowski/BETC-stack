@@ -3,13 +3,21 @@ import { isAuthError } from "@/lib/utils"
 import { convexClient } from "@convex-dev/better-auth/client/plugins"
 import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start"
 import { createServerFn } from "@tanstack/react-start"
-import { organizationClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
+import { createAuthMutations } from "better-convex/react"
 
 export const authClient = createAuthClient({
-  baseURL: env.VITE_SITE_URL,
-  plugins: [convexClient(), organizationClient()]
+  baseURL: process.env.NEXT_PUBLIC_SITE_URL!,
+  plugins: [convexClient()]
 })
+
+// Export mutation hooks for TanStack Query
+export const {
+  useSignOutMutationOptions,
+  useSignInSocialMutationOptions,
+  useSignInMutationOptions,
+  useSignUpMutationOptions
+} = createAuthMutations(authClient)
 
 // those are necessary utils to fetch convex functions from tanstack server code
 export const { handler, getToken, fetchAuthQuery, fetchAuthMutation, fetchAuthAction } =
@@ -21,7 +29,6 @@ export const { handler, getToken, fetchAuthQuery, fetchAuthMutation, fetchAuthAc
       isAuthError
     }
   })
-
 /**
  * Gets current user auth session and the query state.
  * (Returns the data pretty much instantly)

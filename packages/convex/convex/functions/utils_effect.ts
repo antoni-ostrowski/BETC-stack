@@ -1,17 +1,14 @@
 import { ConvexError } from "convex/values"
 import { Data, Effect, ManagedRuntime, pipe, Result } from "effect"
 
-import { AuthType } from "./auth"
-import { MyUser } from "./betterAuth/schema"
-
-export const getUserEff = Effect.fn(function* (fn: () => Promise<MyUser>) {
+export const getUserEff = Effect.fn(function* (fn: () => Promise<any>) {
   return yield* Effect.tryPromise({
     try: async () => fn(),
     catch: (cause) => new NotAuthenticated({ cause })
   })
 })
 
-export const getAuthEff = Effect.fn(function* (fn: () => Promise<AuthType>) {
+export const getAuthEff = Effect.fn(function* (fn: () => Promise<any>) {
   return yield* Effect.tryPromise({
     try: async () => fn(),
     catch: (cause) => new ServerError({ cause, message: "failed to get auth obj" })
