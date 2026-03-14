@@ -25,16 +25,21 @@ export const Route = createFileRoute("/authed-route/test")({
 })
 
 function RouteComponent() {
-  // this is the way to get current user SSR safe way (pending component gets triggered, and user always sees the authed state)
+  // this is the way to get current user SSR safe way.
+  // (pending component gets triggered, and user always sees the authed state)
+  // use suspensy query in most situations
   const { data: user } = useSuspenseQuery(convexQuery(api.user.queries.getMe, {}))
 
   const [input, setInput] = useState("")
 
+  // wrap convex mutations in tanstack hook.
   const { mutate: createNewTodo } = useMutation({
     meta: {
+      // we can attach toast behaviour like this
       withToasts: true,
       loadingMessage: "Creating todo",
-      successMessage: "Created todo"
+      successMessage: "Created todo",
+      errorMessage: "failed!"
     },
     mutationFn: useConvexMutation(api.todo.mutations.create)
   })
@@ -47,7 +52,11 @@ function RouteComponent() {
     },
     mutationFn: useConvexMutation(api.todo.mutations.remove)
   })
-  const { data, error } = useQuery(convexQuery(api.todo.queries.list, {}))
+
+  // this doesnt trigger pending component. on server will return undefined,
+  // and will finish fething data on client. use suspenseQuery when possible
+  const { data, error, isPending } = useQuery(convexQuery(api.todo.queries.list, {}))
+
   const { mutate } = useMutation({
     meta: {
       withToasts: true,
@@ -90,6 +99,11 @@ function RouteComponent() {
             <PlusIcon />
           </Button>
 
+          {isPending && (
+            <div className="flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
           {error && <p className="text-destructive">{parseConvexError(error)}</p>}
           {data?.map((a) => {
             return (
