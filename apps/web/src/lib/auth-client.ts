@@ -29,18 +29,6 @@ export const { handler, getToken, fetchAuthQuery, fetchAuthMutation, fetchAuthAc
       isAuthError
     }
   })
-/**
- * Gets current user auth session and the query state.
- * (Returns the data pretty much instantly)
- */
-export function useSession() {
-  const session = authClient.useSession()
-  return {
-    session: session.data?.session,
-    user: session.data?.user,
-    query: session
-  }
-}
 
 /**
  * This is server function to fetch the data from convex using current cookies. It's a default func from convex + better auth docs.

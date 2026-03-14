@@ -1,11 +1,11 @@
 import PageWrapper from "@/components/page-wrapper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useSession } from "@/lib/auth-client"
+import { Spinner } from "@/components/ui/spinner"
 import { parseConvexError } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { api } from "@packages/convex"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { PlusIcon, XIcon } from "lucide-react"
 import { useState } from "react"
@@ -16,12 +16,17 @@ export const Route = createFileRoute("/authed-route/test")({
       throw redirect({ to: "/sign-in" })
     }
   },
-  component: RouteComponent
+  component: RouteComponent,
+  pendingComponent: () => (
+    <PageWrapper className={"h-screen w-screen"}>
+      <Spinner />
+    </PageWrapper>
+  )
 })
 
 function RouteComponent() {
-  const { user } = useSession()
-  console.log({ user })
+  // this is the way to get current user SSR safe way (pending component gets triggered, and user always sees the authed state)
+  const { data: user } = useSuspenseQuery(convexQuery(api.user.queries.getMe, {}))
 
   const [input, setInput] = useState("")
 
