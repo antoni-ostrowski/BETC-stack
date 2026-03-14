@@ -1,13 +1,10 @@
 import { Effect } from "effect"
 import { z } from "zod/v4"
+
 import { authedMutation } from "../lib"
 import { appRuntime } from "../runtime"
-import {
-  DatabaseError,
-  effectifyPromise,
-  runEffOrThrow,
-  ServerError
-} from "../utils_effect"
+import { DatabaseError, effectifyPromise, runEffOrThrow, ServerError } from "../utils_effect"
+
 function generateSlug(name: string) {
   return name.slice(0, name.length / 2)
 }

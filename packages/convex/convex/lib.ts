@@ -4,6 +4,7 @@ import { useQueries } from "convex-helpers/react/cache"
 import { typedV } from "convex-helpers/validators"
 import { createBuilder } from "fluent-convex"
 import { WithZod } from "fluent-convex/zod"
+
 import { DataModel } from "./_generated/dataModel"
 import { authComponent, createAuth } from "./auth"
 import { MyUserId } from "./betterAuth/schema"
@@ -36,10 +37,7 @@ export const authMiddleware = convex
 
 export const authedQuery = convex.query().extend(WithZod).use(authMiddleware)
 
-export const authedMutation = convex
-  .mutation()
-  .extend(WithZod)
-  .use(authMiddleware)
+export const authedMutation = convex.mutation().extend(WithZod).use(authMiddleware)
 
 export const authedAction = convex.action().extend(WithZod).use(authMiddleware)
 

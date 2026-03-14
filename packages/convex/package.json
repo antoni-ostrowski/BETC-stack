@@ -18,13 +18,17 @@
   "scripts": {
     "dev": "convex dev",
     "setup": "convex dev --until-success",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "format": "vp fmt",
+    "format:check": "vp fmt --check",
+    "check": "vp check",
     "typecheck": "tsc --noEmit -p convex",
     "auth:gen": "cd convex/betterAuth && bunx @better-auth/cli generate -y --output generatedSchema.ts"
   },
   "dependencies": {
     "@convex-dev/better-auth": "^0.10.13",
     "better-auth": "1.4.9",
-    "@packages/convex": "workspace:*",
     "convex": "^1.32.0",
     "convex-helpers": "^0.1.114",
     "effect": "^3.19.19",
@@ -32,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.3.5",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite-plus": "catalog:"
   }
 }

@@ -10,5 +10,11 @@
   "workspaces": [
     "packages/**",
     "apps/**"
-  ]
+  ],
+  "catalog": {
+    "vite-plus": "^0.1.11"
+  },
+  "devDependencies": {
+    "vite-plus": "catalog:"
+  }
 }
