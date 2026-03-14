@@ -1,5 +1,10 @@
+import { GenericCtx } from "@convex-dev/better-auth"
+import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
 import { Data, Effect, ManagedRuntime, pipe, Result } from "effect"
+
+import { DataModel, Id } from "./_generated/dataModel"
+import { appRuntime } from "./runtime"
 
 export const getUserEff = Effect.fn(function* (fn: () => Promise<any>) {
   return yield* Effect.tryPromise({
@@ -113,3 +118,13 @@ export class NotAuthenticated extends Data.TaggedError("NotAuthenticated")<{
     })
   }
 }
+
+export const getUserById = Effect.fn(function* (
+  ctx: GenericQueryCtx<DataModel>,
+  userId: Id<"user">
+) {
+  return yield* effectifyPromise(
+    () => ctx.db.get("user", userId),
+    (a) => new ServerError(a)
+  )
+})

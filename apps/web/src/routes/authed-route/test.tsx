@@ -26,7 +26,7 @@ export const Route = createFileRoute("/authed-route/test")({
 
 function RouteComponent() {
   // this is the way to get current user SSR safe way.
-  // (pending component gets triggered, and user always sees the authed state)
+  // (pending component gets triggered (and error), and user always sees the authed state)
   // use suspensy query in most situations
   const { data: user } = useSuspenseQuery(convexQuery(api.user.queries.getMe, {}))
 
