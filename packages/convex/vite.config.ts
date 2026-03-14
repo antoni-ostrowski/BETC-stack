@@ -24,16 +24,27 @@ export default defineConfig({
     singleQuote: false,
     semi: false,
     trailingComma: "none",
-    experimentalSortImports: {
+    ignorePatterns: [
+      "**/node_modules/**",
+      "**/.convex/_generated/**",
+      "**/.convex/betterAuth/_generated/**",
+      "**/bun.lock",
+    ],
+    sortImports: {
       groups: [
-        ["type-import"],
-        ["type-external", "value-external"],
-        ["type-parent", "type-sibling", "type-index"],
-        ["type-internal"],
-        ["value-parent", "value-sibling", "value-index"],
-        ["value-internal"],
+        "builtin",
+        "external",
+        ["internal", "subpath"],
+        ["parent", "sibling", "index"],
+        "style",
+        "unknown",
       ],
       newlinesBetween: true,
+      order: "asc",
+      internalPattern: ["^~/", "^@/"],
+    },
+    sortPackageJson: {
+      sortScripts: false,
     },
   },
 });

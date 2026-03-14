@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input"
+
 import { useFieldContext } from "../app-form"
 import { FormBase, type FormControlProps } from "./form-base"
 
@@ -12,7 +13,9 @@ export function FormTextField(props: FormControlProps) {
         name={field.name}
         value={field.state.value}
         onBlur={field.handleBlur}
-        onChange={(e) =>{  field.handleChange(e.target.value); }}
+        onChange={(e) => {
+          field.handleChange(e.target.value)
+        }}
         aria-invalid={isInvalid}
       />
     </FormBase>
@@ -30,7 +33,9 @@ export function FormTextPasswordField(props: FormControlProps) {
         name={field.name}
         value={field.state.value}
         onBlur={field.handleBlur}
-        onChange={(e) =>{  field.handleChange(e.target.value); }}
+        onChange={(e) => {
+          field.handleChange(e.target.value)
+        }}
         aria-invalid={isInvalid}
       />
     </FormBase>

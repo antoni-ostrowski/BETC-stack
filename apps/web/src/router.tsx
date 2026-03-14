@@ -1,14 +1,10 @@
 import { ConvexQueryClient } from "@convex-dev/react-query"
-import {
-  MutationCache,
-  QueryClient,
-  QueryKey,
-  notifyManager
-} from "@tanstack/react-query"
+import { MutationCache, QueryClient, QueryKey, notifyManager } from "@tanstack/react-query"
 import { createRouter } from "@tanstack/react-router"
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query"
 import { Effect } from "effect"
 import { toast } from "sonner"
+
 import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
 import { NotFound } from "./components/router/default-not-found"
 import { env } from "./env"

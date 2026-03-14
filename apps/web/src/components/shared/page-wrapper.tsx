@@ -9,12 +9,7 @@ export default function PageWrapper({
   className?: ComponentProps<"div">
 }) {
   return (
-    <div
-      className={cn(
-        "flex h-full w-full flex-1 flex-col items-start justify-start",
-        className
-      )}
-    >
+    <div className={cn("flex h-full w-full flex-1 flex-col items-start justify-start", className)}>
       {children}
     </div>
   )

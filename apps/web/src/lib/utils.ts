@@ -22,9 +22,7 @@ type Success<T> = [T, null]
 type Failure<E> = [null, E]
 type Result<T, E = Error> = Success<T> | Failure<E>
 
-export async function tryCatch<T, E = Error>(
-  promise: Promise<T>
-): Promise<Result<T, E>> {
+export async function tryCatch<T, E = Error>(promise: Promise<T>): Promise<Result<T, E>> {
   try {
     const data = await promise
     return [data, null]
@@ -44,8 +42,6 @@ export function tryCatchSync<T, E = Error>(func: () => T): Result<T, E> {
 
 export const isAuthError = (error: unknown) => {
   const message =
-    (error instanceof ConvexError && error.data) ||
-    (error instanceof Error && error.message) ||
-    ""
+    (error instanceof ConvexError && error.data) || (error instanceof Error && error.message) || ""
   return /auth/i.test(message)
 }

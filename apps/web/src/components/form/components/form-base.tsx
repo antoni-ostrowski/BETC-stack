@@ -6,6 +6,7 @@ import {
   FieldLabel
 } from "@/components/ui/field"
 import { type ReactNode } from "react"
+
 import { useFieldContext } from "../app-form"
 
 export type FormControlProps = {
@@ -37,10 +38,7 @@ export function FormBase({
   const errorElem = isInvalid && <FieldError errors={field.state.meta.errors} />
 
   return (
-    <Field
-      data-invalid={isInvalid}
-      orientation={horizontal ? "horizontal" : undefined}
-    >
+    <Field data-invalid={isInvalid} orientation={horizontal ? "horizontal" : undefined}>
       {controlFirst ? (
         <>
           {children}

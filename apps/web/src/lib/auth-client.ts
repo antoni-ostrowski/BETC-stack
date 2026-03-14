@@ -12,20 +12,15 @@ export const authClient = createAuthClient({
 })
 
 // those are necessary utils to fetch convex functions from tanstack server code
-export const {
-  handler,
-  getToken,
-  fetchAuthQuery,
-  fetchAuthMutation,
-  fetchAuthAction
-} = convexBetterAuthReactStart({
-  convexUrl: env.VITE_CONVEX_URL,
-  convexSiteUrl: env.VITE_CONVEX_SITE_URL,
-  jwtCache: {
-    enabled: true,
-    isAuthError
-  }
-})
+export const { handler, getToken, fetchAuthQuery, fetchAuthMutation, fetchAuthAction } =
+  convexBetterAuthReactStart({
+    convexUrl: env.VITE_CONVEX_URL,
+    convexSiteUrl: env.VITE_CONVEX_SITE_URL,
+    jwtCache: {
+      enabled: true,
+      isAuthError
+    }
+  })
 
 /**
  * Gets current user auth session and the query state.

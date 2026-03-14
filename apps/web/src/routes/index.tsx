@@ -11,15 +11,12 @@ function App() {
 
       <div className="font-semibold">
         <Link to="/authed-route/test" className="hover:underline">
-          <p>
-            /authed-route/test - checkout authenticated route with todo example
-          </p>
+          <p>/authed-route/test - checkout authenticated route with todo example</p>
         </Link>
       </div>
 
       <h2 className="text-muted-foreground">
-        Try toggling the todo state from convex dashboard and see how client
-        reacts.
+        Try toggling the todo state from convex dashboard and see how client reacts.
       </h2>
     </div>
   )

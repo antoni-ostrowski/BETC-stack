@@ -1,4 +1,5 @@
 import { OctagonX, RotateCcw, TriangleAlert } from "lucide-react"
+
 import { Button } from "../ui/button"
 
 export default function FullScreenError({
@@ -15,13 +16,9 @@ export default function FullScreenError({
   return (
     <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
       {type === "error" && <OctagonX className="text-destructive" size={100} />}
-      {type === "warning" && (
-        <TriangleAlert className="text-yellow-300" size={100} />
-      )}
+      {type === "warning" && <TriangleAlert className="text-yellow-300" size={100} />}
       <h1 className="text-3xl font-bold">{errorMessage}</h1>
-      <p className="text-muted-foreground max-w-[50%] text-center text-sm">
-        {errorDetail}
-      </p>
+      <p className="text-muted-foreground max-w-[50%] text-center text-sm">{errorDetail}</p>
       <div className="flex w-1/6 flex-col items-center justify-center gap-3">
         <Button
           className="w-full"
@@ -32,9 +29,7 @@ export default function FullScreenError({
         >
           <RotateCcw /> {"Odśwież stronę"}
         </Button>
-        {actionButton && (
-          <div className="w-full [&_button]:w-full">{actionButton}</div>
-        )}
+        {actionButton && <div className="w-full [&_button]:w-full">{actionButton}</div>}
       </div>
     </div>
   )

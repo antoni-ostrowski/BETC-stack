@@ -85,15 +85,10 @@ function RouteComponent() {
             <PlusIcon />
           </Button>
 
-          {error && (
-            <p className="text-destructive">{parseConvexError(error)}</p>
-          )}
+          {error && <p className="text-destructive">{parseConvexError(error)}</p>}
           {data?.map((a) => {
             return (
-              <div
-                key={a._id}
-                className="flex w-30 flex-row items-center justify-start gap-2"
-              >
+              <div key={a._id} className="flex w-30 flex-row items-center justify-start gap-2">
                 <input
                   type="checkbox"
                   checked={a.completed}

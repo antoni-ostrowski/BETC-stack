@@ -17,11 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { authClient, useSession } from "@/lib/auth-client"
 import { useTheme } from "@/lib/providers/theme/theme-provider"
 import { useRouter } from "@tanstack/react-router"
@@ -86,9 +82,7 @@ function LogOutBtn() {
       ></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Czy na pewno chcesz się wylogować?
-          </AlertDialogTitle>
+          <AlertDialogTitle>Czy na pewno chcesz się wylogować?</AlertDialogTitle>
           <AlertDialogDescription>
             Zostaniesz przekierowany na stronę główną.
           </AlertDialogDescription>

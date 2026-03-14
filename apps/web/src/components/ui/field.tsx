@@ -1,9 +1,8 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import { useMemo } from "react"
-
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
+import { cva, type VariantProps } from "class-variance-authority"
+import { useMemo } from "react"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
@@ -49,23 +48,20 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-const fieldVariants = cva(
-  "data-[invalid=true]:text-destructive gap-2 group/field flex w-full",
-  {
-    variants: {
-      orientation: {
-        vertical: "flex-col [&>*]:w-full [&>.sr-only]:w-auto",
-        horizontal:
-          "flex-row items-center [&>[data-slot=field-label]]:flex-auto has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
-        responsive:
-          "flex-col [&>*]:w-full [&>.sr-only]:w-auto @md/field-group:flex-row @md/field-group:items-center @md/field-group:[&>*]:w-auto @md/field-group:[&>[data-slot=field-label]]:flex-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px"
-      }
-    },
-    defaultVariants: {
-      orientation: "vertical"
+const fieldVariants = cva("data-[invalid=true]:text-destructive group/field flex w-full gap-2", {
+  variants: {
+    orientation: {
+      vertical: "flex-col [&>*]:w-full [&>.sr-only]:w-auto",
+      horizontal:
+        "flex-row items-center has-[>[data-slot=field-content]]:items-start [&>[data-slot=field-label]]:flex-auto has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
+      responsive:
+        "flex-col @md/field-group:flex-row @md/field-group:items-center @md/field-group:has-[>[data-slot=field-content]]:items-start [&>*]:w-full @md/field-group:[&>*]:w-auto [&>.sr-only]:w-auto @md/field-group:[&>[data-slot=field-label]]:flex-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px"
     }
+  },
+  defaultVariants: {
+    orientation: "vertical"
   }
-)
+})
 
 function Field({
   className,
@@ -87,19 +83,13 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="field-content"
-      className={cn(
-        "group/field-content flex flex-1 flex-col gap-0.5 leading-snug",
-        className
-      )}
+      className={cn("group/field-content flex flex-1 flex-col gap-0.5 leading-snug", className)}
       {...props}
     />
   )
 }
 
-function FieldLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof Label>) {
+function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
   return (
     <Label
       data-slot="field-label"
@@ -188,9 +178,7 @@ function FieldError({
       return null
     }
 
-    const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values()
-    ]
+    const uniqueErrors = [...new Map(errors.map((error) => [error?.message, error])).values()]
 
     if (uniqueErrors?.length == 1) {
       return uniqueErrors[0]?.message
@@ -198,10 +186,7 @@ function FieldError({
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map(
-          (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>
-        )}
+        {uniqueErrors.map((error, index) => error?.message && <li key={index}>{error.message}</li>)}
       </ul>
     )
   }, [children, errors])

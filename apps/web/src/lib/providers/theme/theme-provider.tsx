@@ -1,11 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { createContext, use, type PropsWithChildren } from "react"
-import {
-  getTheme,
-  setThemeServerFn,
-  themeStorageKey,
-  type T as Theme
-} from "./theme"
+
+import { getTheme, setThemeServerFn, themeStorageKey, type T as Theme } from "./theme"
 
 type ThemeContextVal = { theme: Theme; setTheme: (val: Theme) => void }
 type Props = PropsWithChildren<{ theme: Theme }>

@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -9,22 +7,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem
-} from "@/components/ui/sidebar"
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/auth-client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useParams, useRouter } from "@tanstack/react-router"
 import { ListIcon } from "lucide-react"
+import * as React from "react"
+
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 
@@ -44,9 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              render={(props) => <OrgDropdown {...props} />}
-            ></SidebarMenuButton>
+            <SidebarMenuButton render={(props) => <OrgDropdown {...props} />}></SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
