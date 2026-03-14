@@ -1,6 +1,6 @@
 import { OctagonX, RotateCcw, TriangleAlert } from "lucide-react"
 
-import { Button } from "../ui/button"
+import { Button } from "./ui/button"
 
 export default function FullScreenError({
   errorMessage = "Something went wrong.",
@@ -27,7 +27,7 @@ export default function FullScreenError({
             location.reload()
           }}
         >
-          <RotateCcw /> {"Odśwież stronę"}
+          <RotateCcw /> {"refresh page"}
         </Button>
         {actionButton && <div className="w-full [&_button]:w-full">{actionButton}</div>}
       </div>

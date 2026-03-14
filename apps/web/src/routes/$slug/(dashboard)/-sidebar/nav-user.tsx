@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { authClient, useSession } from "@/lib/auth-client"
-import { useTheme } from "@/lib/providers/theme/theme-provider"
+import { useTheme } from "@/lib/theme/theme-provider"
 import { useRouter } from "@tanstack/react-router"
 import { LogOut, Moon, Sun } from "lucide-react"
 import { useState } from "react"

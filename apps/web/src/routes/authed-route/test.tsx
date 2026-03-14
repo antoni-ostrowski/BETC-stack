@@ -1,4 +1,4 @@
-import PageWrapper from "@/components/shared/page-wrapper"
+import PageWrapper from "@/components/page-wrapper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useSession } from "@/lib/auth-client"

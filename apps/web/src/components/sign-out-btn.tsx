@@ -3,8 +3,8 @@ import { useQueryClient } from "@tanstack/react-query"
 import { Link, useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 
-import { Button } from "../ui/button"
-import { Spinner } from "../ui/spinner"
+import { Button } from "./ui/button"
+import { Spinner } from "./ui/spinner"
 
 export default function SignOutBtn() {
   const [isPending, setIsPending] = useState(false)

@@ -5,8 +5,8 @@ import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query
 import { Effect } from "effect"
 import { toast } from "sonner"
 
-import { DefaultCatchBoundary } from "./components/router/default-error-boundary"
-import { NotFound } from "./components/router/default-not-found"
+import { DefaultCatchBoundary } from "./components/default-error-boundary"
+import { NotFound } from "./components/default-not-found"
 import { env } from "./env"
 import { parseConvexError } from "./lib/utils"
 import { routeTree } from "./routeTree.gen"
