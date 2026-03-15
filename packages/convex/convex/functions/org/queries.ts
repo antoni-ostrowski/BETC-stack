@@ -45,7 +45,9 @@ export const getPersonalOrg = authedQuery
       if (!personalOrgId) {
         return null
       }
+      console.log({ personalOrgId })
       const org = yield* effectifyPromise(() => ctx.db.get(personalOrgId))
+      console.log({ org })
       return org
     })
     return await runEffOrThrow(appRuntime, program)

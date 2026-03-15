@@ -1,3 +1,7 @@
+import { Button } from "@/components/ui/button"
+import { convexQuery } from "@convex-dev/react-query"
+import { api } from "@packages/convex"
+import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
@@ -5,19 +9,15 @@ export const Route = createFileRoute("/")({
 })
 
 function App() {
+  const { data: personalOrg } = useQuery(convexQuery(api.org.queries.getPersonalOrg, {}))
+  console.log({ personalOrg })
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">welcome</h1>
-
-      <div className="font-semibold">
-        <Link to="/authed-route/test" className="hover:underline">
-          <p>/authed-route/test - checkout authenticated route with todo example</p>
+      {personalOrg && (
+        <Link to="/$slug/dashboard" params={{ slug: personalOrg.slug }}>
+          <Button>Dashboard</Button>
         </Link>
-      </div>
-
-      <h2 className="text-muted-foreground">
-        Try toggling the todo state from convex dashboard and see how client reacts.
-      </h2>
+      )}
     </div>
   )
 }

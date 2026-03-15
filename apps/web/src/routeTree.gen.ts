@@ -10,22 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/sign-in'
-import { Route as AuthedRouteRouteRouteImport } from './routes/authed-route/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthedRouteTestRouteImport } from './routes/authed-route/test'
+import { Route as SlugDashboardRouteRouteImport } from './routes/$slug/dashboard/route'
+import { Route as SlugDashboardIndexRouteImport } from './routes/$slug/dashboard/index'
 import { Route as ApiOrgSplatRouteImport } from './routes/api/org/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as SlugdashboardDashboardRouteImport } from './routes/$slug/(dashboard)/dashboard'
-import { Route as SlugdashboardDashboardIndexRouteImport } from './routes/$slug/(dashboard)/dashboard.index'
+import { Route as SlugDashboardTodosRouteImport } from './routes/$slug/dashboard/todos'
 
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthedRouteRouteRoute = AuthedRouteRouteRouteImport.update({
-  id: '/authed-route',
-  path: '/authed-route',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -33,10 +27,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthedRouteTestRoute = AuthedRouteTestRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => AuthedRouteRouteRoute,
+const SlugDashboardRouteRoute = SlugDashboardRouteRouteImport.update({
+  id: '/$slug/dashboard',
+  path: '/$slug/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlugDashboardIndexRoute = SlugDashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SlugDashboardRouteRoute,
 } as any)
 const ApiOrgSplatRoute = ApiOrgSplatRouteImport.update({
   id: '/api/org/$',
@@ -48,85 +47,72 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SlugdashboardDashboardRoute = SlugdashboardDashboardRouteImport.update({
-  id: '/$slug/(dashboard)/dashboard',
-  path: '/$slug/dashboard',
-  getParentRoute: () => rootRouteImport,
+const SlugDashboardTodosRoute = SlugDashboardTodosRouteImport.update({
+  id: '/todos',
+  path: '/todos',
+  getParentRoute: () => SlugDashboardRouteRoute,
 } as any)
-const SlugdashboardDashboardIndexRoute =
-  SlugdashboardDashboardIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => SlugdashboardDashboardRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/authed-route': typeof AuthedRouteRouteRouteWithChildren
   '/sign-in': typeof SignInRoute
-  '/authed-route/test': typeof AuthedRouteTestRoute
-  '/$slug/dashboard': typeof SlugdashboardDashboardRouteWithChildren
+  '/$slug/dashboard': typeof SlugDashboardRouteRouteWithChildren
+  '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/org/$': typeof ApiOrgSplatRoute
-  '/$slug/dashboard/': typeof SlugdashboardDashboardIndexRoute
+  '/$slug/dashboard/': typeof SlugDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/authed-route': typeof AuthedRouteRouteRouteWithChildren
   '/sign-in': typeof SignInRoute
-  '/authed-route/test': typeof AuthedRouteTestRoute
+  '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/org/$': typeof ApiOrgSplatRoute
-  '/$slug/dashboard': typeof SlugdashboardDashboardIndexRoute
+  '/$slug/dashboard': typeof SlugDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/authed-route': typeof AuthedRouteRouteRouteWithChildren
   '/sign-in': typeof SignInRoute
-  '/authed-route/test': typeof AuthedRouteTestRoute
-  '/$slug/(dashboard)/dashboard': typeof SlugdashboardDashboardRouteWithChildren
+  '/$slug/dashboard': typeof SlugDashboardRouteRouteWithChildren
+  '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/org/$': typeof ApiOrgSplatRoute
-  '/$slug/(dashboard)/dashboard/': typeof SlugdashboardDashboardIndexRoute
+  '/$slug/dashboard/': typeof SlugDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/authed-route'
     | '/sign-in'
-    | '/authed-route/test'
     | '/$slug/dashboard'
+    | '/$slug/dashboard/todos'
     | '/api/auth/$'
     | '/api/org/$'
     | '/$slug/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/authed-route'
     | '/sign-in'
-    | '/authed-route/test'
+    | '/$slug/dashboard/todos'
     | '/api/auth/$'
     | '/api/org/$'
     | '/$slug/dashboard'
   id:
     | '__root__'
     | '/'
-    | '/authed-route'
     | '/sign-in'
-    | '/authed-route/test'
-    | '/$slug/(dashboard)/dashboard'
+    | '/$slug/dashboard'
+    | '/$slug/dashboard/todos'
     | '/api/auth/$'
     | '/api/org/$'
-    | '/$slug/(dashboard)/dashboard/'
+    | '/$slug/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthedRouteRouteRoute: typeof AuthedRouteRouteRouteWithChildren
   SignInRoute: typeof SignInRoute
-  SlugdashboardDashboardRoute: typeof SlugdashboardDashboardRouteWithChildren
+  SlugDashboardRouteRoute: typeof SlugDashboardRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiOrgSplatRoute: typeof ApiOrgSplatRoute
 }
@@ -140,13 +126,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignInRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/authed-route': {
-      id: '/authed-route'
-      path: '/authed-route'
-      fullPath: '/authed-route'
-      preLoaderRoute: typeof AuthedRouteRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -154,12 +133,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/authed-route/test': {
-      id: '/authed-route/test'
-      path: '/test'
-      fullPath: '/authed-route/test'
-      preLoaderRoute: typeof AuthedRouteTestRouteImport
-      parentRoute: typeof AuthedRouteRouteRoute
+    '/$slug/dashboard': {
+      id: '/$slug/dashboard'
+      path: '/$slug/dashboard'
+      fullPath: '/$slug/dashboard'
+      preLoaderRoute: typeof SlugDashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug/dashboard/': {
+      id: '/$slug/dashboard/'
+      path: '/'
+      fullPath: '/$slug/dashboard/'
+      preLoaderRoute: typeof SlugDashboardIndexRouteImport
+      parentRoute: typeof SlugDashboardRouteRoute
     }
     '/api/org/$': {
       id: '/api/org/$'
@@ -175,53 +161,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$slug/(dashboard)/dashboard': {
-      id: '/$slug/(dashboard)/dashboard'
-      path: '/$slug/dashboard'
-      fullPath: '/$slug/dashboard'
-      preLoaderRoute: typeof SlugdashboardDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$slug/(dashboard)/dashboard/': {
-      id: '/$slug/(dashboard)/dashboard/'
-      path: '/'
-      fullPath: '/$slug/dashboard/'
-      preLoaderRoute: typeof SlugdashboardDashboardIndexRouteImport
-      parentRoute: typeof SlugdashboardDashboardRoute
+    '/$slug/dashboard/todos': {
+      id: '/$slug/dashboard/todos'
+      path: '/todos'
+      fullPath: '/$slug/dashboard/todos'
+      preLoaderRoute: typeof SlugDashboardTodosRouteImport
+      parentRoute: typeof SlugDashboardRouteRoute
     }
   }
 }
 
-interface AuthedRouteRouteRouteChildren {
-  AuthedRouteTestRoute: typeof AuthedRouteTestRoute
+interface SlugDashboardRouteRouteChildren {
+  SlugDashboardTodosRoute: typeof SlugDashboardTodosRoute
+  SlugDashboardIndexRoute: typeof SlugDashboardIndexRoute
 }
 
-const AuthedRouteRouteRouteChildren: AuthedRouteRouteRouteChildren = {
-  AuthedRouteTestRoute: AuthedRouteTestRoute,
+const SlugDashboardRouteRouteChildren: SlugDashboardRouteRouteChildren = {
+  SlugDashboardTodosRoute: SlugDashboardTodosRoute,
+  SlugDashboardIndexRoute: SlugDashboardIndexRoute,
 }
 
-const AuthedRouteRouteRouteWithChildren =
-  AuthedRouteRouteRoute._addFileChildren(AuthedRouteRouteRouteChildren)
-
-interface SlugdashboardDashboardRouteChildren {
-  SlugdashboardDashboardIndexRoute: typeof SlugdashboardDashboardIndexRoute
-}
-
-const SlugdashboardDashboardRouteChildren: SlugdashboardDashboardRouteChildren =
-  {
-    SlugdashboardDashboardIndexRoute: SlugdashboardDashboardIndexRoute,
-  }
-
-const SlugdashboardDashboardRouteWithChildren =
-  SlugdashboardDashboardRoute._addFileChildren(
-    SlugdashboardDashboardRouteChildren,
-  )
+const SlugDashboardRouteRouteWithChildren =
+  SlugDashboardRouteRoute._addFileChildren(SlugDashboardRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthedRouteRouteRoute: AuthedRouteRouteRouteWithChildren,
   SignInRoute: SignInRoute,
-  SlugdashboardDashboardRoute: SlugdashboardDashboardRouteWithChildren,
+  SlugDashboardRouteRoute: SlugDashboardRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiOrgSplatRoute: ApiOrgSplatRoute,
 }

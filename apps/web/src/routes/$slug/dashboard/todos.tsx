@@ -11,7 +11,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 import { PlusIcon, XIcon } from "lucide-react"
 import { useState } from "react"
 
-export const Route = createFileRoute("/authed-route/test")({
+export const Route = createFileRoute("/$slug/dashboard/todos")({
   beforeLoad: async (ctx) => {
     if (!ctx.context.isAuthenticated) {
       throw redirect({ to: "/sign-in" })
@@ -73,13 +73,7 @@ function RouteComponent() {
         <h1 className="text-2xl font-bold">
           Hi {user?.name}! ({user?.email})
         </h1>
-        <h1 className="text-2xl font-bold">
-          You can access this page only when you are authenticated.
-        </h1>
 
-        <p className="text-muted-foreground">
-          Try accessing this page manually with url when signed out.
-        </p>
         <div className="mt-4 flex flex-col gap-2">
           <div className="flex flex-col gap-2">
             <Input

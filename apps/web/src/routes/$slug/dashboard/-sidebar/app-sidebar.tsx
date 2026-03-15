@@ -11,35 +11,25 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/auth-client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useParams, useRouter } from "@tanstack/react-router"
-import { ListIcon } from "lucide-react"
-import * as React from "react"
+import { useRouter } from "@tanstack/react-router"
 
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 
-const data = {
-  navMain: [
-    {
-      title: "todo's",
-      url: "/admin/panel/todo",
-      icon: <ListIcon />
-    }
-  ]
-}
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ slug }: { slug: string }) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton render={(props) => <OrgDropdown {...props} />}></SidebarMenuButton>
+            <SidebarMenuButton
+              render={(props) => <OrgDropdown {...props} slug={slug} />}
+            ></SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain {...{ slug }} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
@@ -48,10 +38,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   )
 }
 
-function OrgDropdown() {
+function OrgDropdown({ slug }: { slug: string }) {
   const router = useRouter()
   const qc = useQueryClient()
-  const { slug } = useParams({ from: "/$slug/(dashboard)/dashboard" })
   const { data: org } = useQuery({
     queryKey: ["getOrg"],
     queryFn: async () => {
@@ -95,7 +84,7 @@ function OrgDropdown() {
       ></DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Organizacje</DropdownMenuLabel>
+          <DropdownMenuLabel>Organizations</DropdownMenuLabel>
           {orgs?.map((org) => (
             <DropdownMenuItem
               key={org.id + "org-dropdown"}
