@@ -12,7 +12,8 @@
     "format:check": "vp fmt --check",
     "check": "bun run format && bun run lint:fix",
     "typecheck": "tsc --noEmit",
-    "auth:gen": "cd convex/betterAuth && bunx @better-auth/cli generate -y --output generatedSchema.ts"
+    "auth:gen": "cd convex/betterAuth && bunx @better-auth/cli generate -y --output generatedSchema.ts",
+    "gen": "bunx better-convex codegen && bun run scripts/patch-auth-types.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -8,44 +8,56 @@ import {
   createAuthRuntime,
   type GenericAuthDefinition,
   getGeneratedAuthDisabledReason,
-  resolveGeneratedAuthDefinition
-} from "better-convex/auth"
+  resolveGeneratedAuthDefinition,
+} from 'better-convex/auth';
+import { internal } from '../_generated/api.js';
+import type { DataModel } from '../_generated/dataModel';
+import type { GenericCtx, MutationCtx } from './server';
 
-import { internal } from "../_generated/api.js"
-import type { DataModel } from "../_generated/dataModel"
-import * as authDefinitionModule from "../auth"
-import schema from "../schema"
-import type { GenericCtx, MutationCtx } from "./server"
+import schema from '../schema';
+import * as authDefinitionModule from '../auth';
 
 export function defineAuth<
-  AuthOptions extends BetterAuthOptionsWithoutDatabase = BetterAuthOptionsWithoutDatabase
->(definition: GenericAuthDefinition<GenericCtx, DataModel, typeof schema, AuthOptions>) {
-  return baseDefineAuth(definition)
+  AuthOptions extends BetterAuthOptionsWithoutDatabase = BetterAuthOptionsWithoutDatabase,
+>(
+  definition: GenericAuthDefinition<GenericCtx, DataModel, typeof schema, AuthOptions>
+) {
+  return baseDefineAuth(definition);
 }
 
 type AuthDefinitionFromFile = Extract<
   typeof authDefinitionModule extends { default: infer T } ? T : never,
   (...args: unknown[]) => unknown
->
+>;
 
 const authDefinition = ((ctx: GenericCtx) =>
-  resolveGeneratedAuthDefinition<AuthDefinitionFromFile>(
-    authDefinitionModule,
-    getGeneratedAuthDisabledReason("default_export_unavailable")
-  )(ctx)) as AuthDefinitionFromFile
 
-const authRuntime = createAuthRuntime<
+type AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>;
+
+type AuthRuntimeType = ReturnType<typeof createAuthRuntime<
   DataModel,
   typeof schema,
   MutationCtx,
   GenericCtx,
-  ReturnType<AuthDefinitionFromFile>
+  AuthOptionsFromFile
+>>;
+  resolveGeneratedAuthDefinition<AuthDefinitionFromFile>(
+    authDefinitionModule,
+    getGeneratedAuthDisabledReason("default_export_unavailable")
+  )(ctx)) as AuthDefinitionFromFile;
+
+const authRuntime: AuthRuntimeType = createAuthRuntime<
+  DataModel,
+  typeof schema,
+  MutationCtx,
+  GenericCtx,
+  AuthOptionsFromFile
 >({
   internal,
   moduleName: "generated/auth",
   schema,
-  auth: authDefinition
-})
+  auth: authDefinition,
+});
 
 export const {
   authEnabled,
@@ -60,5 +72,5 @@ export const {
   updateMany,
   updateOne,
   getLatestJwks,
-  rotateKeys
-} = authRuntime
+  rotateKeys,
+} = authRuntime;

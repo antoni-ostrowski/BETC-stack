@@ -1,9 +1,12 @@
+import { getHeaders } from "better-convex/auth"
 import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
 import { Effect, ManagedRuntime, pipe, Result } from "effect"
 
 import { DataModel, Id } from "./_generated/dataModel"
 import { ServerError } from "./errors"
+import { getAuth } from "./generated/auth"
+import { GenericCtx } from "./generated/server"
 /**
  * Creates an Effect from a Promise, handling errors and logging.
  *
@@ -17,7 +20,7 @@ import { ServerError } from "./errors"
  */
 export function effectifyPromise<A, E, R = never>(
   promiseFactory: () => Promise<A>,
-  errorFactory: (obj: { cause: unknown; message: string }) => E,
+  errorFactory: (obj: { cause: unknown; message: string }) => E = (a) => new ServerError(a) as E,
   errorMessage: string = "Promise failed"
 ): Effect.Effect<A, E, R> {
   return pipe(
@@ -31,7 +34,7 @@ export function effectifyPromise<A, E, R = never>(
 
 export function effectifyFunc<A, E, R = never>(
   funcFactory: () => A,
-  errorFactory: (obj: { cause: unknown; message: string }) => E,
+  errorFactory: (obj: { cause: unknown; message: string }) => E = (a) => new ServerError(a) as E,
   errorMessage: string = "Function failed"
 ): Effect.Effect<A, E, R> {
   return pipe(
@@ -75,6 +78,16 @@ export const getUserById = Effect.fn(function* (
 ) {
   return yield* effectifyPromise(
     () => ctx.db.get("user", userId),
+    (a) => new ServerError(a)
+  )
+})
+
+export const getUserAuth = Effect.fn(function* (ctx: GenericQueryCtx<DataModel>) {
+  const c: GenericCtx = ctx
+  return yield* effectifyPromise(
+    async () => {
+      return { auth: getAuth(c), headers: await getHeaders(ctx) }
+    },
     (a) => new ServerError(a)
   )
 })

@@ -3,7 +3,6 @@ import { z } from "zod"
 
 import { Id } from "../_generated/dataModel"
 import { DatabaseError } from "../errors"
-import { getAuth } from "../generated/auth"
 import { authedMutation } from "../lib"
 import { appRuntime } from "../runtime"
 import { effectifyPromise, runEffOrThrow } from "../utils_effect"

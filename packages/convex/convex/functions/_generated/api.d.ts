@@ -15,11 +15,13 @@ import type * as generated_auth from "../generated/auth.js";
 import type * as generated_server from "../generated/server.js";
 import type * as http from "../http.js";
 import type * as lib from "../lib.js";
+import type * as my_triggers from "../my_triggers.js";
 import type * as org_mutations from "../org/mutations.js";
 import type * as org_queries from "../org/queries.js";
 import type * as runtime from "../runtime.js";
 import type * as todo_mutations from "../todo/mutations.js";
 import type * as todo_queries from "../todo/queries.js";
+import type * as user_mutations from "../user/mutations.js";
 import type * as user_queries from "../user/queries.js";
 import type * as utils_effect from "../utils_effect.js";
 
@@ -37,11 +39,13 @@ declare const fullApi: ApiFromModules<{
   "generated/server": typeof generated_server;
   http: typeof http;
   lib: typeof lib;
+  my_triggers: typeof my_triggers;
   "org/mutations": typeof org_mutations;
   "org/queries": typeof org_queries;
   runtime: typeof runtime;
   "todo/mutations": typeof todo_mutations;
   "todo/queries": typeof todo_queries;
+  "user/mutations": typeof user_mutations;
   "user/queries": typeof user_queries;
   utils_effect: typeof utils_effect;
 }>;

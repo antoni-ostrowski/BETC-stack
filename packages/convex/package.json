@@ -24,13 +24,14 @@
     "format:check": "vp fmt --check",
     "check": "vp check",
     "typecheck": "tsc --noEmit -p convex/tsconfig.check.json",
-    "auth:gen": "bunx @better-auth/cli generate -y --output convex/functions/authSchema.ts --config convex/functions/generated/auth.ts"
+    "gen:auth": "bunx @better-auth/cli generate -y --output convex/functions/authSchema.ts --config convex/functions/generated/auth.ts",
+    "gen": "bunx better-convex codegen && bun run scripts/patch-auth-types.ts"
   },
   "dependencies": {
     "@convex-dev/better-auth": "^0.10.13",
     "better-auth": "1.4.9",
     "better-convex": "^0.10.3",
-    "convex": "^1.32.0",
+    "convex": "^1.33.1",
     "convex-helpers": "^0.1.114",
     "effect": "^4.0.0-beta.31",
     "fluent-convex": "^0.12.3",
@@ -39,6 +40,6 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "typescript": "^5.9.3",
-    "vite-plus": "catalog:"
+    "vite-plus": "^0.1.11"
   }
 }

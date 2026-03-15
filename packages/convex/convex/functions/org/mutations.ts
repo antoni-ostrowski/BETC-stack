@@ -1,24 +1,23 @@
-import { getHeaders } from "better-convex/auth"
 import { Effect } from "effect"
 import { z } from "zod/v4"
 
 import { DatabaseError, ServerError } from "../errors"
-import { getAuth } from "../generated/auth"
-import { authedMutation, authUtils, getAuthData, getUserAuth } from "../lib"
+import { mutation } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyFunc, effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { effectifyPromise, getUserAuth, runEffOrThrow } from "../utils_effect"
 
 function generateSlug(name: string) {
   return name.slice(0, name.length / 2)
 }
 
-export const create = authedMutation
+export const create = mutation
   .input(
     z.object({
       name: z.string()
     })
   )
   .handler(async (ctx, args) => {
+    console.log("runnign org creation")
     const program = Effect.gen(function* () {
       const { auth, headers } = yield* getUserAuth(ctx)
       const org = yield* effectifyPromise(
@@ -40,7 +39,7 @@ export const create = authedMutation
       }
 
       yield* effectifyPromise(
-        () => markOrgAsActive(ctx, { orgId: org?.id }),
+        () => markAsActiveFn(ctx, { orgId: org?.id }),
         (a) => new ServerError(a)
       )
       return org
@@ -50,7 +49,7 @@ export const create = authedMutation
   })
   .public()
 
-export const markOrgAsActive = authedMutation
+export const markAsActiveFn = mutation
   .input(z.object({ orgId: z.string() }))
   .handler(async (ctx, args) => {
     const program = Effect.gen(function* () {
@@ -71,4 +70,4 @@ export const markOrgAsActive = authedMutation
     return await runEffOrThrow(appRuntime, program)
   })
 
-export const markAsActive = markOrgAsActive.public()
+export const markAsActive = markAsActiveFn.public()

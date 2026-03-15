@@ -1,7 +1,6 @@
 import { organization } from "better-auth/plugins"
 import { convex } from "better-convex/auth"
 
-import { api } from "./_generated/api"
 import authConfig from "./auth.config"
 import { defineAuth } from "./generated/auth"
 
@@ -25,18 +24,6 @@ export default defineAuth((_ctx) => ({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID ?? "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? ""
-    }
-  },
-
-  triggers: {
-    user: {
-      create: {
-        before: async (data, triggerCtx) => {
-          // here create user personal org
-          return { data }
-        },
-        after: async (user, triggerCtx) => {}
-      }
     }
   }
 }))

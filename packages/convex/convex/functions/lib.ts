@@ -1,21 +1,21 @@
-import { getAuthUserIdentity, getHeaders } from "better-convex/auth"
+import { getAuthUserIdentity } from "better-convex/auth"
 import { typedV } from "convex-helpers/validators"
-import { GenericQueryCtx } from "convex/server"
+import { GenericMutationCtx } from "convex/server"
 import { ConvexError } from "convex/values"
 import { createBuilder } from "fluent-convex"
 import { WithZod } from "fluent-convex/zod"
 
 import { DataModel } from "./_generated/dataModel"
-import { ServerError } from "./errors"
 import { getAuth } from "./generated/auth"
+import type { GenericCtx } from "./generated/server"
+import { triggers } from "./my_triggers"
 import schema from "./schema"
-import { effectifyFunc, effectifyPromise } from "./utils_effect"
 
 export const vv = typedV(schema)
 const convex = createBuilder<DataModel>()
 
-const authMiddleware = convex
-  .$context<GenericQueryCtx<DataModel>>()
+const withAuth = convex
+  .$context<GenericMutationCtx<DataModel>>()
   .createMiddleware(async (ctx, next) => {
     const identity = await getAuthUserIdentity(ctx)
     if (!identity) throw new ConvexError("Unauthorized")
@@ -26,10 +26,19 @@ const authMiddleware = convex
     })
   })
 
-export const authedQuery = convex.query().extend(WithZod).use(authMiddleware)
+export const withTriggers = convex
+  .$context<GenericMutationCtx<DataModel>>()
+  .createMiddleware(async (ctx, next) => {
+    return next(triggers.wrapDB(ctx))
+  })
 
-export const authedMutation = convex.mutation().extend(WithZod).use(authMiddleware)
+export const query = convex.query().extend(WithZod)
+export const authedQuery = convex.query().extend(WithZod).use(withAuth)
 
+export const mutation = convex.mutation().extend(WithZod)
+export const authedMutation = convex.mutation().extend(WithZod).use(withAuth)
+
+export const action = convex.action().extend(WithZod)
 export const actionAuthMiddleware = convex.action().createMiddleware(async (ctx, next) => {
   const identity = await ctx.auth.getUserIdentity()
   if (!identity) throw new ConvexError("Unauthorized")
@@ -41,12 +50,3 @@ export const actionAuthMiddleware = convex.action().createMiddleware(async (ctx,
 })
 
 export const authedAction = convex.action().extend(WithZod).use(actionAuthMiddleware)
-
-export function getUserAuth(ctx: GenericQueryCtx<DataModel>) {
-  return effectifyPromise(
-    async () => {
-      return { auth: getAuth(ctx), headers: await getHeaders(ctx) }
-    },
-    () => new ServerError()
-  )
-}
