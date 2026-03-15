@@ -6,9 +6,6 @@ import { createBuilder } from "fluent-convex"
 import { WithZod } from "fluent-convex/zod"
 
 import { DataModel } from "./_generated/dataModel"
-import { getAuth } from "./generated/auth"
-import type { GenericCtx } from "./generated/server"
-import { triggers } from "./my_triggers"
 import schema from "./schema"
 
 export const vv = typedV(schema)
@@ -26,11 +23,12 @@ const withAuth = convex
     })
   })
 
-export const withTriggers = convex
-  .$context<GenericMutationCtx<DataModel>>()
-  .createMiddleware(async (ctx, next) => {
-    return next(triggers.wrapDB(ctx))
-  })
+// possible trigger usage from convex-helpers
+// export const withTriggers = convex
+//   .$context<GenericMutationCtx<DataModel>>()
+//   .createMiddleware(async (ctx, next) => {
+//     return next(triggers.wrapDB(ctx))
+//   })
 
 export const query = convex.query().extend(WithZod)
 export const authedQuery = convex.query().extend(WithZod).use(withAuth)
