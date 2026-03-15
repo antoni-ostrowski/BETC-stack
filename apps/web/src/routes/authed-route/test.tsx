@@ -2,10 +2,11 @@ import PageWrapper from "@/components/page-wrapper"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { useGetUserSuspense } from "@/lib/auth-client"
 import { parseConvexError } from "@/lib/utils"
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
 import { api } from "@packages/convex"
-import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 import { PlusIcon, XIcon } from "lucide-react"
 import { useState } from "react"
@@ -28,7 +29,7 @@ function RouteComponent() {
   // this is the way to get current user SSR safe way.
   // (pending component gets triggered (and error), and user always sees the authed state)
   // use suspensy query in most situations
-  const { data: user } = useSuspenseQuery(convexQuery(api.user.queries.getMe, {}))
+  const { data: user } = useGetUserSuspense()
 
   const [input, setInput] = useState("")
 

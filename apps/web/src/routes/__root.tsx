@@ -5,12 +5,13 @@ import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
 import { ThemeProvider, useGetTheme } from "@/lib/theme/theme-provider"
 import ThemeToggle from "@/lib/theme/theme-toggle"
-import { ConvexQueryClient } from "@convex-dev/react-query"
+import { convexQuery, ConvexQueryClient } from "@convex-dev/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import { type QueryClient } from "@tanstack/react-query"
+import { useQuery, useSuspenseQuery, type QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
@@ -76,6 +77,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   },
   component: RootComponent
 })
+import { Button } from "@/components/ui/button"
+import { api } from "@packages/convex"
 import { ConvexAuthProvider } from "better-convex/auth/client"
 
 function RootComponent() {
@@ -106,6 +109,7 @@ function RootComponent() {
 function RootDocument({ children }: { children: React.ReactNode }) {
   const theme = useGetTheme()
   const { pathname } = useLocation()
+  const { data: personalOrg } = useQuery(convexQuery(api.org.queries.getPersonalOrg, {}))
 
   return (
     <ThemeProvider theme={theme}>
@@ -119,8 +123,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             {!pathname.includes("dashboard") && (
               <>
                 <SignOutBtn />
-                <div>
+                <div className="flex flex-row gap-2">
                   <ThemeToggle />
+                  {personalOrg && (
+                    <Link to="/$slug/dashboard" params={{ slug: personalOrg.slug }}>
+                      <Button>Dashboard</Button>
+                    </Link>
+                  )}
                 </div>
               </>
             )}

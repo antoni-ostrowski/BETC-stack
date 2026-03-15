@@ -9,8 +9,6 @@ export const Route = createFileRoute("/$slug/(dashboard)/dashboard/")({
 })
 
 function RouteComponent() {
-  const r = Route.useParams()
-  console.log({ r })
   return (
     <SidebarProvider>
       <AppSidebar />

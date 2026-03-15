@@ -2,6 +2,9 @@ import { env } from "@/env"
 import { isAuthError } from "@/lib/utils"
 import { convexClient } from "@convex-dev/better-auth/client/plugins"
 import { convexBetterAuthReactStart } from "@convex-dev/better-auth/react-start"
+import { convexQuery } from "@convex-dev/react-query"
+import { api } from "@packages/convex"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { organizationClient } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
@@ -37,3 +40,7 @@ export const { handler, getToken, fetchAuthQuery, fetchAuthMutation, fetchAuthAc
 export const getAuth = createServerFn({ method: "GET" }).handler(async () => {
   return await getToken()
 })
+
+export function useGetUserSuspense() {
+  return useSuspenseQuery(convexQuery(api.user.queries.getMe, {}))
+}

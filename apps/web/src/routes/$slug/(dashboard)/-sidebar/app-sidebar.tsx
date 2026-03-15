@@ -82,9 +82,9 @@ function OrgDropdown() {
           >
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage src={undefined} />
-              <AvatarFallback className="rounded-lg">AD</AvatarFallback>
+              <AvatarFallback className="rounded-lg"></AvatarFallback>
             </Avatar>
-            <div {...props} className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2">
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{org?.name}</span>
                 <span className="truncate text-xs">{org?.name}</span>

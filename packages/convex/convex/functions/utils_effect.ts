@@ -4,7 +4,7 @@ import { ConvexError } from "convex/values"
 import { Effect, ManagedRuntime, pipe, Result } from "effect"
 
 import { DataModel, Id } from "./_generated/dataModel"
-import { ServerError } from "./errors"
+import { NotAuthenticated, ServerError } from "./errors"
 import { getAuth } from "./generated/auth"
 import { GenericCtx } from "./generated/server"
 /**
@@ -76,10 +76,14 @@ export const getUserById = Effect.fn(function* (
   ctx: GenericQueryCtx<DataModel>,
   userId: Id<"user">
 ) {
-  return yield* effectifyPromise(
+  const user = yield* effectifyPromise(
     () => ctx.db.get("user", userId),
     (a) => new ServerError(a)
   )
+  if (!user) {
+    return yield* new NotAuthenticated()
+  }
+  return user
 })
 
 export const getUserAuth = Effect.fn(function* (ctx: GenericQueryCtx<DataModel>) {

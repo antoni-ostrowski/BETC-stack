@@ -9,7 +9,6 @@
  */
 
 import type * as auth from "../auth.js";
-import type * as authSchema from "../authSchema.js";
 import type * as errors from "../errors.js";
 import type * as generated_auth from "../generated/auth.js";
 import type * as generated_server from "../generated/server.js";
@@ -33,7 +32,6 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
-  authSchema: typeof authSchema;
   errors: typeof errors;
   "generated/auth": typeof generated_auth;
   "generated/server": typeof generated_server;
