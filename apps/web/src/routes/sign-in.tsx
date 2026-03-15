@@ -29,15 +29,7 @@ function AuthPage() {
             },
             {
               onSuccess: async () => {
-                console.log("sign in on success handler")
-
-                console.log("attemping to run org creation")
-                await createPersonalOrg({ name: "Personal" })
-
-                console.log("after org creation")
                 await router.invalidate()
-
-                await router.navigate({ to: "/" })
               },
               onError: (err) => {
                 console.error("Failed to sign in - ", err)
@@ -46,6 +38,16 @@ function AuthPage() {
             }
           )
 
+          console.log("attemping to run org creation")
+          try {
+            await createPersonalOrg({ name: "Personal" })
+          } catch (e) {
+            console.error(e)
+          }
+
+          console.log("after org creation")
+
+          await router.navigate({ to: "/" })
           setIsPending(false)
         }}
       >

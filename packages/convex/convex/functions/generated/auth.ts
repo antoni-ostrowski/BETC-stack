@@ -30,8 +30,6 @@ type AuthDefinitionFromFile = Extract<
   (...args: unknown[]) => unknown
 >;
 
-const authDefinition = ((ctx: GenericCtx) =>
-
 type AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>;
 
 type AuthRuntimeType = ReturnType<typeof createAuthRuntime<
@@ -41,6 +39,8 @@ type AuthRuntimeType = ReturnType<typeof createAuthRuntime<
   GenericCtx,
   AuthOptionsFromFile
 >>;
+
+const authDefinition = ((ctx: GenericCtx) =>
   resolveGeneratedAuthDefinition<AuthDefinitionFromFile>(
     authDefinitionModule,
     getGeneratedAuthDisabledReason("default_export_unavailable")

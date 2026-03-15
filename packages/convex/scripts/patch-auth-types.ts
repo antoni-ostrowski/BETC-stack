@@ -30,8 +30,9 @@ function patchAuthTypes(): void {
   }
 
   // Find the AuthDefinitionFromFile type and add our new types after it
+  // Match the type definition ending with >;\n (handles both old and new formats)
   const authDefinitionMatch =
-    /type AuthDefinitionFromFile = Extract<[\s\S]*?>[\s\S]*?>\n/.exec(content)
+    /type AuthDefinitionFromFile = Extract<[\s\S]*?>;\n/.exec(content)
 
   if (!authDefinitionMatch) {
     console.error(
@@ -43,17 +44,7 @@ function patchAuthTypes(): void {
   const insertPosition = authDefinitionMatch.index + authDefinitionMatch[0].length
 
   // New types to insert
-  const newTypes = `
-type AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>;
-
-type AuthRuntimeType = ReturnType<typeof createAuthRuntime<
-  DataModel,
-  typeof schema,
-  MutationCtx,
-  GenericCtx,
-  AuthOptionsFromFile
->>;
-`
+  const newTypes = `\ntype AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>;\n\ntype AuthRuntimeType = ReturnType<typeof createAuthRuntime<\n  DataModel,\n  typeof schema,\n  MutationCtx,\n  GenericCtx,\n  AuthOptionsFromFile\n>>;\n`
 
   // Insert the new types
   content = content.slice(0, insertPosition) + newTypes + content.slice(insertPosition)

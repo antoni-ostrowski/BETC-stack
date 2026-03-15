@@ -1,19 +1,16 @@
 import { DefaultCatchBoundary } from "@/components/default-error-boundary"
 import { NotFound } from "@/components/default-not-found"
 import SignOutBtn from "@/components/sign-out-btn"
-import { Button } from "@/components/ui/button"
 import { Toaster } from "@/components/ui/sonner"
 import { authClient, getAuth } from "@/lib/auth-client"
 import { ThemeProvider, useGetTheme } from "@/lib/theme/theme-provider"
 import ThemeToggle from "@/lib/theme/theme-toggle"
-import { ConvexBetterAuthProvider } from "@convex-dev/better-auth/react"
 import { ConvexQueryClient } from "@convex-dev/react-query"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { type QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   HeadContent,
-  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
