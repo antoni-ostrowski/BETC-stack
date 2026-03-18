@@ -1,8 +1,6 @@
 import { DefaultCatchBoundary } from "@/components/default-error-boundary"
 import { NotFound } from "@/components/default-not-found"
-import SignOutBtn from "@/components/sign-out-btn"
 import { Toaster } from "@/components/ui/sonner"
-import { authClient, getAuth } from "@/lib/auth-client"
 import { ThemeProvider, useGetTheme } from "@/lib/theme/theme-provider"
 import ThemeToggle from "@/lib/theme/theme-toggle"
 import { ConvexQueryClient } from "@convex-dev/react-query"
@@ -14,13 +12,9 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
-  useLocation,
-  useRouteContext,
-  useRouter
+  useLocation
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { ConvexAuthProvider } from "better-convex/auth/client"
-import { ConvexQueryCacheProvider } from "convex-helpers/react/cache"
 
 import appCss from "../styles.css?url"
 
@@ -61,45 +55,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   // this will run on every page navigation,
   // but JWT caching from convex ensures the navigation
   // still feels snappy while keeping the app safe
-  beforeLoad: async (ctx) => {
-    const token = await getAuth()
-    // all queries, mutations and actions through TanStack Query will be
-    // authenticated during SSR if we have a valid token
-    if (token) {
-      // During SSR only (the only time serverHttpClient exists),
-      // set the auth token to make HTTP queries with.
-      ctx.context.convexQueryClient.serverHttpClient?.setAuth(token)
-    }
-    return {
-      isAuthenticated: !!token,
-      token
-    }
-  },
   component: RootComponent
 })
 
 function RootComponent() {
-  const context = useRouteContext({ from: Route.id })
-  const router = useRouter()
-
   return (
-    <ConvexAuthProvider
-      authClient={authClient}
-      client={context.convexQueryClient.convexClient}
-      initialToken={context.token}
-      onMutationUnauthorized={() => {
-        router.navigate({ to: "/sign-in" })
-      }}
-      onQueryUnauthorized={() => {
-        router.navigate({ to: "/sign-in" })
-      }}
-    >
-      <ConvexQueryCacheProvider>
-        <RootDocument>
-          <Outlet />
-        </RootDocument>
-      </ConvexQueryCacheProvider>
-    </ConvexAuthProvider>
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
   )
 }
 
@@ -118,7 +81,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <div className="absolute top-4 left-4 flex flex-row gap-2">
             {!pathname.includes("dashboard") && (
               <>
-                <SignOutBtn />
                 <div className="flex flex-row gap-2">
                   <ThemeToggle />
                 </div>
