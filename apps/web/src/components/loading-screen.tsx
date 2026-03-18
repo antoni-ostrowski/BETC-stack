@@ -1,11 +1,11 @@
-import { Spinner } from "./ui/spinner"
+import { Spinner } from "./ui/spinner";
 
 export default function FullScreenLoading({
   loadingMessage = "",
-  loadingDetail = ""
+  loadingDetail = "",
 }: {
-  loadingMessage?: string
-  loadingDetail?: string
+  loadingMessage?: string;
+  loadingDetail?: string;
 }) {
   return (
     <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-4">
@@ -14,5 +14,5 @@ export default function FullScreenLoading({
       <p className="max-w-[50%] text-center text-sm">{loadingDetail}</p>
       <div className="flex flex-col items-center justify-center gap-3"></div>
     </div>
-  )
+  );
 }

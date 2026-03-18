@@ -1,3 +1,4 @@
+import { effectifyPromise } from "@packages/shared"
 import { Effect } from "effect"
 import { z } from "zod"
 
@@ -5,7 +6,7 @@ import { Id } from "../_generated/dataModel"
 import { DatabaseError } from "../errors"
 import { authedMutation } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { runEffOrThrow } from "../utils_effect"
 
 export const toggle = authedMutation
   .input(z.object({ id: z.string() }))

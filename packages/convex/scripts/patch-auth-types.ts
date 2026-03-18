@@ -29,24 +29,31 @@ function patchAuthTypes(): void {
     process.exit(0)
   }
 
-  // Find the AuthDefinitionFromFile type and add our new types after it
-  // Match the type definition ending with >;\n (handles both old and new formats)
-  const authDefinitionMatch =
-    /type AuthDefinitionFromFile = Extract<[\s\S]*?>;\n/.exec(content)
-
-  if (!authDefinitionMatch) {
+  // Find where const authDefinition starts - insert types before it
+  const authDefinitionStart = content.indexOf("const authDefinition = ")
+  if (authDefinitionStart === -1) {
     console.error(
-      "❌ Could not find AuthDefinitionFromFile type. File structure may have changed."
+      "❌ Could not find 'const authDefinition'. File structure may have changed."
     )
     process.exit(1)
   }
 
-  const insertPosition = authDefinitionMatch.index + authDefinitionMatch[0].length
+  const insertPosition = authDefinitionStart
 
   // New types to insert
-  const newTypes = `\ntype AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>;\n\ntype AuthRuntimeType = ReturnType<typeof createAuthRuntime<\n  DataModel,\n  typeof schema,\n  MutationCtx,\n  GenericCtx,\n  AuthOptionsFromFile\n>>;\n`
+  const newTypes = `type AuthOptionsFromFile = ReturnType<AuthDefinitionFromFile>
 
-  // Insert the new types
+type AuthRuntimeType = ReturnType<typeof createAuthRuntime<
+  DataModel,
+  typeof schema,
+  MutationCtx,
+  GenericCtx,
+  AuthOptionsFromFile
+>>
+
+`
+
+  // Insert the new types before const authDefinition
   content = content.slice(0, insertPosition) + newTypes + content.slice(insertPosition)
 
   // Replace: const authRuntime = createAuthRuntime<...>({

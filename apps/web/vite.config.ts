@@ -1,32 +1,32 @@
-import tailwindcss from "@tailwindcss/vite"
-import { devtools } from "@tanstack/devtools-vite"
-import { tanstackStart } from "@tanstack/react-start/plugin/vite"
-import viteReact from "@vitejs/plugin-react"
-import { nitro } from "nitro/vite"
-import { defineConfig } from "vite-plus"
+import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite-plus";
 
 const baseIgnorePatters = [
   "**/node_modules/**",
   "**/.convex/_generated/**",
   "**/.convex/betterAuth/_generated/**",
   "**/routeTree.gen.ts",
-  "**/bun.lock"
-]
+  "**/bun.lock",
+];
 
 export default defineConfig({
   resolve: {
-    tsconfigPaths: true
+    tsconfigPaths: true,
   },
   plugins: [
     tailwindcss(),
     tanstackStart(),
-    nitro({ preset: "bun" }),
+    nitro({ preset: "node" }),
     devtools({ consolePiping: { enabled: true }, enhancedLogs: { enabled: true } }),
     viteReact({
       babel: {
-        plugins: ["babel-plugin-react-compiler"]
-      }
-    })
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
   ],
 
   lint: {
@@ -39,10 +39,10 @@ export default defineConfig({
       "node",
       "promise",
       "react-perf",
-      "jsx-a11y"
+      "jsx-a11y",
     ],
     env: {
-      builtin: true
+      builtin: true,
     },
     rules: {
       "react-hooks/exhaustive-deps": "warn",
@@ -54,8 +54,8 @@ export default defineConfig({
       "@typescript-eslint/require-await": "warn",
       "@typescript-eslint/restrict-template-expressions": "warn",
       "require-yield": "off",
-      "@typescript-eslint/unbound-method": "off"
-    }
+      "@typescript-eslint/unbound-method": "off",
+    },
   },
   fmt: {
     singleQuote: false,
@@ -69,17 +69,17 @@ export default defineConfig({
         ["internal", "subpath"],
         ["parent", "sibling", "index"],
         "style",
-        "unknown"
+        "unknown",
       ],
       newlinesBetween: true,
       order: "asc",
-      internalPattern: ["^~/", "^@/"]
+      internalPattern: ["^~/", "^@/"],
     },
     sortTailwindcss: {
-      functions: ["clsx", "cn", "cva", "tw"]
+      functions: ["clsx", "cn", "cva", "tw"],
     },
     sortPackageJson: {
-      sortScripts: false
-    }
-  }
-})
+      sortScripts: false,
+    },
+  },
+});

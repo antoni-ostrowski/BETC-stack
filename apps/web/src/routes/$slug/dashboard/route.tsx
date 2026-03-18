@@ -1,40 +1,40 @@
-import PageWrapper from "@/components/page-wrapper"
-import { Separator } from "@/components/ui/separator"
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { Spinner } from "@/components/ui/spinner"
-import { authClient } from "@/lib/auth-client"
-import { tryCatch } from "@/lib/utils"
-import { convexQuery } from "@convex-dev/react-query"
-import { api } from "@packages/convex"
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import PageWrapper from "@/components/page-wrapper";
+import { Separator } from "@/components/ui/separator";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth-client";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@packages/convex";
+import { tryCatch } from "@packages/shared";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { AppSidebar } from "./-sidebar/app-sidebar"
+import { AppSidebar } from "./-sidebar/app-sidebar";
 
 export const Route = createFileRoute("/$slug/dashboard")({
   loader: async ({ context, params }) => {
     if (!context.isAuthenticated) {
-      throw redirect({ to: "/sign-in" })
+      throw redirect({ to: "/sign-in" });
     }
     const [_isUserPartOfThisOrg, err] = await tryCatch(
       context.queryClient.fetchQuery(
-        convexQuery(api.org.queries.checkUserMembership, { slug: params.slug })
-      )
-    )
+        convexQuery(api.org.queries.checkUserMembership, { slug: params.slug }),
+      ),
+    );
     if (err) {
-      throw redirect({ to: "/" })
+      throw redirect({ to: "/" });
     }
-    await tryCatch(authClient.organization.setActive({ organizationSlug: params.slug }))
+    await tryCatch(authClient.organization.setActive({ organizationSlug: params.slug }));
   },
   component: RouteComponent,
   pendingComponent: () => (
     <PageWrapper className="h-screen">
       <Spinner />
     </PageWrapper>
-  )
-})
+  ),
+});
 
 function RouteComponent() {
-  const { slug } = Route.useParams()
+  const { slug } = Route.useParams();
   return (
     <SidebarProvider>
       <AppSidebar slug={slug} />
@@ -50,5 +50,5 @@ function RouteComponent() {
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }

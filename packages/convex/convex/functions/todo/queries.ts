@@ -1,8 +1,9 @@
+import { effectifyPromise } from "@packages/shared"
 import { Effect } from "effect"
 
 import { authedQuery } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { runEffOrThrow } from "../utils_effect"
 
 export const list = authedQuery
   .handler(async (ctx) => {

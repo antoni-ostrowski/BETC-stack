@@ -3,39 +3,39 @@ import {
   FieldContent,
   FieldDescription,
   FieldError,
-  FieldLabel
-} from "@/components/ui/field"
-import { type ReactNode } from "react"
+  FieldLabel,
+} from "@/components/ui/field";
+import { type ReactNode } from "react";
 
-import { useFieldContext } from "../app-form"
+import { useFieldContext } from "../app-form";
 
 export type FormControlProps = {
-  label: string
-  description?: string
-}
+  label: string;
+  description?: string;
+};
 
 type FormBaseProps = FormControlProps & {
-  children: ReactNode
-  horizontal?: boolean
-  controlFirst?: boolean
-}
+  children: ReactNode;
+  horizontal?: boolean;
+  controlFirst?: boolean;
+};
 
 export function FormBase({
   children,
   label,
   description,
   controlFirst,
-  horizontal
+  horizontal,
 }: FormBaseProps) {
-  const field = useFieldContext()
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+  const field = useFieldContext();
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   const labelElement = (
     <>
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
       {description && <FieldDescription>{description}</FieldDescription>}
     </>
-  )
-  const errorElem = isInvalid && <FieldError errors={field.state.meta.errors} />
+  );
+  const errorElem = isInvalid && <FieldError errors={field.state.meta.errors} />;
 
   return (
     <Field data-invalid={isInvalid} orientation={horizontal ? "horizontal" : undefined}>
@@ -55,5 +55,5 @@ export function FormBase({
         </>
       )}
     </Field>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
-import { useFieldContext } from "../app-form"
-import { FormBase, type FormControlProps } from "./form-base"
+import { useFieldContext } from "../app-form";
+import { FormBase, type FormControlProps } from "./form-base";
 
 export function FormTextField(props: FormControlProps) {
-  const field = useFieldContext<string>()
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+  const field = useFieldContext<string>();
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
     <FormBase {...props}>
       <Input
@@ -14,17 +14,17 @@ export function FormTextField(props: FormControlProps) {
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(e.target.value)
+          field.handleChange(e.target.value);
         }}
         aria-invalid={isInvalid}
       />
     </FormBase>
-  )
+  );
 }
 
 export function FormTextPasswordField(props: FormControlProps) {
-  const field = useFieldContext<string>()
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+  const field = useFieldContext<string>();
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
   return (
     <FormBase {...props}>
       <Input
@@ -34,10 +34,10 @@ export function FormTextPasswordField(props: FormControlProps) {
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(e.target.value)
+          field.handleChange(e.target.value);
         }}
         aria-invalid={isInvalid}
       />
     </FormBase>
-  )
+  );
 }

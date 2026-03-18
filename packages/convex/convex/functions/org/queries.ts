@@ -1,10 +1,11 @@
+import { effectifyPromise } from "@packages/shared"
 import { Effect } from "effect"
 import z from "zod"
 
 import { ServerError } from "../errors"
 import { authedQuery } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyPromise, getUserById, runEffOrThrow } from "../utils_effect"
+import { getUserById, runEffOrThrow } from "../utils_effect"
 
 export const checkUserMembership = authedQuery
   .input(z.object({ slug: z.string() }))

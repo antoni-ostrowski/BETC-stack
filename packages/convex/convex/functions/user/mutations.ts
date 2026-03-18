@@ -1,3 +1,4 @@
+import { effectifyPromise } from "@packages/shared"
 import { getHeaders } from "better-convex/auth"
 import { Effect } from "effect"
 import z from "zod"
@@ -5,7 +6,7 @@ import z from "zod"
 import { getAuth } from "../generated/auth"
 import { mutation } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyPromise, runEffOrThrow } from "../utils_effect"
+import { runEffOrThrow } from "../utils_effect"
 
 export const setupNewUser = mutation
   .input(z.object({ name: z.string() }))

@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router"
-import { ReactNode } from "react"
+import { Link } from "@tanstack/react-router";
+import { ReactNode } from "react";
 
 export function NotFound({ children }: { children?: ReactNode }) {
   return (
@@ -10,7 +10,7 @@ export function NotFound({ children }: { children?: ReactNode }) {
       <p className="flex flex-wrap items-center gap-2">
         <button
           onClick={() => {
-            window.history.back()
+            window.history.back();
           }}
           className="rounded-sm bg-emerald-500 px-2 py-1 text-sm font-black text-white uppercase"
         >
@@ -24,5 +24,5 @@ export function NotFound({ children }: { children?: ReactNode }) {
         </Link>
       </p>
     </div>
-  )
+  );
 }

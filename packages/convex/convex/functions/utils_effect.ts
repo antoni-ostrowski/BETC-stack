@@ -1,50 +1,13 @@
+import { effectifyPromise } from "@packages/shared"
 import { getHeaders } from "better-convex/auth"
 import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
-import { Effect, ManagedRuntime, pipe, Result } from "effect"
+import { Effect, ManagedRuntime, Result } from "effect"
 
 import { DataModel, Id } from "./_generated/dataModel"
 import { NotAuthenticated, ServerError } from "./errors"
 import { getAuth } from "./generated/auth"
 import { GenericCtx } from "./generated/server"
-/**
- * Creates an Effect from a Promise, handling errors and logging.
- *
- * @template A - The success type of the promise.
- * @template E - The custom error type to throw on promise rejection.
- * @template R - The context/environment required by the promise factory (if any).
- * @param {() => Promise<A>} promiseFactory - A function that returns the Promise to be wrapped.
- * @param {(cause: unknown, message: string) => E} errorFactory - A function to map the unknown promise rejection cause to your specific error type E.
- * @param {string} [errorMessage] - An optional custom error message. Defaults to "Promise failed".
- * @returns {Effect.Effect<A, E, R>} An Effect that resolves to the promise's success value, or your custom error E.
- */
-export function effectifyPromise<A, E, R = never>(
-  promiseFactory: () => Promise<A>,
-  errorFactory: (obj: { cause: unknown; message: string }) => E = (a) => new ServerError(a) as E,
-  errorMessage: string = "Promise failed"
-): Effect.Effect<A, E, R> {
-  return pipe(
-    Effect.tryPromise({
-      try: promiseFactory,
-      catch: (cause) => errorFactory({ cause, message: errorMessage })
-    }),
-    Effect.tapError((error) => Effect.logError("Effectified Promise Error:", errorMessage, error))
-  )
-}
-
-export function effectifyFunc<A, E, R = never>(
-  funcFactory: () => A,
-  errorFactory: (obj: { cause: unknown; message: string }) => E = (a) => new ServerError(a) as E,
-  errorMessage: string = "Function failed"
-): Effect.Effect<A, E, R> {
-  return pipe(
-    Effect.try({
-      try: funcFactory,
-      catch: (cause) => errorFactory({ cause, message: errorMessage })
-    }),
-    Effect.tapError((error) => Effect.logError("Effectified Function Error:", errorMessage, error))
-  )
-}
 
 /**
  * execute the final eff that returns the success data or wraps the failure in ConvexError,

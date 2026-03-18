@@ -3,9 +3,9 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
-} from "@/components/ui/sidebar"
-import { Link } from "@tanstack/react-router"
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { Link } from "@tanstack/react-router";
 
 export function NavMain({ slug }: { slug: string }) {
   return (
@@ -19,11 +19,11 @@ export function NavMain({ slug }: { slug: string }) {
                 <Link {...props} to={"/$slug/dashboard/todos"} params={{ slug }}>
                   todos
                 </Link>
-              )
+              );
             }}
           ></SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }

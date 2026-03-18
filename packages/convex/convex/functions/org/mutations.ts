@@ -1,3 +1,4 @@
+import { effectifyPromise } from "@packages/shared"
 import { Effect } from "effect"
 import { z } from "zod/v4"
 
@@ -5,7 +6,7 @@ import { Id } from "../_generated/dataModel"
 import { DatabaseError, ServerError } from "../errors"
 import { authedMutation, mutation } from "../lib"
 import { appRuntime } from "../runtime"
-import { effectifyPromise, getUserAuth, getUserById, runEffOrThrow } from "../utils_effect"
+import { getUserAuth, getUserById, runEffOrThrow } from "../utils_effect"
 
 export const generateSlug = (input: string): string => {
   return input

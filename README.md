@@ -37,10 +37,10 @@ bun dev:convex
 export const list = authedQuery
   .handler(async (ctx) => {
     const program = Effect.gen(function* () {
-      return yield* effectifyPromise(() => ctx.db.query("todos").collect())
-    })
+      return yield* effectifyPromise(() => ctx.db.query("todos").collect());
+    });
 
-    return runEffOrThrow(appRuntime, program)
+    return runEffOrThrow(appRuntime, program);
   })
-  .public()
+  .public();
 ```

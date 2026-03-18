@@ -1,20 +1,20 @@
-import PageWrapper from "@/components/page-wrapper"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
-import { useGetUserSuspense } from "@/lib/auth-client"
-import { parseConvexError } from "@/lib/utils"
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query"
-import { api } from "@packages/convex"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { createFileRoute, redirect } from "@tanstack/react-router"
-import { PlusIcon, XIcon } from "lucide-react"
-import { useState } from "react"
+import PageWrapper from "@/components/page-wrapper";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { useGetUserSuspense } from "@/lib/auth-client";
+import { parseConvexError } from "@/lib/utils";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { api } from "@packages/convex";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { PlusIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/$slug/dashboard/todos")({
   beforeLoad: async (ctx) => {
     if (!ctx.context.isAuthenticated) {
-      throw redirect({ to: "/sign-in" })
+      throw redirect({ to: "/sign-in" });
     }
   },
   component: RouteComponent,
@@ -22,16 +22,16 @@ export const Route = createFileRoute("/$slug/dashboard/todos")({
     <PageWrapper className={"h-screen w-screen"}>
       <Spinner />
     </PageWrapper>
-  )
-})
+  ),
+});
 
 function RouteComponent() {
   // this is the way to get current user SSR safe way.
   // (pending component gets triggered (and error), and user always sees the authed state)
   // use suspensy query in most situations
-  const { data: user } = useGetUserSuspense()
+  const { data: user } = useGetUserSuspense();
 
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState("");
 
   // wrap convex mutations in tanstack hook.
   const { mutate: createNewTodo } = useMutation({
@@ -40,32 +40,32 @@ function RouteComponent() {
       withToasts: true,
       loadingMessage: "Creating todo",
       successMessage: "Created todo",
-      errorMessage: "failed!"
+      errorMessage: "failed!",
     },
-    mutationFn: useConvexMutation(api.todo.mutations.create)
-  })
+    mutationFn: useConvexMutation(api.todo.mutations.create),
+  });
 
   const { mutate: deleteTodo } = useMutation({
     meta: {
       withToasts: true,
       loadingMessage: "Deleting todo",
-      successMessage: "Deleted todo"
+      successMessage: "Deleted todo",
     },
-    mutationFn: useConvexMutation(api.todo.mutations.remove)
-  })
+    mutationFn: useConvexMutation(api.todo.mutations.remove),
+  });
 
   // this doesnt trigger pending component. on server will return undefined,
   // and will finish fething data on client. use suspenseQuery when possible
-  const { data, error, isPending } = useQuery(convexQuery(api.todo.queries.list, {}))
+  const { data, error, isPending } = useQuery(convexQuery(api.todo.queries.list, {}));
 
   const { mutate } = useMutation({
     meta: {
       withToasts: true,
       successMessage: "Toggled todo!",
-      loadingMessage: "Loading..."
+      loadingMessage: "Loading...",
     },
-    mutationFn: useConvexMutation(api.todo.mutations.toggle)
-  })
+    mutationFn: useConvexMutation(api.todo.mutations.toggle),
+  });
 
   return (
     <PageWrapper>
@@ -79,7 +79,7 @@ function RouteComponent() {
             <Input
               value={input}
               onChange={(e) => {
-                setInput(e.target.value)
+                setInput(e.target.value);
               }}
               placeholder="Todo text"
             />
@@ -87,8 +87,8 @@ function RouteComponent() {
 
           <Button
             onClick={async () => {
-              createNewTodo({ text: input })
-              setInput("")
+              createNewTodo({ text: input });
+              setInput("");
             }}
           >
             <PlusIcon />
@@ -107,15 +107,15 @@ function RouteComponent() {
                   type="checkbox"
                   checked={a.completed}
                   onChange={() => {
-                    mutate({ id: a._id })
+                    mutate({ id: a._id });
                   }}
                 />
                 <Button
                   variant={"ghost"}
                   onClick={() => {
                     deleteTodo({
-                      todoId: a._id
-                    })
+                      todoId: a._id,
+                    });
                   }}
                 >
                   <XIcon />
@@ -123,10 +123,10 @@ function RouteComponent() {
 
                 {a.text}
               </div>
-            )
+            );
           })}
         </div>
       </div>
     </PageWrapper>
-  )
+  );
 }

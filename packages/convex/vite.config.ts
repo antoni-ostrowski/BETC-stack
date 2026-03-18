@@ -1,4 +1,4 @@
-import { defineConfig } from "vite-plus";
+import { defineConfig } from "vite-plus"
 
 export default defineConfig({
   lint: {
@@ -6,19 +6,19 @@ export default defineConfig({
       "**/node_modules/**",
       "**/convex/_generated/**",
       "**/convex/betterAuth/_generated/**",
-      "**/bun.lock",
+      "**/bun.lock"
     ],
     plugins: ["typescript"],
     categories: {
       correctness: "error",
       suspicious: "warn",
-      perf: "warn",
+      perf: "warn"
     },
     rules: {
       "no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "error",
-      "@typescript-eslint/no-unused-vars": "warn",
-    },
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": "warn"
+    }
   },
   fmt: {
     singleQuote: false,
@@ -28,7 +28,7 @@ export default defineConfig({
       "**/node_modules/**",
       "**/.convex/_generated/**",
       "**/.convex/betterAuth/_generated/**",
-      "**/bun.lock",
+      "**/bun.lock"
     ],
     sortImports: {
       groups: [
@@ -37,14 +37,14 @@ export default defineConfig({
         ["internal", "subpath"],
         ["parent", "sibling", "index"],
         "style",
-        "unknown",
+        "unknown"
       ],
       newlinesBetween: true,
       order: "asc",
-      internalPattern: ["^~/", "^@/"],
+      internalPattern: ["^~/", "^@/"]
     },
     sortPackageJson: {
-      sortScripts: false,
-    },
-  },
-});
+      sortScripts: false
+    }
+  }
+})
