@@ -1,12 +1,8 @@
 # My FullStack Template (monorepo)
 
-> I was tired of configuring tech stack every time I wanted to start new web app so i created this repo. This is exactly how I would start new web app today.
-
 _**This repo is meant to be cloned and used as a starting point for a your next project.**_
 
 # Getting Started
-
-You can wire everything up yourself if you like, but I propose you just clone this repo to have my exact setup.
 
 > Remember to delete the .git folder, and init a new repo after cloning :)
 
@@ -22,7 +18,7 @@ bun dev:convex
 
 - [Tanstack (Start & Router & Query & ...)](https://tanstack.com/) (React framework & tools)
 - [Convex](https://www.convex.dev/) (Backend)
-- [Better-auth](https://www.better-auth.com/) (Auth)
+- [Better-auth](https://www.better-auth.com/) (Auth, with [better-convex](https://www.better-convex.com/))
 - [Effect v4](https://effect.website/) (best way to write TypeScript)
 
 ## Tooling
@@ -35,7 +31,7 @@ bun dev:convex
 - CSS - [Tailwindcss](https://tailwindcss.com/)
 - Base components - [Shadcn](https://ui.shadcn.com/)
 
-> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. For now, I created a utility to run an effect and wrap any failures in ConvexError and throw it. Then client can use parseConvexError util to read exact error message. This approach preserves the nature of js exceptions and doesn't break convex assumptions. This is how that looks like. Im using [fluent convex](https://github.com/mikecann/fluent-convex).
+> I'm still experimenting with the best way to make the effect code interact correctly with convex functions. For now, I created a utility to run an effect and wrap any failures in ConvexError and throw it. Then client can use parseConvexError util to read exact error message. This approach preserves the nature of js exceptions and doesn't break convex assumptions. This is how that looks like. Im using [fluent convex](https://github.com/mikecann/fluent-convex) - simple lib that enables TRPC style procedures and middlewares.
 
 ```typescript
 export const list = authedQuery
