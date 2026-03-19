@@ -1,11 +1,11 @@
-import { effectifyPromise } from "@packages/shared"
-import { Effect } from "effect"
+import { Effect, Schema } from "effect"
 import z from "zod"
 
-import { ServerError } from "../errors"
+import { ServerError } from "../../errors"
+import { effectifyPromise, getUserById } from "../../utils"
+import { runEffOrThrow } from "../../utils"
 import { authedQuery } from "../lib"
 import { appRuntime } from "../runtime"
-import { getUserById, runEffOrThrow } from "../utils_effect"
 
 export const checkUserMembership = authedQuery
   .input(z.object({ slug: z.string() }))
@@ -18,18 +18,18 @@ export const checkUserMembership = authedQuery
           .first()
       )
       if (!org) {
-        return yield* new ServerError({ message: "organization doesnt exist" })
+        return yield* new ServerError({ message: "organization doesnt exist", cause: null })
       }
       const userMempership = yield* effectifyPromise(() =>
         ctx.db
           .query("member")
-          .withIndex("userId_organization_id", (q) =>
-            q.eq("userId", ctx.userId).eq("organizationId", org._id)
+          .withIndex("organization_id_userId", (q) =>
+            q.eq("organizationId", org._id).eq("userId", ctx.userId)
           )
           .first()
       )
       if (!userMempership) {
-        return yield new ServerError({ message: "you are not part of this org" })
+        return yield new ServerError({ message: "you are not part of this org", cause: null })
       }
 
       return userMempership
@@ -37,6 +37,30 @@ export const checkUserMembership = authedQuery
 
     return runEffOrThrow(appRuntime, program)
   })
+  .public()
+
+export const getOrgBySlugErrors = Schema.Union([ServerError])
+
+export const getOrgBySlug = authedQuery
+  .input(z.object({ slug: z.string() }))
+  .handler(
+    async (ctx, args) =>
+      await runEffOrThrow(
+        appRuntime,
+        Effect.gen(function* () {
+          if (args.slug.length === 0) {
+            return yield* new ServerError({ message: "no slug provided", cause: null })
+          }
+          const org = yield* effectifyPromise(() =>
+            ctx.db
+              .query("organization")
+              .withIndex("slug", (q) => q.eq("slug", args.slug))
+              .first()
+          )
+          return org
+        })
+      )
+  )
   .public()
 
 export const getPersonalOrg = authedQuery

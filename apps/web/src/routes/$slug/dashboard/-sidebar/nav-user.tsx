@@ -1,26 +1,26 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { authClient, useGetUserSuspense } from "@/lib/auth-client";
-import { useTheme } from "@/lib/theme/theme-provider";
-import { useRouter } from "@tanstack/react-router";
-import { LogOut, Moon, Sun } from "lucide-react";
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { authClient, useUserSuspense } from "@/lib/auth-client"
+import { useTheme } from "@/lib/theme/theme-provider"
+import { useRouter } from "@tanstack/react-router"
+import { LogOut, Moon, Sun } from "lucide-react"
 
 export function NavUser() {
-  const { data: user } = useGetUserSuspense();
+  const { data: user } = useUserSuspense()
 
-  const router = useRouter();
+  const router = useRouter()
   const handleLogout = async () => {
-    await authClient.signOut();
-    await router.invalidate();
-    await router.navigate({ to: "/" });
-  };
+    await authClient.signOut()
+    await router.invalidate()
+    await router.navigate({ to: "/" })
+  }
   return (
     <SidebarMenu>
       <SidebarMenuItem className="flex flex-col gap-2">
@@ -54,18 +54,18 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }
 
 function SideBarThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme()
   return (
     <DropdownMenuItem
       onClick={() => {
         if (theme === "dark") {
-          setTheme("light");
+          setTheme("light")
         } else {
-          setTheme("dark");
+          setTheme("dark")
         }
       }}
     >
@@ -73,5 +73,5 @@ function SideBarThemeToggle() {
       <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
       Theme
     </DropdownMenuItem>
-  );
+  )
 }

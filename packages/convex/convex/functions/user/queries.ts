@@ -1,6 +1,6 @@
+import { getUserById, runEffOrThrow } from "../../utils"
 import { authedQuery } from "../lib"
 import { appRuntime } from "../runtime"
-import { getUserById, runEffOrThrow } from "../utils_effect"
 
 export const getMe = authedQuery
   .handler(async (ctx) => {

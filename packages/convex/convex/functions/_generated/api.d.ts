@@ -9,7 +9,6 @@
  */
 
 import type * as auth from "../auth.js";
-import type * as errors from "../errors.js";
 import type * as generated_auth from "../generated/auth.js";
 import type * as generated_server from "../generated/server.js";
 import type * as http from "../http.js";
@@ -21,7 +20,6 @@ import type * as todo_mutations from "../todo/mutations.js";
 import type * as todo_queries from "../todo/queries.js";
 import type * as user_mutations from "../user/mutations.js";
 import type * as user_queries from "../user/queries.js";
-import type * as utils_effect from "../utils_effect.js";
 
 import type {
   ApiFromModules,
@@ -31,7 +29,6 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
-  errors: typeof errors;
   "generated/auth": typeof generated_auth;
   "generated/server": typeof generated_server;
   http: typeof http;
@@ -43,7 +40,6 @@ declare const fullApi: ApiFromModules<{
   "todo/queries": typeof todo_queries;
   "user/mutations": typeof user_mutations;
   "user/queries": typeof user_queries;
-  utils_effect: typeof utils_effect;
 }>;
 
 /**
