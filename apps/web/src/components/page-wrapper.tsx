@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
-import { ComponentProps, ReactNode } from "react";
+import { cn } from "@/lib/utils"
+import { ComponentProps, ReactNode } from "react"
 
 export default function PageWrapper({
   children,
-  className,
+  className
 }: {
-  children: ReactNode;
-  className?: ComponentProps<"div">["className"];
+  children: ReactNode
+  className?: ComponentProps<"div">["className"]
 }) {
   return (
     <div
@@ -14,5 +14,5 @@ export default function PageWrapper({
     >
       {children}
     </div>
-  );
+  )
 }

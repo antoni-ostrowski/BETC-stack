@@ -23,6 +23,10 @@ function App() {
           <Button>Dashboard</Button>
         </Link>
       )}
+
+      <Link to="/create-org">
+        <Button>Create org</Button>
+      </Link>
     </div>
   )
 }

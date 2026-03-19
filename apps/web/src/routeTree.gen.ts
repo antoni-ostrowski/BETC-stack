@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as CreateOrgRouteImport } from './routes/create-org'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugDashboardRouteRouteImport } from './routes/$slug/dashboard/route'
 import { Route as SlugDashboardIndexRouteImport } from './routes/$slug/dashboard/index'
@@ -20,6 +21,11 @@ import { Route as SlugDashboardTodosRouteImport } from './routes/$slug/dashboard
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateOrgRoute = CreateOrgRouteImport.update({
+  id: '/create-org',
+  path: '/create-org',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,6 +61,7 @@ const SlugDashboardTodosRoute = SlugDashboardTodosRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-org': typeof CreateOrgRoute
   '/sign-in': typeof SignInRoute
   '/$slug/dashboard': typeof SlugDashboardRouteRouteWithChildren
   '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create-org': typeof CreateOrgRoute
   '/sign-in': typeof SignInRoute
   '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/create-org': typeof CreateOrgRoute
   '/sign-in': typeof SignInRoute
   '/$slug/dashboard': typeof SlugDashboardRouteRouteWithChildren
   '/$slug/dashboard/todos': typeof SlugDashboardTodosRoute
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/create-org'
     | '/sign-in'
     | '/$slug/dashboard'
     | '/$slug/dashboard/todos'
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/create-org'
     | '/sign-in'
     | '/$slug/dashboard/todos'
     | '/api/auth/$'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/create-org'
     | '/sign-in'
     | '/$slug/dashboard'
     | '/$slug/dashboard/todos'
@@ -111,6 +123,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CreateOrgRoute: typeof CreateOrgRoute
   SignInRoute: typeof SignInRoute
   SlugDashboardRouteRoute: typeof SlugDashboardRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -124,6 +137,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-org': {
+      id: '/create-org'
+      path: '/create-org'
+      fullPath: '/create-org'
+      preLoaderRoute: typeof CreateOrgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -186,6 +206,7 @@ const SlugDashboardRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CreateOrgRoute: CreateOrgRoute,
   SignInRoute: SignInRoute,
   SlugDashboardRouteRoute: SlugDashboardRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

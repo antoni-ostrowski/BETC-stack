@@ -39,8 +39,6 @@ export const checkUserMembership = authedQuery
   })
   .public()
 
-export const getOrgBySlugErrors = Schema.Union([ServerError])
-
 export const getOrgBySlug = authedQuery
   .input(z.object({ slug: z.string() }))
   .handler(
