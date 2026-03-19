@@ -7,17 +7,6 @@ import { Id } from "../_generated/dataModel"
 import { authedMutation, mutation } from "../lib"
 import { appRuntime } from "../runtime"
 
-export const generateSlug = (input: string): string => {
-  return input
-    .toLowerCase()
-    .trim()
-    .normalize("NFD") // Splits accents from letters (e.g., "é" -> "e")
-    .replace(/[\u0300-\u036f]/g, "") // Removes the accents
-    .replace(/[^a-z0-9\s-]/g, "") // Removes anything that isn't a letter, number, or space
-    .replace(/[\s-]+/g, "-") // Replaces spaces and multiple hyphens with a single hyphen
-    .replace(/^-+|-+$/g, "") // Trims hyphens from the start and end
-}
-
 export const create = mutation
   .input(
     z.object({
@@ -86,6 +75,15 @@ export const createPersonalOrg = authedMutation
     const program = Effect.gen(function* () {
       const { auth, headers } = yield* getUserAuth(ctx)
       const user = yield* getUserById(ctx, ctx.userId)
+
+      const userCurPersonalOrgId = user.personalOrganizationId
+
+      if (userCurPersonalOrgId) {
+        const curPersonalOrg = yield* effectifyPromise(() => ctx.db.get(userCurPersonalOrgId))
+        if (curPersonalOrg) {
+          return curPersonalOrg.slug
+        }
+      }
 
       const org = yield* effectifyPromise(async () =>
         auth.api.createOrganization({
