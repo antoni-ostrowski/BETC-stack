@@ -1,11 +1,10 @@
-import { Effect, Schema } from "effect"
+import { Effect } from "effect"
 import z from "zod"
 
-import { ServerError } from "../../errors"
-import { effectifyPromise, getUserById } from "../../utils"
-import { runEffOrThrow } from "../../utils"
+import { DatabaseError, ServerError } from "../../errors"
+import { appRuntime } from "../../runtime"
+import { effectifyPromise, getUserById, runEffOrThrow } from "../../utils"
 import { authedQuery } from "../lib"
-import { appRuntime } from "../runtime"
 
 export const checkUserMembership = authedQuery
   .input(z.object({ slug: z.string() }))
@@ -39,26 +38,27 @@ export const checkUserMembership = authedQuery
   })
   .public()
 
+export type getOrgBySlugErrorsTypes = ServerError | DatabaseError
 export const getOrgBySlug = authedQuery
   .input(z.object({ slug: z.string() }))
-  .handler(
-    async (ctx, args) =>
-      await runEffOrThrow(
-        appRuntime,
-        Effect.gen(function* () {
-          if (args.slug.length === 0) {
-            return yield* new ServerError({ message: "no slug provided", cause: null })
-          }
-          const org = yield* effectifyPromise(() =>
-            ctx.db
-              .query("organization")
-              .withIndex("slug", (q) => q.eq("slug", args.slug))
-              .first()
-          )
-          return org
+  .handler(async (ctx, args) => {
+    const program = Effect.gen(function* () {
+      if (args.slug.length === 0) {
+        return yield* new DatabaseError({
+          message: "no slug provided",
+          cause: null
         })
+      }
+      const org = yield* effectifyPromise(() =>
+        ctx.db
+          .query("organization")
+          .withIndex("slug", (q) => q.eq("slug", args.slug))
+          .first()
       )
-  )
+      return org
+    })
+    return await runEffOrThrow(appRuntime, program)
+  })
   .public()
 
 export const getPersonalOrg = authedQuery

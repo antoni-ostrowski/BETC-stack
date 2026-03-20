@@ -2,10 +2,10 @@ import { getHeaders } from "better-convex/auth"
 import { Effect } from "effect"
 import z from "zod"
 
+import { appRuntime } from "../../runtime"
 import { effectifyPromise, runEffOrThrow } from "../../utils"
 import { getAuth } from "../generated/auth"
 import { mutation } from "../lib"
-import { appRuntime } from "../runtime"
 
 export const setupNewUser = mutation
   .input(z.object({ name: z.string() }))

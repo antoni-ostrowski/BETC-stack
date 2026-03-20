@@ -1,37 +1,29 @@
 import { getHeaders } from "better-convex/auth"
 import { GenericQueryCtx } from "convex/server"
 import { ConvexError } from "convex/values"
-import { pipe } from "effect"
+import { Exit, Match, pipe } from "effect"
 import { Effect, ManagedRuntime, Result } from "effect"
 
 import { Unauthenticated, ServerError } from "./errors"
 import { DataModel, Id } from "./functions/_generated/dataModel"
 import { getAuth } from "./functions/generated/auth"
 import { GenericCtx } from "./functions/generated/server"
-/**
- * execute the final eff that returns the success data or wraps the failure in ConvexError,
- * (so client can easly read err message via parseConvexError util)
- * R = The requirements provided by the ManagedRuntime
- * E_Runtime = Errors that can occur during runtime initialization
- */
-export async function runEffOrThrow<A, E, R, E_Runtime>(
-  runtime: ManagedRuntime.ManagedRuntime<R, E_Runtime>,
+
+export async function runEffOrThrow<A, E, R>(
+  runtime: ManagedRuntime.ManagedRuntime<R, never>,
   eff: Effect.Effect<A, E, R>
 ): Promise<A> {
-  const result = await runtime.runPromise(Effect.result(eff))
+  const exit = await runtime.runPromise(Effect.exit(eff))
 
-  if (Result.isFailure(result)) {
-    const error = result.failure
-    const errorMessage =
-      (error as Error).message ||
-      (typeof error === "string" ? error : "An unexpected error occurred")
+  if (Exit.isFailure(exit)) {
+    const error = exit.cause
 
-    Effect.runSync(Effect.logError(error))
+    runtime.runSync(Effect.logError("Effect failed", error))
 
-    throw new ConvexError(errorMessage)
+    throw new ConvexError(JSON.stringify(error))
   }
 
-  return result.success
+  return exit.value
 }
 
 export const getUserById = Effect.fn(function* (
@@ -64,6 +56,16 @@ export function parseConvexError(error: unknown) {
       ? (error.data as string)
       : `[ERROR] Unexpected error occurred - ${error}`
   return errMess
+}
+
+export function parseConvexErrorData(error: unknown) {
+  const errMess = error instanceof ConvexError ? error.data : { _tag: "Unknown error occurred" }
+  return errMess
+}
+
+export function parseQueryError<ErrorT>(error: Error) {
+  const err: ErrorT = parseConvexErrorData(error)
+  return Match.value(err)
 }
 
 export const isAuthError = (error: unknown) => {
